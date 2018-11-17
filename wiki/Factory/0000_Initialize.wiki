@@ -1,0 +1,176 @@
+%title Initialize (Task 0000) | Tasks | ProjectName
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#API|API]]
+    - [[#Acceptance Tests|Acceptance Tests]]
+    - [[#Integration Tests|Integration Tests]]
+    - [[#Unit Tests|Unit Tests]]
+    - [[#Design Choices|Design Choices]]
+    - [[#Refactor|Refactor]]
+    - [[#For Later|For Later]]
+    - [[#Road Blocks|Road Blocks]]
+    - [[#Status|Status]]
+
+= User Story =
+As a typical person with responsibilities, it would be nice if I could record
+an upcoming obligation or task, perhaps with a date and time if applicable,
+along with something to identify the obligation, so that later I could
+review my upcoming obligations and avoid forgetting anything important.
+= Solution Proposal =
+* User executes command to add entry
+    * they provide the following information via arguments:
+        * name of entry
+        * description of entry (optional)
+        * associated date and time (optional)
+        * duration of event (optional)
+            * when associated date and time are provided, duration is
+                interpreted as the time until the end of the event
+            * when date and time are _not_ provided, duration is to be
+                interpreted as the time that the task is expected to take
+                * for example, if set to one hour, the user knows they need to
+                    find a free hour to accomplish the task
+* User requests a list of entries
+    * TimeIn prints a list of all entries to the console, including all
+        information provided for each entry
+    * the entries are listed in order of:
+        * ascending date/time of occurrence
+        * ascending date/time that the entry was added
+= Solution Breakdown =
+== API ==
+* method that stores a new `PlannedEvent` - `AddPlannedEvent`
+    * arguments:
+        * `string eventName`
+    * returns:
+        * void
+    * side effects:
+        * writes new record to persisted data storage
+            * to keep it simple, let's start with non-persistent storage that
+                lasts the life of the application
+                * can add database access later
+* method that retrieves `PlannedEvent` records - `GetPlannedEvents`
+    * arguments:
+        * none
+    * returns:
+        * `List<PlannedEvent>` collection, ordered by date/time added
+    * side effects:
+        * none
+= Acceptance Tests =
+* Add event
+    * eventName = "My first event."
+* Retrieve event list
+    * `PlannedEvent` ID should be 0
+    * "My first nonscheduled event."
+    * "Added <date/time added>"
+* Add event
+    * eventName = "My second event."
+* Retrieve event list
+    * displays two events, starting with the previous one, followed by:
+    * 1
+    * "My second event."
+* Add event
+    * eventName = "My third event."
+* Retrieve event list
+    * displays three events, starting the same output as the previous call,
+        plus one more line:
+    * 2
+    * "My third event."
+= Integration Tests =
+* none
+= Unit Tests =
+AddPlannedEvent_VeryShortNameProvided_WritesNewRecord
+AddPlannedEvent_ShortNameProvided_WritesNewRecord
+AddPlannedEvent_MediumNameProvided_WritesNewRecord
+AddPlannedEvent_LongNameProvided_WritesNewRecord
+AddPlannedEvent_VeryLongNameProvided_WritesNewRecord
+AddPlannedEvent_WhitespaceNameProvided_ThrowsArgumentException
+AddPlannedEvent_NullNameProvided_ThrowsArgumentNullException
+GetPlannedEvents_NoEvents_ReturnsEmptyList
+GetPlannedEvents_WithEvents_ReturnsListOfEventsOrderedByIdAsc
+= Design Choices =
+* [X] What should the default display ordering be for `PlannedEvent` records?
+    * ~~ascending date/time of occurrence~~
+        * (see next design choice)
+    * ~~ascending date/time that the entry was added~~
+        * better yet, since, for now, IDs are added sequentially, just order
+            by ID ascending
+* [X] Query and display scheduled and nonscheduled events together, or
+    separately?
+    * I have decided to only have one type for now - `PlannedEvent` which
+        has no scheduled date/time
+* [X] Include `Duration` field for both scheduled tasks and non-scheduled tasks?
+    * save this for later
+* [X] I don't like "Task". It's too common a term in .NET; so what then?
+    * decision: `PlannedEvent`, with sub-types `ScheduledEvent` and
+        `NonscheduledEvent`
+    * suggestions:
+        * `Todo`
+        * `Event`
+        * `Obligation`
+        * `Plan`
+        * `PlannedEvent`
+            * broken into `ScheduledEvent` and `NonscheduledEvent`
+            * think I'll go with this (for now, anyway)
+            * however, the subclasses will be added later
+        * `FutureOccurrence`
+        * `Reminder`
+* [X] What persistent storage method should I use?
+    * Use non-persisted storage for now - database (probably sqlite;
+        possible postgres?) later
+* [ ] What to return from attempt to add new `PlannedEvent`?
+    * void
+* [X] Collection to use for `PlannedEvent` records on retrieval?
+    * decision: `List<T>`
+    * facts:
+        * no adding, removing
+        * [X] reordering?
+            * when in doubt, KISS!
+            * i.e. NO
+        * read sequentially
+            * no indexing needed, no backward iteration
+        * [X] read one time? multiple times?
+            * again, just for the sake of keeping things simple for now, one
+                read only
+    * what does this all point to?
+        * `SortedList<TKey, TValue>` and `SortedDictionary<TKey, TValue>` sort
+            by key
+            * could use datetime as key... should only ever have one entry per
+                datetime
+                * that's not strictly true - a person may double-book and decide
+                    later which to bail on
+        * I think, for now, I'll stick with `List<PlannedEvent>` and, later
+            create a custom collection for `Schedule`s
+            * this collection can be used for storing, say, the user's schedule
+                for the day
+            * of course, this only really makes sense for scheduled events
+                * so it could be a collection of `ScheduledEvent`s
+                * a separate collection could be used for `ToDo` lists
+                    * might even need different properties from the list of
+                        scheduled events
+* [ ] `PlannedEvent` properties:
+    * `int ID`
+    * `string EventName`
+    * `DateTimeOffset Added`
+* [ ] How shall we display planned event records at the console?
+    * implement `ToString` for `PlannedEvent`
+        * `PlannedEvent` ID
+        * name
+        * "Added <date/time added>"
+    * [ ] each segment should be separated by...?
+        * let's go with a pipe ("|") for now
+* [ ] limit `PlannedEvent.Name` length?
+    * I think it should be 50 characters, but not doing anything now
+= Refactor =
+= For Later =
+* `PlannedEvent` will have two sub-types:
+    * `ScheduledEvent`
+        * will have an additional `DateTimeOffset eventSchedule` property
+    * `NonscheduledEvent`
+* `PlannedEvent` will soon have additional properties:
+    * `string eventDescription`
+    * `TimeSpan eventDuration`
+= Road Blocks =
+= Status =
+

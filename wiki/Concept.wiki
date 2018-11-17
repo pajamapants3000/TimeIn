@@ -1,0 +1,13 @@
+%title Concept | TimeIn | Projects
+
+* TimeIn is all about managing your time, so that you:
+    a) maximize the time you have
+    b) keep up with your schedule - always on time
+    c) find time to do the things you didn't think you had time for
+    d) never forget an event or appointment
+    e) have a record of how you have spent your time, whether it be as simple
+        as your past calendar, or more elaborate with post-event commentary and
+        a well-integrated diary
+    f) can achieve long-term goals by planning stepping-stone accomplishments
+        and tracking your progress
+

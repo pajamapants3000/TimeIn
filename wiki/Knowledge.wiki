@@ -1,0 +1,28 @@
+%title Knowledge | TimeIn | Projects
+
+= The Problem with UWP =
+* Universal Windows applications cannot use consoles as UI
+    * there is a new, experimental project template to allow this, but it
+        requires writing the console app in C++
+    * UWP applications will not work with .NET Core or .NET Framework
+        * this is true not only as UWP libraries with core and framework console
+            applications, but UWP applications (.exe) with .NET Core and
+            .NET Framework libraries!
+    * bottom line: Universal Windows is simply not compatible with these other
+        frameworks in any way
+    * Therefore, I don't think it's possible to write a console UI to use as
+        a testing UI for UWP applications
+    * what about an MVC or Web API application referencing a UWP library?
+        * these are .NET Core/Framework! So.... NO :(
+* I don't think UWP is an appropriate framework for this application
+    * it seems better suited for simpler applications, focused on an attractive
+        user experience more than a great deal of functionality and complexity
+    * I will have to come up with another idea to practice UWP development
+* ~~Moving forward, this is a WPF application~~
+    * ~~this means targeting .NET Framework (I'll use 4.7.1)~~
+    * ~~web front end will also have to use .NET Framework~~
+    * unless I just want to do .NET core with a console app and web front end?
+    * I _have_ been wanting to experiment with MVC and Angular...
+    * plus, I already have a WPF application I want to write - The Library.
+    * sold!
+

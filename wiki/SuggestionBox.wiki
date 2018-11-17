@@ -1,0 +1,21 @@
+%title SuggestionBox | TimeIn | Projects
+
+= Contents =
+    - [[#Initialize|Initialize]]
+    - [[#Data Persistence|Data Persistence]]
+    - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
+
+
+= Initialize =
+As a typical person with responsibilities, it would be nice if I could record
+an upcoming obligation or task, perhaps with a date and time if applicable,
+along with something to identify the obligation, so that later I could
+review my upcoming obligations and avoid forgetting anything important.
+= Data Persistence =
+As a typical user, I just want to be able to close the application and still
+see my schedule the next time I open it, without having to re-enter everything.
+= Schedule Nonscheduled Events =
+As someone who has a lot to do but doesn't always know when I'll have time, I
+would like to be able to record my todo list items and later schedule them when
+I decide when I will have time for them.
+
