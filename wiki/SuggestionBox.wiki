@@ -2,15 +2,26 @@
 
 = Contents =
     - [[#Initialize|Initialize]]
+    - [[#Mark as complete|Mark as complete]]
+    - [[#Completion Details|Completion Details]]
+    - [[#Create scheduled events|Create scheduled events]]
     - [[#Data Persistence|Data Persistence]]
     - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
 
 
 = Initialize =
 As a typical person with responsibilities, it would be nice if I could record
-an upcoming obligation or task, perhaps with a date and time if applicable,
-along with something to identify the obligation, so that later I could
-review my upcoming obligations and avoid forgetting anything important.
+an upcoming obligation, task, or reminder. At any time I should be able to
+review all of the reminders I have created.
+= Mark as complete =
+Any reminder that has been created should have the ability to be marked as
+complete.
+= Completion Details =
+When completing a reminder, it should be possible to note whether the item
+was completed, disregarded, or whatever likely might have been the outcome.
+= Create scheduled events =
+In addition to simple reminders, I would like to be able to add items with
+specific date/times associated with them.
 = Data Persistence =
 As a typical user, I just want to be able to close the application and still
 see my schedule the next time I open it, without having to re-enter everything.

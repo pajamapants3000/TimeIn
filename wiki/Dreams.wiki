@@ -1,2 +1,7 @@
 %title Dreams | TimeIn | Projects
 
+* Integrate with Alexa
+    * schedule should integrate with the schedule/calendar maintained in Alexa/
+        Amazon account
+    * create skills?
+
