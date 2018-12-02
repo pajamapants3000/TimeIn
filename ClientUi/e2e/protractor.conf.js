@@ -6,14 +6,14 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    './src/**/*.e2e-spec.ts'
+    'src/app.e2e-spec.ts'
   ],
   capabilities: {
     'browserName': 'chrome'
   },
-  directConnect: true,
   baseUrl: 'http://localhost:4200/',
   framework: 'jasmine',
+  seleniumAddress: 'http://localhost:4444/wd/hub',
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 30000,
@@ -26,3 +26,6 @@ exports.config = {
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
   }
 };
+
+// vim: ts=2 sts=2 sw=2
+

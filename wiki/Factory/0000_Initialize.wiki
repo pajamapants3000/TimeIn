@@ -11,6 +11,11 @@
             - [[#Solution Breakdown#Frontend#Modules|Modules]]
             - [[#Solution Breakdown#Frontend#Components|Components]]
             - [[#Solution Breakdown#Frontend#Services|Services]]
+            - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
+        - [[#Solution Breakdown#Integration|Integration]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
 
 = User Story =
 As a typical person with responsibilities, it would be nice if I could record
@@ -45,14 +50,93 @@ review all of the reminders I have created.
 == Frontend ==
 === Modules ===
 * just the root module
+    * doesn't seem like module has tests...?
 === Components ===
 * root
-* add-reminder
-    * single input textbox and "Add" button
+    * [X] tests:
+        * [X] component can be created
+        * [X] component template-related tests
+            * [X] should have as title "Welcome to TimeIn!"
+            * [X] should render title in a h1 tag
+            * [X] should render add-reminder element ('app-add-reminder')
+            * [X] should render list-reminders element ('app-list-reminders')
+        * [X] component class-related tests
 * list-reminders
-    * list (ul) of strings
+    * [O] tests:
+        * [X] component can be created
+        * [O] component template-related tests:
+            * [X] should render h2 heading "Reminders"
+            * [X] should render an unordered list
+            * [X] should render an empty list when `listReminders` service call
+                    returns empty list
+            * [X] should render list matching result of `listReminders` service
+                    call when non-empty
+            * [X] should render same list results if service call to
+                    `listReminders` service method fails
+        * [o] component class-related tests:
+            * [X] should call `listReminders` when initialized (`ngOnInit`)
+            * [X] should call `listReminders` in `ngOnInit`
+            * [X] should call `listReminders` in `ngOnChanges`
+            * [ ] #`listReminders` should call `listReminders` on service
+* add-reminder
+    * [ ] tests:
+        * [ ] component can be created
+        * [ ] template-related:
+            * [ ] should have a button
+            * [ ] should have a text input
+            * [ ] clicking the button should call the `addReminder` service
+                  method with the content in the text input field
+            * [ ] clicking the button should raise `ngOnChanges` lifecycle event
+        * [ ] class-related:
+            * [ ] #`addReminder` should call `addReminder` service method with
+                  input text as Reminder
 === Services ===
 * reminder-service
     * addReminder method that calls the API, providing a new entry
     * listReminders method that calls the API, obtaining and returning the list
         of reminders
+    * [X] tests:
+        * [X] service instance can be created
+        * [X] #`addReminder` should call POST api with argument'
+        * [X] #`addReminder` should return success response when API call is successful
+        * [X] #`addReminder` should return error response when API call is not successful
+        * [X] #`listReminders` should call GET api
+        * [X] #`listReminders` should return empty array when API returns empty array
+        * [X] #`listReminders` should return list of `Reminder`s when API returns list
+        * [X] #`listReminders` should return error response when API call is not successful
+* in-memory-data
+    * temporary service to simulate a web API
+    * [X] tests:
+        * [X] service instance can be created
+=== End-to-End Tests ===
+* steps:
+    * load root component
+        * see if there is a way to load it with special test data already seeded
+    * assert that both the add-reminder and list-reminders components are
+        present
+    * assert that the list-reminders components shows the expected data
+    * input a new reminder and click submit
+    * assert that the reminder input is cleared
+    * assert that list-reminders shows the expected data
+        * same as before, with the new reminder added to the bottom of the list
+    * the end!
+== Integration ==
+* While building, the front-end `ReminderService` will keep a local in-memory
+    copy of the values the user has provided
+    * use 'angular-in-memory-web-api'
+* as a last step, the service will make a request via HTTP to get or set
+    reminders
+= To-Do =
+* Add Angular build and test to build.cake
+    * build
+    * unit test
+    * serve
+    * e2e test
+* use FitNesse to test back end
+= Progress =
+* e2e tests written for Angular
+* Angular services have been implemented successfully
+= Next =
+* create tests for Angular components
+* implement Angular components
+
