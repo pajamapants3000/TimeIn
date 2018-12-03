@@ -19,20 +19,19 @@ describe('ReminderService', () => {
     TestBed.configureTestingModule({
       providers: [{ provide: HttpClient, useValue: spy }]
     })
+    reminderService = TestBed.get(ReminderService);
+    dataServiceSpy = TestBed.get(HttpClient);
+    dataServiceSpy.post.and.returnValue(of(testReminder));
+    dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
   });
 
   it('should be created', () => {
-    reminderService = TestBed.get(ReminderService);
-
     expect(reminderService).toBeTruthy();
   });
 
   it('#addReminder should call POST api with argument',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
-
-      reminderService.addReminder(testReminder.value);
+      reminderService.addReminder(testReminder);
 
       expect(dataServiceSpy.post).toHaveBeenCalledWith(remindersUrl,
                                                        testReminder,
@@ -40,85 +39,124 @@ describe('ReminderService', () => {
      }
   );
 
-  it('#addReminder should return success response when API call is successful',
+  it('#addReminder should return new Reminder API call is successful',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
-      dataServiceSpy.post.and.returnValue(of(testReminder));
-
-      reminderService.addReminder(testReminder.value).subscribe(
-        success => {/* success! */},
+      reminderService.addReminder(testReminder).subscribe(
+        success => {
+          expect(success).toBeTruthy();
+          expect(success.value).toEqual(testReminder.value);
+        },
         error => fail('expected successful call'));
    });
 
   it('#addReminder should return error response when API call is not successful',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
       dataServiceSpy.post.and.returnValue(throwError('received error from server'));
 
-      reminderService.addReminder(testReminder.value).subscribe(
+      reminderService.addReminder(testReminder).subscribe(
         success => fail('expected failure'),
         error => {/* expected failure */}
       );
   });
 
-  it('#listReminders should call GET api',
+  it('#`addReminder` should trigger update for any subscribers to reminders',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
-      dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
+      dataServiceSpy.get.and.returnValue(of([testReminder]));
 
-      reminderService.listReminders();
+      let reminderSubscriber: Reminder[] = [];
+      reminderService.reminders.subscribe(
+        success => reminderSubscriber = success,
+        error => fail('expected successful call')
+      );
+
+      reminderService.addReminder(testReminder).subscribe(
+        success => {
+          expect(reminderSubscriber.length).toEqual(1);
+        },
+        error => fail('expected successful call')
+      );
+  });
+
+  it('#updateReminders should call GET api',
+     () => {
+      reminderService.updateReminders();
 
       expect(dataServiceSpy.get).toHaveBeenCalledWith(remindersUrl);
      }
   );
 
-  it('#listReminders should return empty array when API returns empty array',
+  it('updateReminders` should trigger update for any subscribers to reminders',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
-      let expectedResult: string[] = REMINDERS_EMPTY;
-      dataServiceSpy.get.and.returnValue(of(expectedResult));
-
-      let resultToTest: string[];
-      reminderService.listReminders().subscribe(
-        success => resultToTest = success,
-        error => fail('expected successful call'));
-
-      expect(resultToTest).toBeTruthy();
-      expect(doArraysContainSameValues(expectedResult, resultToTest))
-        .toBeTruthy();
-   });
-
-  it('#listReminders should return list of reminders when API returns list',
-     (): void => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
-      let expectedResult: string[] = REMINDERS.map((reminder) => reminder.value);
       dataServiceSpy.get.and.returnValue(of(REMINDERS));
 
-      let resultToTest: string[];
-      reminderService.listReminders().subscribe(
-        success => resultToTest = success,
-        error => fail('expected successful call'));
+      let reminderSubscriber: Reminder[] = REMINDERS_EMPTY;
+      reminderService.reminders.subscribe(
+        success => reminderSubscriber = success,
+        error => fail('expected successful call')
+      );
 
-      expect(resultToTest).toBeTruthy();
-      expect(doArraysContainSameValues(expectedResult, resultToTest))
+      reminderService.updateReminders();
+      expect(reminderSubscriber.length).toEqual(REMINDERS.length);
+   });
+
+  it('#updateReminders should leave reminders with updated value - empty ',
+     () => {
+      dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
+
+      let reminderSubscriber: Reminder[] = REMINDERS;
+      reminderService.reminders.subscribe(
+        success => reminderSubscriber = success,
+        error => fail('expected successful call')
+      );
+
+      reminderService.updateReminders();
+
+      expect(doArraysContainSameValues(REMINDERS_EMPTY, reminderSubscriber))
         .toBeTruthy();
    });
 
-  it('#listReminders should return error response when API call is not successful',
+  it('#updateReminders should leave reminders with updated value - non-empty ',
      () => {
-      reminderService = TestBed.get(ReminderService);
-      dataServiceSpy = TestBed.get(HttpClient);
+      dataServiceSpy.get.and.returnValue(of(REMINDERS));
+
+      let reminderSubscriber: Reminder[] = [];
+      reminderService.reminders.subscribe(
+        success => reminderSubscriber = success,
+        error => fail('expected successful call')
+      );
+
+      reminderService.updateReminders();
+
+      expect(doArraysContainSameValues(REMINDERS, reminderSubscriber))
+        .toBeTruthy();
+   });
+
+  it('#updateReminders should return error response when API call is not successful',
+     () => {
       dataServiceSpy.get.and.returnValue(throwError('received error from server'));
 
-      reminderService.listReminders().subscribe(
+      let reminders$: Observable<Reminder[]> = reminderService.reminders
+      reminderService.updateReminders();
+
+      reminders$.subscribe(
         success => fail('expected failure'),
         error => {/* expected failure */}
-      );
+      )
   });
+
+  it('#`updateReminders` should not update Reminders subject when API call is not successful',
+     () => {
+      dataServiceSpy.get.and.returnValue(throwError('received error from server'));
+
+      let reminderSubscriber: Reminder[] = REMINDERS;
+      reminderService.reminders.subscribe(
+        success => reminderSubscriber = success,
+        error => fail('expected successful call')
+      );
+
+      reminderService.updateReminders();
+
+      expect(doArraysContainSameValues(reminderSubscriber, REMINDERS)).toBeTruthy();
+   });
 });
 

@@ -62,48 +62,54 @@ review all of the reminders I have created.
             * [X] should render list-reminders element ('app-list-reminders')
         * [X] component class-related tests
 * list-reminders
-    * [O] tests:
+    * [X] tests:
         * [X] component can be created
-        * [O] component template-related tests:
+        * [X] component template-related tests:
             * [X] should render h2 heading "Reminders"
             * [X] should render an unordered list
-            * [X] should render an empty list when `listReminders` service call
-                    returns empty list
-            * [X] should render list matching result of `listReminders` service
-                    call when non-empty
-            * [X] should render same list results if service call to
-                    `listReminders` service method fails
-        * [o] component class-related tests:
-            * [X] should call `listReminders` when initialized (`ngOnInit`)
-            * [X] should call `listReminders` in `ngOnInit`
-            * [X] should call `listReminders` in `ngOnChanges`
-            * [ ] #`listReminders` should call `listReminders` on service
+            * [X] should render an empty list when storage is empty
+            * [X] should render list matching storage when non-empty
+            * [X] should render updated list when data changes
+        * [X] component class-related tests:
+            * [X] should call service method `updateReminders()` in `ngOnInit`
 * add-reminder
-    * [ ] tests:
-        * [ ] component can be created
-        * [ ] template-related:
-            * [ ] should have a button
-            * [ ] should have a text input
-            * [ ] clicking the button should call the `addReminder` service
-                  method with the content in the text input field
-            * [ ] clicking the button should raise `ngOnChanges` lifecycle event
-        * [ ] class-related:
-            * [ ] #`addReminder` should call `addReminder` service method with
+    * [X] tests:
+        * [X] component can be created
+        * [X] template-related:
+            * [X] should have a button
+            * [X] should have a text input
+            * [X] should call the `addReminder` service method with the content
+                    in the text input field when button is clicked
+            * [X] should clear the input text field when button is clicked
+        * [X] class-related:
+            * [X] #`addReminder` should call `addReminder` service method with
                   input text as Reminder
 === Services ===
 * reminder-service
     * addReminder method that calls the API, providing a new entry
-    * listReminders method that calls the API, obtaining and returning the list
-        of reminders
+        * triggers call to `next` on the Reminders subject
+    * updateReminders method is called by `addReminder` and `listReminders`
+        * calls GET api to get updated list and calls `next` on `reminders`
+    * reminders `Subject()` that calls `next(remindersList)` every time the
+        list of reminders is updated, or an update is requested
+    * private:
     * [X] tests:
         * [X] service instance can be created
         * [X] #`addReminder` should call POST api with argument'
-        * [X] #`addReminder` should return success response when API call is successful
-        * [X] #`addReminder` should return error response when API call is not successful
-        * [X] #`listReminders` should call GET api
-        * [X] #`listReminders` should return empty array when API returns empty array
-        * [X] #`listReminders` should return list of `Reminder`s when API returns list
-        * [X] #`listReminders` should return error response when API call is not successful
+        * [X] #`addReminder` should return new Reminder when API call is successful
+        * [X] #`addReminder` should return error response when API call is not
+                successful
+        * [X] #`addReminder` should trigger update for any subscribers to
+                `reminders`
+        * [X] #`updateReminders` should call GET api
+        * [X] #`updateReminders` should trigger update for any subscribers to
+                `reminders`
+        * [X] #`updateReminders` should leave `reminders` with updated value - empty
+        * [X] #`updateReminders` should leave `reminders` with updated value - non-empty
+        * [X] #`updateReminders` should return error response when API call is not
+                successful
+        * [X] #`updateReminders` should not update Reminders subject when API call
+                is not successful
 * in-memory-data
     * temporary service to simulate a web API
     * [X] tests:
@@ -136,7 +142,7 @@ review all of the reminders I have created.
 = Progress =
 * e2e tests written for Angular
 * Angular services have been implemented successfully
+* Angular components implemented successfully
 = Next =
-* create tests for Angular components
-* implement Angular components
+* ? Simplify with a refresh button in the list-reminders component ?
 

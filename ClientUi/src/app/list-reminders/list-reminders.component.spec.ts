@@ -1,54 +1,55 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
 
 import { ListRemindersComponent } from './list-reminders.component';
+import { ReminderFakeService } from '../reminder.fake.service';
 import { ReminderService } from '../reminder.service';
 import { REMINDERS } from '../mock-reminders'
 import { REMINDERS_EMPTY } from '../mock-reminders-empty'
 import { doArraysContainSameValues } from '../common';
+import { Reminder } from '../reminder';
 
 describe('ListRemindersComponent', () => {
   let component: ListRemindersComponent;
   let fixture: ComponentFixture<ListRemindersComponent>;
-  let reminderServiceSpy: jasmine.SpyObj<ReminderService>;
+  let fakeService: ReminderFakeService = new ReminderFakeService();
 
   beforeEach(() => {
-    let spy = jasmine.createSpyObj('ReminderService',
-                                              ['listReminders']);
     TestBed.configureTestingModule({
       declarations: [ ListRemindersComponent ],
       providers: [
-        { provide: ReminderService, useValue: spy }
+        { provide: ReminderService, useValue: fakeService }
       ]
     })
-    reminderServiceSpy = TestBed.get(ReminderService);
-    reminderServiceSpy.listReminders.and.returnValue(of(REMINDERS_EMPTY));
+    fakeService.fakeData = REMINDERS_EMPTY;
 
     fixture = TestBed.createComponent(ListRemindersComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should be created',
+    () => {
     expect(component).toBeTruthy();
   });
 
   /* Template-related tests */
-  it('should render h2 heading "Reminders"', () => {
+  it('should render h2 heading "Reminders"',
+    () => {
     const element: HTMLElement = fixture.nativeElement;
     const h2 = element.querySelector('h2');
     expect(h2.textContent).toEqual('Reminders');
   });
 
-  it('should render an unordered list', () => {
+  it('should render an unordered list',
+    () => {
     const element: HTMLElement = fixture.nativeElement;
     const ul = element.querySelector('ul');
     expect(ul).toBeTruthy();
   });
 
-  it('should render an empty list when `listReminders` returns empty list',
+  it('should render an empty list when storage is empty',
      () => {
-    component.listReminders();
+    fakeService.fakeData = REMINDERS_EMPTY;
+    component.ngOnInit();
     fixture.detectChanges();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
@@ -58,14 +59,17 @@ describe('ListRemindersComponent', () => {
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
     }
+    let reminderExpectedValues = fakeService.fakeData
+      .map(reminder => reminder.value);
 
-    expect(doArraysContainSameValues(REMINDERS_EMPTY, listValues)).toBeTruthy();
+    expect(doArraysContainSameValues(reminderExpectedValues, listValues))
+      .toBeTruthy();
   });
 
   it('should render list matching result of `listReminders` when non-empty',
      () => {
-    reminderServiceSpy.listReminders.and.returnValue(of(REMINDERS));
-    component.listReminders();
+    fakeService.fakeData = REMINDERS;
+    component.ngOnInit();
     fixture.detectChanges();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
@@ -75,57 +79,48 @@ describe('ListRemindersComponent', () => {
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
     }
+    let reminderExpectedValues = fakeService.fakeData
+      .map(reminder => reminder.value);
 
-    let remindersValues: string[] = REMINDERS.map((reminder) => reminder.value);
-    expect(doArraysContainSameValues(remindersValues, listValues)).toBeTruthy();
+    expect(doArraysContainSameValues(reminderExpectedValues, listValues))
+      .toBeTruthy();
   });
 
-  it('should render same list results if service call to listReminders fails',
+  it('should render updated list when data changes',
      () => {
-    reminderServiceSpy.listReminders.and.throwError('service returned error');
+    let expectedResult: Reminder[] = [...REMINDERS,
+      { value:'new reminder' } as Reminder];
 
-    let beforeList: string[] = [];
+    fakeService.fakeData = REMINDERS;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    fakeService.fakeData = expectedResult;
+    fakeService.updateReminders();
+    fixture.detectChanges();
+
     let remindersListElement: HTMLElement = fixture.nativeElement
                                               .querySelector('ul')
     let listItems = remindersListElement.getElementsByTagName('li');
-
+    let listValues: string[] = [];
     for (let i = 0; i < listItems.length; i++) {
-      beforeList.push(listItems[i].getElementsByTagName('span')[0].textContent)
+      listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
     }
+    let reminderExpectedValues = fakeService.fakeData
+      .map(reminder => reminder.value);
 
-    try {
-    component.listReminders();
-    } catch (e) { }
-    fixture.detectChanges();
-
-    listItems = remindersListElement.getElementsByTagName('li');
-    let afterList: string[] = [];
-    for (let i = 0; i < listItems.length; i++) {
-      afterList.push(listItems[i].getElementsByTagName('span')[0].textContent)
-    }
-
-    expect(doArraysContainSameValues(beforeList, afterList)).toBeTruthy();
-  });
+    expect(doArraysContainSameValues(reminderExpectedValues, listValues))
+      .toBeTruthy();
+   });
 
   /* Class-related tests */
-  it('should call listReminders when initialized (ngOnInit)', () => {
-    expect(reminderServiceSpy.listReminders.calls.count()).toEqual(1);
-  });
-
-  it('should call listReminders in ngOnInit',
+  it('should call service method updateReminders in ngOnInit',
      () => {
-    let initialCallCount = reminderServiceSpy.listReminders.calls.count();
+    let spy = spyOn(fakeService, "updateReminders");
+    let initialCallCount = spy.calls.count();
     component.ngOnInit();
 
-    expect(reminderServiceSpy.listReminders.calls.count())
-      .toEqual(initialCallCount + 1);
-  });
-
-  it('#listReminders should call GET API', () => {
-      let callsAfterInit = reminderServiceSpy.listReminders.calls.count();
-      component.listReminders();
-      expect(reminderServiceSpy.listReminders.calls.count())
-        .toEqual(callsAfterInit + 1);
+    expect(spy.calls.count()).toEqual(initialCallCount + 1);
   });
 });
 

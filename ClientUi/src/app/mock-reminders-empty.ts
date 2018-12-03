@@ -1,4 +1,6 @@
-export const REMINDERS_EMPTY: string[] = [
+import { Reminder } from './reminder';
+
+export const REMINDERS_EMPTY: Reminder[] = [
 ];
 
 

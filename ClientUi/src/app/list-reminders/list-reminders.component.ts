@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { ReminderService } from '../reminder.service';
 import { Reminder } from '../reminder';
@@ -10,18 +11,17 @@ import { Reminder } from '../reminder';
 })
 export class ListRemindersComponent implements OnInit {
 
-  reminders: Reminder[];
+  reminders$: Observable<Reminder[]>;
 
   constructor(private service: ReminderService) { }
 
   ngOnInit() {
-    this.listReminders();
-  }
-
-  listReminders(): void {
-    this.service.listReminders().subscribe(
-      list => { this.reminders = list; },
-      fail => { throw new Error(fail.message); }
-    )
+    this.service.reminders.subscribe(
+      next => this.reminders$ = of(next),
+      err => {},
+      () => {}
+    );
+    this.service.updateReminders();
   }
 }
+

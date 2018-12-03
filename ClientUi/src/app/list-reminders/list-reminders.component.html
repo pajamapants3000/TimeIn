@@ -1,6 +1,6 @@
 <h2>Reminders</h2>
 <ul>
-    <li *ngFor="let reminder of reminders">
+    <li *ngFor="let reminder of reminders$ | async">
         <span>{{reminder.value}}</span>
     </li>
 </ul>
