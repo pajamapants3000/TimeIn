@@ -3,18 +3,16 @@ import { AppPage } from './app.po';
 import { REMINDERS } from '../../src/app/mock-reminders';
 
 
-describe('workspace-project App', () => {
+describe('TimeIn ClientUi', () => {
   let page: AppPage;
 
 // Helpers
 let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => {
-    let reminders$ = element.all(by.repeater('reminder in reminders')
-        .column('reminder.value'));
-    reminders$.then(
+    element.all(by.css('.reminders-list li')).then(
       (reminders) => {
         expect(reminders).toBeTruthy();
         expect(reminders.length).toBe(expected.length);
-        for (let i = 0; i < expected.length; i++) {
+        for (let i = 0; i < reminders.length; i++) {
           expect(reminders[i].getText()).toBe(expected[i]);
         }
       },
@@ -30,29 +28,29 @@ let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => 
 
   it('should display heading message - My Reminders', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('My Reminders');
+    expect(page.getTitleText()).toEqual('Welcome to TimeIn!');
   });
 
   it('should display add-reminder component', () => {
     page.navigateTo();
-    expect(page.getComponent('add-reminder').isPresent()).toBe(true);
+    expect(page.getComponent('app-add-reminder').isPresent()).toBe(true);
   });
 
   it('should display list-reminders component', () => {
     page.navigateTo();
-    expect(page.getComponent('list-reminders').isPresent()).toBe(true);
+    expect(page.getComponent('app-list-reminders').isPresent()).toBe(true);
   });
 
   it('should initially list seeded reminders', () => {
     page.navigateTo();
-    assertRemindersListAsExpected(REMINDERS);
+    assertRemindersListAsExpected(REMINDERS.map(rem => rem.value));
   });
 
   it('should update reminders list when reminder is added', () => {
     page.navigateTo();
     let reminderToAdd: string = 'My New Reminder';
     page.submitAddReminder(reminderToAdd);
-    let updatedRemindersList = [...REMINDERS, reminderToAdd];
+    let updatedRemindersList = [...REMINDERS.map(rem => rem.value), reminderToAdd];
 
     assertRemindersListAsExpected(updatedRemindersList);
   });

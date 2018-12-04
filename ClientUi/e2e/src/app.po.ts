@@ -14,12 +14,12 @@ export class AppPage {
   }
 
   getAddReminderInput(): ElementFinder {
-    let addReminderComponent: ElementFinder = this.getComponent('add-reminder');
-    return addReminderComponent.element(by.exactBinding('newReminder'));
+    let addReminderComponent: ElementFinder = this.getComponent('app-add-reminder');
+    return addReminderComponent.element(by.tagName('input'));
   }
 
   getAddReminderSubmitButton(): ElementFinder {
-    let addReminderComponent: ElementFinder = this.getComponent('add-reminder');
+    let addReminderComponent: ElementFinder = this.getComponent('app-add-reminder');
     return addReminderComponent.element(by.buttonText('Add'));
   }
 
