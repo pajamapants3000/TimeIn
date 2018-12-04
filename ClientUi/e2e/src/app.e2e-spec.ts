@@ -26,7 +26,7 @@ let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => 
     page = new AppPage();
   });
 
-  it('should display heading message - My Reminders', () => {
+  it('should display heading message - Welcome to TimeIn!', () => {
     page.navigateTo();
     expect(page.getTitleText()).toEqual('Welcome to TimeIn!');
   });

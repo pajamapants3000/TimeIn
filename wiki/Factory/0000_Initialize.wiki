@@ -13,6 +13,7 @@
             - [[#Solution Breakdown#Frontend#Services|Services]]
             - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
         - [[#Solution Breakdown#Integration|Integration]]
+    - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
     - [[#Next|Next]]
@@ -132,6 +133,15 @@ review all of the reminders I have created.
     * use 'angular-in-memory-web-api'
 * as a last step, the service will make a request via HTTP to get or set
     reminders
+= Additional Tasks =
+* Set up cake build for:
+    * build web API project
+    * web API unit tests
+    * ClientUi (angular) build
+    * ClientUi (angular) tests
+    * ClientUi (angular) e2e
+    * publish all
+        * ?
 = To-Do =
 * Add Angular build and test to build.cake
     * build

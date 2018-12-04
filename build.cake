@@ -5,6 +5,8 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
+var framework = Argument("framework", "netcoreapp2.0");
+var runtime = Argument("runtime", "win10-x64");
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -12,11 +14,14 @@ var configuration = Argument("configuration", "Debug");
 
 var solutionName = "TimeIn";
 
-// Define directories.
+// Define files and directories.
 var buildDir = Directory("./bin") + Directory(configuration);
+var clientUiDir = Directory("./ClientUi");
+var e2eTestPath = clientUiDir + Directory("e2e") + File("protractor.conf.js");
 var msBuildDirsPattern = "./**/bin/" + configuration;
 var msBuildObjDirsPattern = "./**/obj/" + configuration;
 var testsAssemblyPath = "./" + solutionName + ".Test/bin/" + configuration + "/" + solutionName + ".Test.dll";
+var solutionFile = Directory("./") + File(solutionName + ".sln");
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -44,14 +49,14 @@ Task("Build")
     if(IsRunningOnWindows())
     {
       // Use MSBuild
-      MSBuild("./" + solutionName + ".sln", settings =>
+      MSBuild(solutionFile, settings =>
         settings.SetConfiguration(configuration));
     }
     else
     {
       // Use XBuild
 
-      XBuild("./" + solutionName + ".sln", settings =>
+      XBuild(solutionFile, settings =>
         settings.SetConfiguration(configuration));
     }
 });
@@ -66,18 +71,80 @@ Task("Run-UnitTests")
         });
 });
 
-Task("Run-AcceptanceTests")
+Task("Run-EndToEndTests")
     .IsDependentOn("Run-UnitTests")
+    .IsDependentOn("Run-ClientUiTests")
     .Does(() =>
 {
-	using(var process = StartAndReturnProcess("consoleUi.Test.ps1"))
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append(@"e2e\protractor.conf.js");
+	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+		}))
 	{
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception("Acceptance tests failed.");
+			throw new Exception("End-to-End tests failed.");
 		}
 	}
+});
+
+Task("Run-ClientUiTests")
+    .IsDependentOn("Run-ClientUiBuild")
+    .Does(() =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("test");
+	arguments.Append("--watch=false");
+	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+		}))
+	{
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
+		{
+			throw new Exception("ClientUi tests failed.");
+		}
+	}
+});
+
+Task("Run-ClientUiBuild")
+    .Does(() =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("build");
+	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+		}))
+	{
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
+		{
+			throw new Exception("ClientUi build failed.");
+		}
+	}
+});
+
+Task("Publish")
+    .IsDependentOn("Run-EndToEndTests")
+    .Does(() =>
+{
+	var settings = new DotNetCorePublishSettings
+        {
+            Framework = framework,
+            Configuration = configuration,
+            OutputDirectory = "./publish/",
+            Runtime = runtime
+        };
+ 
+        DotNetCorePublish(solutionFile, settings);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -85,7 +152,7 @@ Task("Run-AcceptanceTests")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Run-AcceptanceTests");
+    .IsDependentOn("Publish");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
