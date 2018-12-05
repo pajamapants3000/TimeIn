@@ -77,18 +77,29 @@ Task("Run-EndToEndTests")
     .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
-	arguments.Append(@"e2e\protractor.conf.js");
-	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
+	arguments.Append("serve");
+	using(var serveProcess = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
 		}))
 	{
-		process.WaitForExit();
-		if (process.GetExitCode() != 0)
+		arguments = new ProcessArgumentBuilder();
+		arguments.Append(@"e2e\protractor.conf.js");
+		using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
+			new ProcessSettings{
+				Arguments = arguments,
+				WorkingDirectory = clientUiDir,
+			}))
 		{
-			throw new Exception("End-to-End tests failed.");
+			process.WaitForExit();
+			if (process.GetExitCode() != 0)
+			{
+				throw new Exception("End-to-End tests failed.");
+			}
 		}
+
+		serveProcess.Kill();
 	}
 });
 

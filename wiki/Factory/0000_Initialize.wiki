@@ -140,20 +140,30 @@ review all of the reminders I have created.
     * ClientUi (angular) build
     * ClientUi (angular) tests
     * ClientUi (angular) e2e
-    * publish all
-        * ?
+    * publish
 = To-Do =
-* Add Angular build and test to build.cake
-    * build
-    * unit test
-    * serve
-    * e2e test
-* use FitNesse to test back end
+* add `ng serve` process to e2e target in cake build configuration
+    * create and run the process asynchronously (I don't think it needs
+      anything special)
+      * end process after e2e tests complete
+      * probably should use a try/finally or using block
+* use FitNesse to test back end?
 = Progress =
 * e2e tests written for Angular
 * Angular services have been implemented successfully
 * Angular components implemented successfully
 * Angular - End-to-End tests all passing!
+* ~~need to serve ClientUi within test for e2e~~
+    * unfortunately I don't think this will work
+        1. you also have to run webdriver, so that's two processes that need
+            to be running for the end-to-end tests to be runnable
+        2. you have to wait for the 'serve' command to finish building the
+            application, which is fine, except you have no idea how long that
+            will take and no way to wait for it other than just setting a long
+            enough timeout
+        3. it appears there is no way to end the serve process in cake - might
+            as well just have it running outside of the build process
 = Next =
+* continue Web API at `ReminderController` GET method
 * ? Simplify with a refresh button in the list-reminders component ?
 
