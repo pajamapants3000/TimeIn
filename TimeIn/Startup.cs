@@ -20,8 +20,9 @@ namespace TimeIn
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connection = @"Server=(localdb)\mssqllocaldb;Database=TimeIn.Dev_01;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<ReminderContext>(opt =>
-                opt.UseInMemoryDatabase("Reminder"));
+                opt.UseSqlServer(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
