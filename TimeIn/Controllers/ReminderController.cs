@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using TimeIn.Models;
 
@@ -28,21 +29,20 @@ namespace TimeIn.Controllers
 
         // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Reminder>>> Get()
         {
-            // https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.2&tabs=visual-studio#add-get-methods
+            return await _context.Reminder.ToListAsync();
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<ActionResult<Reminder>> Post([FromBody]Reminder newReminder)
         {
-        }
+            _context.Reminder.Add(newReminder);
+            await _context.SaveChangesAsync();
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return CreatedAtAction("Post", newReminder);
         }
     }
 }
+
