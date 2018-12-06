@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
 
-import { remindersUrl } from './common'
 import { Reminder } from './reminder';
 import { REMINDERS } from './mock-reminders';
 

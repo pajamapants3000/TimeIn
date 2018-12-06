@@ -11,9 +11,9 @@ export class InMemoryDataService implements InMemoryDbService {
   public useEmptyRemindersList: Boolean = false;
 
   createDb() {
-    const reminders = this.useEmptyRemindersList ? REMINDERS_EMPTY : REMINDERS;
+    const reminder_test = this.useEmptyRemindersList ? REMINDERS_EMPTY : REMINDERS;
 
-    return {reminders};
+    return {reminder_test};
   }
 
   constructor() { }

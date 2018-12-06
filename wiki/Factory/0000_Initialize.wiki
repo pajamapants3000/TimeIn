@@ -163,7 +163,10 @@ review all of the reminders I have created.
             enough timeout
         3. it appears there is no way to end the serve process in cake - might
             as well just have it running outside of the build process
+* Web API written and fully functional with ClientUi!
+* testing now uses a different collection name so that the in-memory api
+    redirects only for testing, but not for normal use
 = Next =
-* continue Web API at `ReminderController` GET method
+* Add styling - and that'll be it!
 * ? Simplify with a refresh button in the list-reminders component ?
 

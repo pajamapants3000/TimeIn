@@ -1,6 +1,7 @@
 import { DebugElement } from '@angular/core';
 
-export const remindersUrl: string = 'api/reminders';
+export const reminderUrl: string = 'http://localhost:5000/api/reminder';
+export const reminderTestUrl: string = 'api/reminder_test';
 
 // write string[] comparison method
 export function doArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): boolean {

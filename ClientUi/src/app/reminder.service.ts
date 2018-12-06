@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { remindersUrl } from './common'
+import { reminderUrl, reminderTestUrl } from './common'
 import { Reminder } from './reminder';
 
 @Injectable({
@@ -15,13 +15,14 @@ export class ReminderService {
   constructor(private http: HttpClient) { }
 
   reminders: Subject<Reminder[]> = new Subject<Reminder[]>();
+  apiUrl: string = reminderUrl;
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   public addReminder(newReminder: Reminder): Observable<Reminder> {
-    let result: Observable<Reminder> = this.http.post<Reminder>(remindersUrl,
+    let result: Observable<Reminder> = this.http.post<Reminder>(this.apiUrl,
                                                             newReminder,
                                                             this.httpOptions);
     return result.pipe(tap(
@@ -35,7 +36,7 @@ export class ReminderService {
   }
 
   public updateReminders(): void {
-    let result: Observable<Reminder[]> = this.http.get<Reminder[]>(remindersUrl);
+    let result: Observable<Reminder[]> = this.http.get<Reminder[]>(this.apiUrl);
 
     result.subscribe(
       success => {

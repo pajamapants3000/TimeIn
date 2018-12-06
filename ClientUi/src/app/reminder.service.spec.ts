@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ReminderService } from './reminder.service';
 import { REMINDERS } from './mock-reminders'
 import { REMINDERS_EMPTY } from './mock-reminders-empty'
-import { remindersUrl, doArraysContainSameValues } from './common'
+import { reminderTestUrl, doArraysContainSameValues } from './common'
 import { Reminder } from './reminder';
 
 describe('ReminderService', () => {
@@ -20,6 +20,7 @@ describe('ReminderService', () => {
       providers: [{ provide: HttpClient, useValue: spy }]
     })
     reminderService = TestBed.get(ReminderService);
+    reminderService.apiUrl = reminderTestUrl;
     dataServiceSpy = TestBed.get(HttpClient);
     dataServiceSpy.post.and.returnValue(of(testReminder));
     dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
@@ -33,7 +34,7 @@ describe('ReminderService', () => {
      () => {
       reminderService.addReminder(testReminder);
 
-      expect(dataServiceSpy.post).toHaveBeenCalledWith(remindersUrl,
+      expect(dataServiceSpy.post).toHaveBeenCalledWith(reminderTestUrl,
                                                        testReminder,
                                                        reminderService.httpOptions);
      }
@@ -81,7 +82,7 @@ describe('ReminderService', () => {
      () => {
       reminderService.updateReminders();
 
-      expect(dataServiceSpy.get).toHaveBeenCalledWith(remindersUrl);
+      expect(dataServiceSpy.get).toHaveBeenCalledWith(reminderTestUrl);
      }
   );
 
