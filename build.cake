@@ -1,11 +1,17 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.8.0
+
+// NOTE: For end-to-end tests:
+//		* selenium server must be running ($ webdriver-manager start)
+//		* IIS should be running the test site, which has access to the test database.
+//		* ng serve should be running the ClientUi
+
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
-var framework = Argument("framework", "netcoreapp2.0");
+var framework = Argument("framework", "netcoreapp2.2");
 var runtime = Argument("runtime", "win10-x64");
 
 //////////////////////////////////////////////////////////////////////
@@ -16,12 +22,14 @@ var solutionName = "TimeIn";
 
 // Define files and directories.
 var buildDir = Directory("./bin") + Directory(configuration);
+var publishDir = Directory(@"D:\publish") + Directory(solutionName);
 var clientUiDir = Directory("./ClientUi");
 var e2eTestPath = clientUiDir + Directory("e2e") + File("protractor.conf.js");
 var msBuildDirsPattern = "./**/bin/" + configuration;
 var msBuildObjDirsPattern = "./**/obj/" + configuration;
 var testsAssemblyPath = "./" + solutionName + ".Test/bin/" + configuration + "/" + solutionName + ".Test.dll";
 var solutionFile = Directory("./") + File(solutionName + ".sln");
+var appSettingsTestFilename = "appsettings.test.json";
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -71,40 +79,51 @@ Task("Run-UnitTests")
         });
 });
 
-Task("Run-EndToEndTests")
+Task("Publish-Test")
     .IsDependentOn("Run-UnitTests")
+    .Does(() =>
+{
+    if(IsRunningOnWindows())
+    {
+      // Use MSBuild
+      MSBuild(solutionFile, settings =>
+        settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", "Test")
+		);
+    }
+    else
+    {
+      // Use XBuild
+
+      XBuild(solutionFile, settings =>
+        settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", "Test")
+		);
+    }
+});
+
+Task("Run-ClientUiBuild")
     .IsDependentOn("Run-ClientUiTests")
     .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("serve");
-	using(var serveProcess = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+	arguments.Append("build");
+	arguments.Append("--prod");
+	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
 		}))
 	{
-		arguments = new ProcessArgumentBuilder();
-		arguments.Append(@"e2e\protractor.conf.js");
-		using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
-			new ProcessSettings{
-				Arguments = arguments,
-				WorkingDirectory = clientUiDir,
-			}))
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
 		{
-			process.WaitForExit();
-			if (process.GetExitCode() != 0)
-			{
-				throw new Exception("End-to-End tests failed.");
-			}
+			throw new Exception("ClientUi build failed.");
 		}
-
-		serveProcess.Kill();
 	}
 });
 
 Task("Run-ClientUiTests")
-    .IsDependentOn("Run-ClientUiBuild")
     .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
@@ -124,12 +143,14 @@ Task("Run-ClientUiTests")
 	}
 });
 
-Task("Run-ClientUiBuild")
-    .Does(() =>
+Task("Run-EndToEndTests")
+    .IsDependentOn("Publish-Test")
+    .IsDependentOn("Run-ClientUiBuild")
+   .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("build");
-	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+	arguments.Append(@"e2e\protractor.conf.js");
+	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
@@ -138,7 +159,7 @@ Task("Run-ClientUiBuild")
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception("ClientUi build failed.");
+			throw new Exception("End-to-End tests failed.");
 		}
 	}
 });
@@ -147,15 +168,23 @@ Task("Publish")
     .IsDependentOn("Run-EndToEndTests")
     .Does(() =>
 {
-	var settings = new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            Configuration = configuration,
-            OutputDirectory = "./publish/",
-            Runtime = runtime
-        };
- 
-        DotNetCorePublish(solutionFile, settings);
+    if(IsRunningOnWindows())
+    {
+      // Use MSBuild
+      MSBuild(solutionFile, settings =>
+        settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", "Production")
+		);
+    }
+    else
+    {
+      // Use XBuild
+
+      XBuild(solutionFile, settings =>
+        settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", "Production")
+		);
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -166,7 +195,41 @@ Task("Default")
     .IsDependentOn("Publish");
 
 //////////////////////////////////////////////////////////////////////
+// HELPERS
+//////////////////////////////////////////////////////////////////////
+Action<string> stopAppPool = appPoolName =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("stop");
+	arguments.Append("apppool");
+	arguments.Append("/apppool.name: " + appPoolName);
+	using(var process = StartAndReturnProcess(@"C:\Windows\System32\inetsrv\appcmd",
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+		}))
+	{
+		process.WaitForExit();
+	}
+};
+
+Action<string> startAppPool = appPoolName =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("start");
+	arguments.Append("apppool");
+	arguments.Append("/apppool.name: " + appPoolName);
+	using(var process = StartAndReturnProcess(@"C:\Windows\System32\inetsrv\appcmd",
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+		}))
+	{
+		process.WaitForExit();
+	}
+};
+
+//////////////////////////////////////////////////////////////////////
 // EXECUTION
 //////////////////////////////////////////////////////////////////////
-
 RunTarget(target);

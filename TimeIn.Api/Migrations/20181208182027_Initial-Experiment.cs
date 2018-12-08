@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace TimeIn.Migrations
+namespace TimeIn.Api.Migrations
 {
-    public partial class InitialCreateReminder : Migration
+    public partial class InitialExperiment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

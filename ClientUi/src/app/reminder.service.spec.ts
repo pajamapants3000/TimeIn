@@ -60,7 +60,7 @@ describe('ReminderService', () => {
       );
   });
 
-  it('#`addReminder` should trigger update for any subscribers to reminders',
+  it('#addReminder should trigger update for any subscribers to reminders',
      () => {
       dataServiceSpy.get.and.returnValue(of([testReminder]));
 

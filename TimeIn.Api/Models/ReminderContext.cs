@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace TimeIn.Models
+namespace TimeIn.Api.Models
 {
     public class ReminderContext : DbContext
     {

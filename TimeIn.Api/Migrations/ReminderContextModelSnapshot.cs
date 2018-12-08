@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TimeIn.Models;
+using TimeIn.Api.Models;
 
-namespace TimeIn.Migrations
+namespace TimeIn.Api.Migrations
 {
     [DbContext(typeof(ReminderContext))]
     partial class ReminderContextModelSnapshot : ModelSnapshot
@@ -18,7 +18,7 @@ namespace TimeIn.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TimeIn.Models.Reminder", b =>
+            modelBuilder.Entity("TimeIn.Api.Models.Reminder", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()

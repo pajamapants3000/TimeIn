@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 import { AddReminderComponent } from './add-reminder/add-reminder.component';
@@ -20,8 +21,12 @@ import { ReminderService } from './reminder.service';
     BrowserModule,
     HttpClientModule,
     // remove this when ready to use real server
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { dataEncapsulation: false }
+    environment.production ?
+      [] : HttpClientInMemoryWebApiModule.forRoot(
+      InMemoryDataService,
+      {
+        dataEncapsulation: false
+      }
     ),
   ],
   providers: [],

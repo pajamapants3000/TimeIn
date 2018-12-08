@@ -13,6 +13,7 @@
             - [[#Solution Breakdown#Frontend#Services|Services]]
             - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
         - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
@@ -133,6 +134,8 @@ review all of the reminders I have created.
     * use 'angular-in-memory-web-api'
 * as a last step, the service will make a request via HTTP to get or set
     reminders
+== Coat of Paint ==
+* use [[https://material.angular.io/|Material]] to produce visual appearance and effects
 = Additional Tasks =
 * Set up cake build for:
     * build web API project

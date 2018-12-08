@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TimeIn.Models;
+using TimeIn.Api.Models;
 
-namespace TimeIn
+namespace TimeIn.Api
 {
     public class Startup
     {
@@ -20,9 +20,8 @@ namespace TimeIn
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = @"Server=(localdb)\mssqllocaldb;Database=TimeIn.Dev_01;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<ReminderContext>(opt =>
-                opt.UseSqlServer(connection));
+               opt.UseSqlServer(Configuration.GetConnectionString("TimeInDatabase")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors(options =>
             {

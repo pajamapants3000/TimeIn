@@ -1,4 +1,4 @@
-import { InMemoryDbService } from 'angular-in-memory-web-api';
+import { InMemoryDbService, ParsedRequestUrl } from 'angular-in-memory-web-api';
 import { Injectable } from '@angular/core';
 import { REMINDERS } from './mock-reminders'
 import { REMINDERS_EMPTY } from './mock-reminders-empty'
@@ -11,9 +11,9 @@ export class InMemoryDataService implements InMemoryDbService {
   public useEmptyRemindersList: Boolean = false;
 
   createDb() {
-    const reminder_test = this.useEmptyRemindersList ? REMINDERS_EMPTY : REMINDERS;
+    const reminder = this.useEmptyRemindersList ? REMINDERS_EMPTY : REMINDERS;
 
-    return {reminder_test};
+    return {reminder};
   }
 
   constructor() { }

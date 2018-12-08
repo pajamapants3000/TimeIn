@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ReminderService } from './reminder.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Welcome to TimeIn!';
+
+  constructor (){ }
 }

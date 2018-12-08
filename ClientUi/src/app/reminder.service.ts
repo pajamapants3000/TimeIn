@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { reminderUrl, reminderTestUrl } from './common'
+import { reminderUrl } from './common'
 import { Reminder } from './reminder';
 
 @Injectable({
@@ -31,7 +31,9 @@ export class ReminderService {
         console.log(`Reminder added: ${success.value}.`);
       },
       error => {
-        throw new Error(`Failed to add reminder: ${newReminder.value}`);
+        throw new Error(`Failed to add reminder: ${newReminder.value}. ` +
+                                `URL: ${this.apiUrl}. ` +
+                                error.message);
     }));
   }
 
@@ -43,8 +45,10 @@ export class ReminderService {
         this.reminders.next(success);
         console.log(`Retrieved list of ${success.length.toString()} from server.`);
       },
-      error => {throw new Error("Failed to retrieve reminders")}
-    );
+      error => {
+        throw new Error("Failed to retrieve reminders. " +
+                                `URL: ${this.apiUrl}. ` +
+                                error.message);
+    });
   }
-
 }

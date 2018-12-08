@@ -1,7 +1,8 @@
 import { DebugElement } from '@angular/core';
 
-export const reminderUrl: string = 'http://localhost:5000/api/reminder';
-export const reminderTestUrl: string = 'api/reminder_test';
+export const reminderUrl: string = 'http://TimeIn.Lilu-WindXPro/api/reminder';
+export const inMemoryUrlBase: string = 'in_memory/api/';
+export const reminderTestUrl: string = inMemoryUrlBase + 'reminder';
 
 // write string[] comparison method
 export function doArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): boolean {

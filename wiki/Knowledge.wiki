@@ -25,4 +25,115 @@
     * I _have_ been wanting to experiment with MVC and Angular...
     * plus, I already have a WPF application I want to write - The Library.
     * sold!
+= Web API Hosting =
+* The docs talk about in-process and out-of-process hosting
+    * https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/?view=aspnetcore-2.2#application-configuration
+    * I noticed this in my project file:
+{{{xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- ... -->
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <!-- ... -->
+</Project>
+}}}
+    * looks like the `AspNetCoreHostingModel` can specify which approach to use
+* By default, a Web API assembly (.dll) will run on a built-in Kestrel server
+* To start the server and the API, do one of the following:
+    * `dotnet <path to dll>`
+    * add site folder to IIS as an application
+== Kestrel ==
+* simply publish to a folder
+* run `dotnet <path to dll>`
+* recommend running from one directory up, so that you can easily stop the
+    server and re-publish
+    * otherwise the publish will fail when it tries to delete and re-create
+        the directory (because you are working in it)
+* by default, Kestrel runs on *http://localhost:5000*
+* supposedly also runs on *https://localhost:5001*
+    * haven't yet been able to get this to work
+    * Solution: added latter url to *launchSettings.json* under "TimeIn" -
+        "applicationUrl", semi-colon-separated alongside the former "http" url
+* doesn't seem to be able to get connection strings from appsettings.json
+    * at least, not the connection strings that IIS seems to have access to
+    * for Kestrel, the only way I know that works is to pass a hardcoded
+        connection string to the `UseSqlServer` method on `AddDbContext` when
+        registering the services
+== IIS ==
+* set the host name in the desired bindings (e.g. *HostName*)
+* set the ip address to 127.0.0.1
+* create an identical binding for http and https, with ports 80 and 443
+    (the defaults), respectively
+* edit the system hosts file (*C:\Windows\System32\drivers\etc\hosts*)
+    * add line e.g. "127.0.0.1   HostName"
+* set the path of the site to the publish folder
+    * the folder that visual studio copies the site files to when publishing
+* create a *logs* folder in the project and make sure it is part of the
+    build/publish output
+    * in the csproj (or whatever project file) you should have:
+{{{xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- ... -->
+
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
+  <!-- ... -->
+</Project>
+}}}
+== Connecting IIS to SQL Server Database ==
+* THANK YOU!  https://blogs.msdn.microsoft.com/ericparvin/2015/04/14/how-to-add-the-applicationpoolidentity-to-a-sql-server-login/
+* Create login "IIS APPPOOL\AppPoolName"
+    * you will _not_ find this in the search
+    * in this case, I created a login with username "IIS APPPOOL\TimeIn"
+* still working out the access details
+    * I'd like to create a role for this, to access all site databases
+    * for now, just added memberships to "db_datareader" and "db_datawriter"
+== More on hosting ==
+* There is a lot involved in web hosting and there is so much to learn
+* Not really my area, so hopefully I won't need much more than these basics
+= SQL Server =
+* Visual Studio has a built-in copy of SQL Server - LocalDB
+* To continue using SQL Server after publishing (i.e. running outside of
+    Visual Studio), make sure to have SQL Server installed
+* SQL Server Browser service needs to be running in order to see instance in
+    dialogs such as add new data source
+* SQL Server Agent service needs to be running to perform actions such as copy
+    database
+* On copying database in SSMS:
+    * Copy always seems to fail; can't figure out why
+    * general recommendation seems to simply be "don't do that"
+        * https://stackoverflow.com/questions/28007992/the-job-failed-in-copying-database-sql-server-2012
+    * use backup and restore instead, at least for making a local copy
+== LocalDb ==
+* not meant to work with IIS
+* can use when developing, testing, and debugging from Visual Studio
+* may also be ok when simply running a Kestrel server
+* Note: mdf file and log file are automatically created in (root of) user folder
+    * automatically, that is, by EF
+    * this is not accessible to an IIS site
+== Entity Framework and SQL Server ==
+* most of the tutorials use LocalDb, so I wasn't sure how to proceed once I was
+    ready to publish
+* As it happens, simply changing the connection string from:
+    * "Server=(localdb)\\mssqllocaldb;Database=TimeIn.Dev_01;Trusted_Connection=True;ConnectRetryCount=0;"
+    to:
+    * "Server=LILU-WINDXPRO;Database=TimeIn.Dev_01;Trusted_Connection=True;ConnectRetryCount=0;Integrated Security=SSPI;"
+    and, subsequently running `Update-Database` in the Package Manager Explorer
+    created the new database in SQL Server, which I could see in SSMS after
+    refreshing the Databases list!
+= Customizing Services based on Configuration =
+* https://andrewlock.net/configuring-environment-specific-services-in-asp-net-core/
+* this enabled me to use a test database in development, but have a separate
+    database for production
+* I found another interesting approach [[https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-2.2#environment-based-startup-class-and-methods|here]]
+* you can set environment variables per app pool
+    * https://docs.microsoft.com/en-us/iis/configuration/system.applicationHost/applicationPools/add/environmentVariables/#appcmdexe
 
