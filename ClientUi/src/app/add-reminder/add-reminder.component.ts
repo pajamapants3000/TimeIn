@@ -13,6 +13,8 @@ export class AddReminderComponent {
   constructor(private service: ReminderService) { }
 
   addReminder(newReminder: string): void {
-    this.service.addReminder({ value: newReminder } as Reminder).subscribe();
+    if (newReminder != '') {
+      this.service.addReminder({ value: newReminder } as Reminder).subscribe();
+    }
   }
 }

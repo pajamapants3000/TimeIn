@@ -22,14 +22,17 @@ var solutionName = "TimeIn";
 
 // Define files and directories.
 var buildDir = Directory("./bin") + Directory(configuration);
-var publishDir = Directory(@"D:\publish") + Directory(solutionName);
 var clientUiDir = Directory("./ClientUi");
-var e2eTestPath = clientUiDir + Directory("e2e") + File("protractor.conf.js");
+var protractorConfFile = Directory("./e2e") + File("protractor.conf.js");
+var protractorCommand = @"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd";
+var ngCliCommand = @"C:\Users\otrip\AppData\Roaming\npm\ng.cmd";
+var errorFormatMessage = "Task {0} failed";
+var testPublishProfileName = "Test";
+var finalPublishProfileName = "Production";
 var msBuildDirsPattern = "./**/bin/" + configuration;
 var msBuildObjDirsPattern = "./**/obj/" + configuration;
 var testsAssemblyPath = "./" + solutionName + ".Test/bin/" + configuration + "/" + solutionName + ".Test.dll";
 var solutionFile = Directory("./") + File(solutionName + ".sln");
-var appSettingsTestFilename = "appsettings.test.json";
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -54,137 +57,101 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
-    if(IsRunningOnWindows())
-    {
-      // Use MSBuild
-      MSBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration));
-    }
-    else
-    {
-      // Use XBuild
-
-      XBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration));
-    }
+	MSBuild(solutionFile, settings =>
+		settings.SetConfiguration(configuration));
 });
 
-Task("Run-UnitTests")
+Task("UnitTests")
     .IsDependentOn("Build")
     .Does(() =>
 {
     NUnit3(testsAssemblyPath, new NUnit3Settings {
         NoResults = false,
 		OutputFile = new FilePath("./unitTestOutput.xml"),
-        });
+	});
 });
 
 Task("Publish-Test")
-    .IsDependentOn("Run-UnitTests")
+    .IsDependentOn("UnitTests")
     .Does(() =>
 {
-    if(IsRunningOnWindows())
-    {
-      // Use MSBuild
-      MSBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration).
-		WithProperty("PublishProfile", "Test")
-		);
-    }
-    else
-    {
-      // Use XBuild
-
-      XBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration).
-		WithProperty("PublishProfile", "Test")
-		);
-    }
+	MSBuild(solutionFile, settings =>
+		settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", testPublishProfileName)
+	);
 });
 
-Task("Run-ClientUiBuild")
-    .IsDependentOn("Run-ClientUiTests")
+Task("ClientUiBuild")
+    .IsDependentOn("ClientUiTests")
     .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
 	arguments.Append("build");
 	arguments.Append("--prod");
-	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+	using(var process = StartAndReturnProcess(ngCliCommand,
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
-		}))
+	}))
 	{
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception("ClientUi build failed.");
+			throw new Exception(String.Format(errorFormatMessage, "ClientUiBuild"));
 		}
 	}
 });
 
-Task("Run-ClientUiTests")
+Task("ClientUiTests")
     .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
 	arguments.Append("test");
 	arguments.Append("--watch=false");
-	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\ng.cmd",
+	using(var process = StartAndReturnProcess(ngCliCommand,
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
-		}))
+	}))
 	{
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception("ClientUi tests failed.");
+			throw new Exception(String.Format(errorFormatMessage, "ClientUiTests"));
 		}
 	}
 });
 
-Task("Run-EndToEndTests")
+// ClientUi must be served in production mode (`--prod` flag passed to `ng serve`)
+Task("EndToEndTests")
     .IsDependentOn("Publish-Test")
-    .IsDependentOn("Run-ClientUiBuild")
+    .IsDependentOn("ClientUiBuild")
    .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
-	arguments.Append(@"e2e\protractor.conf.js");
-	using(var process = StartAndReturnProcess(@"C:\Users\otrip\AppData\Roaming\npm\protractor.cmd",
+	arguments.Append(protractorConfFile.ToString());
+	using(var process = StartAndReturnProcess(protractorCommand,
 		new ProcessSettings{
 			Arguments = arguments,
 			WorkingDirectory = clientUiDir,
-		}))
+	}))
 	{
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception("End-to-End tests failed.");
+			throw new Exception(String.Format(errorFormatMessage, "EndToEndTests"));
 		}
 	}
 });
 
 Task("Publish")
-    .IsDependentOn("Run-EndToEndTests")
+    .IsDependentOn("EndToEndTests")
     .Does(() =>
 {
-    if(IsRunningOnWindows())
-    {
-      // Use MSBuild
-      MSBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration).
-		WithProperty("PublishProfile", "Production")
-		);
-    }
-    else
-    {
-      // Use XBuild
-
-      XBuild(solutionFile, settings =>
-        settings.SetConfiguration(configuration).
-		WithProperty("PublishProfile", "Production")
-		);
-    }
+	MSBuild(solutionFile, settings =>
+		settings.SetConfiguration(configuration).
+		WithProperty("PublishProfile", finalPublishProfileName)
+	);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -197,37 +164,6 @@ Task("Default")
 //////////////////////////////////////////////////////////////////////
 // HELPERS
 //////////////////////////////////////////////////////////////////////
-Action<string> stopAppPool = appPoolName =>
-{
-	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("stop");
-	arguments.Append("apppool");
-	arguments.Append("/apppool.name: " + appPoolName);
-	using(var process = StartAndReturnProcess(@"C:\Windows\System32\inetsrv\appcmd",
-		new ProcessSettings{
-			Arguments = arguments,
-			WorkingDirectory = clientUiDir,
-		}))
-	{
-		process.WaitForExit();
-	}
-};
-
-Action<string> startAppPool = appPoolName =>
-{
-	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("start");
-	arguments.Append("apppool");
-	arguments.Append("/apppool.name: " + appPoolName);
-	using(var process = StartAndReturnProcess(@"C:\Windows\System32\inetsrv\appcmd",
-		new ProcessSettings{
-			Arguments = arguments,
-			WorkingDirectory = clientUiDir,
-		}))
-	{
-		process.WaitForExit();
-	}
-};
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

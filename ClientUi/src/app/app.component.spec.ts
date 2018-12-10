@@ -53,3 +53,4 @@ describe('AppComponent', () => {
     expect(element.querySelector('app-list-reminders')).toBeTruthy();
   });
 });
+

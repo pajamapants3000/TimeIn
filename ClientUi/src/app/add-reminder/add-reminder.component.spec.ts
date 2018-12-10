@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -6,6 +7,10 @@ import { AddReminderComponent } from './add-reminder.component';
 import { ReminderService } from '../reminder.service';
 import { doArraysContainSameValues, click } from '../common';
 import { Reminder } from '../reminder';
+
+@Component({selector: 'mat-form-field', template: '<ng-content></ng-content>'})
+class MatFormFieldStub {
+}
 
 describe('AddReminderComponent', () => {
   let component: AddReminderComponent;
@@ -17,7 +22,10 @@ describe('AddReminderComponent', () => {
     let spy = jasmine.createSpyObj('ReminderService',
                                               ['addReminder']);
     TestBed.configureTestingModule({
-      declarations: [ AddReminderComponent ],
+      declarations: [
+        AddReminderComponent,
+        MatFormFieldStub,
+      ],
       providers: [
         { provide: ReminderService, useValue: spy }
       ]
@@ -47,8 +55,9 @@ describe('AddReminderComponent', () => {
   it('should have a text input',
     () => {
     const element: HTMLElement = fixture.nativeElement;
-    const button = element.querySelector('button');
-    expect(button).toBeTruthy();
+    const inner = element.querySelector('mat-form-field');
+    const input = inner.querySelector('input');
+    expect(inner).toBeTruthy();
   });
 
   it('should call addReminder service method with input text when button clicked',
@@ -82,6 +91,7 @@ describe('AddReminderComponent', () => {
     expect(input.value).toEqual("");
   });
 
+
   /* Class-related Tests */
   it('#addReminder should call addReminder service method with input text as Reminder',
     () => {
@@ -96,4 +106,3 @@ describe('AddReminderComponent', () => {
    });
 
 });
-

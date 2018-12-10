@@ -1,7 +1,14 @@
-<h2>Reminders</h2>
-<ul class="reminders-list">
-    <li *ngFor="let reminder of reminders$ | async">
-        <span>{{reminder.value}}</span>
-    </li>
-</ul>
+<div class="mat-list">
+    <mat-list class="reminder-list">
+        <h2 class="mat-h2">Reminders</h2>
+
+        <mat-list-item class="reminder-list-item"
+            *ngFor="let reminder of reminders$ | async">
+            <div class="reminder-list-item-content">
+                <mat-icon>alarm</mat-icon>
+                <span>{{reminder.value}}</span>
+            </div>
+        </mat-list-item>
+    </mat-list>
+</div>
 

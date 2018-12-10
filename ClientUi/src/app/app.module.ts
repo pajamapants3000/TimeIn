@@ -4,6 +4,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { environment } from '../environments/environment';
 
+import {
+  MatListModule,
+  MatInputModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatIconModule
+} from '@angular/material';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppComponent } from './app.component';
 import { AddReminderComponent } from './add-reminder/add-reminder.component';
 import { ListRemindersComponent } from './list-reminders/list-reminders.component';
@@ -15,7 +25,7 @@ import { ReminderService } from './reminder.service';
   declarations: [
     AppComponent,
     AddReminderComponent,
-    ListRemindersComponent
+    ListRemindersComponent,
   ],
   imports: [
     BrowserModule,
@@ -28,6 +38,12 @@ import { ReminderService } from './reminder.service';
         dataEncapsulation: false
       }
     ),
+    MatListModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

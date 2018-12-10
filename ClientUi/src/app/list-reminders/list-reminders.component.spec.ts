@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListRemindersComponent } from './list-reminders.component';
@@ -8,6 +9,16 @@ import { REMINDERS_EMPTY } from '../mock-reminders-empty'
 import { doArraysContainSameValues } from '../common';
 import { Reminder } from '../reminder';
 
+@Component({selector: 'mat-list', template: '<ng-content></ng-content>'})
+class MatListStub {
+}
+@Component({selector: 'mat-list-item', template: '<ng-content></ng-content>'})
+class MatListItemStub {
+}
+@Component({selector: 'mat-icon', template: '<div></div>'})
+class MatIcon {
+}
+
 describe('ListRemindersComponent', () => {
   let component: ListRemindersComponent;
   let fixture: ComponentFixture<ListRemindersComponent>;
@@ -15,7 +26,12 @@ describe('ListRemindersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListRemindersComponent ],
+      declarations: [
+        ListRemindersComponent,
+        MatListStub,
+        MatListItemStub,
+        MatIcon
+      ],
       providers: [
         { provide: ReminderService, useValue: fakeService }
       ]
@@ -39,11 +55,11 @@ describe('ListRemindersComponent', () => {
     expect(h2.textContent).toEqual('Reminders');
   });
 
-  it('should render an unordered list',
+  it('should render a material list',
     () => {
     const element: HTMLElement = fixture.nativeElement;
-    const ul = element.querySelector('ul');
-    expect(ul).toBeTruthy();
+    const list = element.querySelector('mat-list');
+    expect(list).toBeTruthy();
   });
 
   it('should render an empty list when storage is empty',
@@ -53,8 +69,10 @@ describe('ListRemindersComponent', () => {
     fixture.detectChanges();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('ul')
-    let listItems = remindersListElement.getElementsByTagName('li');
+                                              .querySelector('mat-list')
+    expect(remindersListElement).toBeTruthy();
+    let listItems = remindersListElement.getElementsByTagName('mat-list-item');
+    expect(listItems).toBeTruthy();
     let listValues: string[] = [];
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
@@ -72,15 +90,13 @@ describe('ListRemindersComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('ul')
-    let listItems = remindersListElement.getElementsByTagName('li');
+    let remindersListElement: HTMLElement = fixture.nativeElement.querySelector('mat-list')
+    let listItems = remindersListElement.querySelectorAll('mat-list-item');
     let listValues: string[] = [];
     for (let i = 0; i < listItems.length; i++) {
-      listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
+      listValues.push(listItems[i].textContent)
     }
-    let reminderExpectedValues = fakeService.fakeData
-      .map(reminder => reminder.value);
+    let reminderExpectedValues = REMINDERS.map(reminder => reminder.value);
 
     expect(doArraysContainSameValues(reminderExpectedValues, listValues))
       .toBeTruthy();
@@ -100,11 +116,11 @@ describe('ListRemindersComponent', () => {
     fixture.detectChanges();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('ul')
-    let listItems = remindersListElement.getElementsByTagName('li');
+                                              .querySelector('mat-list')
+    let listItems = remindersListElement.querySelectorAll('mat-list-item');
     let listValues: string[] = [];
     for (let i = 0; i < listItems.length; i++) {
-      listValues.push(listItems[i].getElementsByTagName('span')[0].textContent)
+      listValues.push(listItems[i].textContent)
     }
     let reminderExpectedValues = fakeService.fakeData
       .map(reminder => reminder.value);

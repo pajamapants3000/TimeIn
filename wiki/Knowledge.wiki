@@ -136,4 +136,32 @@
 * I found another interesting approach [[https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-2.2#environment-based-startup-class-and-methods|here]]
 * you can set environment variables per app pool
     * https://docs.microsoft.com/en-us/iis/configuration/system.applicationHost/applicationPools/add/environmentVariables/#appcmdexe
+= Random Lessons =
+== No Form Tags on Components! ==
+* Don't wrap a component template in <form> (idiot)
+    * I spent so much time trying to understand why testing was running in an
+        infinite loop as soon as I called a click event
+    * I realized how stupid it is to wrap a component in a <form> tag! Of
+        course, after I spent a _LOT_ of time troubleshooting
+        * *sigh*
+* I think it's ok in the root component (e.g. AppComponent)
+== Ng-Content for Directive Elements that Wrap Content ==
+* When testing against pages with angular components that have content inside
+    them, create a stub with template="<ng-content></ng-content>"
+    * e.g. a page like:
+{{{html
+<div>
+    <mat-form-field class="reminder-input">
+        <input matInput type="text" #newReminder placeholder="Add new reminder" />
+    </mat-form-field>
+</div>
+}}}
+    * in the test, need to create the following:
+{{{ts
+@Component({selector: 'mat-form-field', template: '<ng-content></ng-content>'})
+class MatFormFieldStub {
+}
+}}}
+    * add this stub to the `TestBed.configureTestingModule` `declarations`
+        metadata property
 

@@ -8,7 +8,7 @@ describe('TimeIn ClientUi', () => {
 
 // Helpers
 let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => {
-    element.all(by.css('.reminders-list li')).then(
+    element.all(by.css('.reminder-list mat-list-item div.reminder-list-item-content span')).then(
       (reminders) => {
         expect(reminders).toBeTruthy();
         expect(reminders.length).toBe(expected.length);

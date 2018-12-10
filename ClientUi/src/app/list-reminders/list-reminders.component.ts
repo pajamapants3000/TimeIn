@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { MatIconRegistry } from '@angular/material';
 
 import { ReminderService } from '../reminder.service';
 import { Reminder } from '../reminder';
