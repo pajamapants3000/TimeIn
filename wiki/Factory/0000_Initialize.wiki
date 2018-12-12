@@ -171,9 +171,9 @@ review all of the reminders I have created.
     redirects only for testing, but not for normal use
 * Angular Material added - theming and styling successful
     * this created a lot of testing issues, but I worked it out
+* test data now resets using a sql script executed by cake build script
+* fully-automated end-to-end build-test-publish working successfully!
 = Next =
-* LAST THING(s)!
-    * apply migration to Test publish profile to truncate and seed test DB
-	* fix remaining e2e tests to work with material updates
 * ? Simplify with a refresh button in the list-reminders component ?
+* Other than possibly doing that (later), this task is COMPLETE!
 

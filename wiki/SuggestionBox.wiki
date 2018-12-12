@@ -1,32 +1,44 @@
 %title SuggestionBox | TimeIn | Projects
 
 = Contents =
-    - [[#Initialize|Initialize]]
     - [[#Mark as complete|Mark as complete]]
     - [[#Completion Details|Completion Details]]
     - [[#Create scheduled events|Create scheduled events]]
-    - [[#Data Persistence|Data Persistence]]
     - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
+    - [[#User Profiles|User Profiles]]
+    - [[#Completed Tasks|Completed Tasks]]
+        - [[#Completed Tasks#Data Persistence|Data Persistence]]
+        - [[#Completed Tasks#Initialize|Initialize]]
 
 
-= Initialize =
-As a typical person with responsibilities, it would be nice if I could record
-an upcoming obligation, task, or reminder. At any time I should be able to
-review all of the reminders I have created.
 = Mark as complete =
 Any reminder that has been created should have the ability to be marked as
 complete.
+- Created Task 0001
 = Completion Details =
 When completing a reminder, it should be possible to note whether the item
 was completed, disregarded, or whatever likely might have been the outcome.
 = Create scheduled events =
 In addition to simple reminders, I would like to be able to add items with
 specific date/times associated with them.
-= Data Persistence =
-As a typical user, I just want to be able to close the application and still
-see my schedule the next time I open it, without having to re-enter everything.
 = Schedule Nonscheduled Events =
 As someone who has a lot to do but doesn't always know when I'll have time, I
 would like to be able to record my todo list items and later schedule them when
 I decide when I will have time for them.
+= User Profiles =
+Currently the application works for a single user. Add a login screen and store
+and access data on a per-user basis.
+
+= Completed Tasks =
+== Data Persistence ==
+As a typical user, I just want to be able to close the application and still
+see my schedule the next time I open it, without having to re-enter everything.
+- Created Task 0000
+- Completed
+== Initialize ==
+As a typical person with responsibilities, it would be nice if I could record
+an upcoming obligation, task, or reminder. At any time I should be able to
+review all of the reminders I have created.
+- Created Task 0000
+- Completed
 

@@ -4,4 +4,7 @@
     * schedule should integrate with the schedule/calendar maintained in Alexa/
         Amazon account
     * create skills?
+* Find a way in both Angular and C# to import JSON (or xml or whatever) to
+    instantiate model instances
+    * generate test data that can be sourced from one location for both projects
 

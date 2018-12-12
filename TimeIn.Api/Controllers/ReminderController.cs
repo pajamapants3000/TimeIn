@@ -8,9 +8,9 @@ using TimeIn.Api.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TimeIn.Controllers
+namespace TimeIn.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ReminderController : ControllerBase
     {

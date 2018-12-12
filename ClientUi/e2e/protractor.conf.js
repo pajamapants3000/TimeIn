@@ -11,7 +11,7 @@ exports.config = {
   capabilities: {
     'browserName': 'chrome'
   },
-  baseUrl: 'http://localhost:4200/',
+  baseUrl: 'http://timein.lilu-windxpro',
   framework: 'jasmine',
   seleniumAddress: 'http://localhost:4444/wd/hub',
   jasmineNodeOpts: {

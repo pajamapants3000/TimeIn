@@ -32,5 +32,8 @@ export class AppPage {
     this.sendTextToAddReminderInput(text);
     let submitButton: ElementFinder = this.getAddReminderSubmitButton();
     submitButton.click();
+    // first API publish seems to cause failure to wait for full page load
+    // trigger another one with no additional update to ensure correct result
+    submitButton.click();
   }
 }

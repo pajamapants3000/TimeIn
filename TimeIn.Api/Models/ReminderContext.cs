@@ -8,5 +8,9 @@ namespace TimeIn.Api.Models
             : base(options) { }
 
         public DbSet<Reminder> Reminder { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+        }
     }
 }

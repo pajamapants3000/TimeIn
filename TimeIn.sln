@@ -8,11 +8,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ClientUi\.gitignore = ClientUi\.gitignore
 		build.cake = build.cake
 		build.ps1 = build.ps1
+		reset_test_data.sql = reset_test_data.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeIn.Test", "TimeIn.Test\TimeIn.Test.csproj", "{E5B1FA46-7F35-49A8-89D8-A244F4FD0A95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeIn.Api", "TimeIn.Api\TimeIn.Api.csproj", "{763F558B-23A1-4EBC-B9E1-DE704D7C0D44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeIn.Api", "TimeIn.Api\TimeIn.Api.csproj", "{763F558B-23A1-4EBC-B9E1-DE704D7C0D44}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ClientUi", "ClientUi\ClientUi.njsproj", "{9F511C30-9765-4596-97C0-4510B2A3D102}"
 EndProject
