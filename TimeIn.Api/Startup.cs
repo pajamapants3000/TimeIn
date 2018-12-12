@@ -23,11 +23,6 @@ namespace TimeIn.Api
             services.AddDbContext<ReminderContext>(opt =>
                opt.UseSqlServer(Configuration.GetConnectionString("TimeInDatabase")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddCors(options =>
-            {
-                options.AddPolicy("ClientUi_Local",
-                    builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +38,6 @@ namespace TimeIn.Api
                 app.UseHsts();
             }
 
-            app.UseCors("ClientUi_Local");
             app.UseHttpsRedirection();
             app.UseMvc();
         }
