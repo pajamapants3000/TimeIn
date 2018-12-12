@@ -2,4 +2,6 @@
 
 * [[0000_Initialize]]
 * [[0001_MarkAsComplete]]
+* [[0002_ClientUiTestMarkAsComplete]]
+* [[0003_InterProjectSharedTestData]]
 

@@ -3,8 +3,6 @@
 // NOTE: For end-to-end tests:
 //		* selenium server must be running ($ webdriver-manager start)
 //		* IIS should be running the test site, which has access to the test database.
-//		* ng serve should be running the ClientUi
-
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
@@ -39,7 +37,55 @@ var sqlResetTestDataFile = Directory("./") + File("reset_test_data.sql");
 // TASKS
 //////////////////////////////////////////////////////////////////////
 
-Task("Clean")
+Task("Test-ClientUi")
+    .Does(() =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("test");
+	arguments.Append("--watch=false");
+	using(var process = StartAndReturnProcess(ngCliCommand,
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+	}))
+	{
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
+		{
+			throw new Exception(String.Format(errorFormatMessage, "Test-ClientUi"));
+		}
+	}
+});
+
+Task("Build-ClientUi-Production")
+    .IsDependentOn("Test-ClientUi")
+    .Does(() =>
+{
+	var arguments = new ProcessArgumentBuilder();
+	arguments.Append("build");
+	arguments.Append("--prod");
+	using(var process = StartAndReturnProcess(ngCliCommand,
+		new ProcessSettings{
+			Arguments = arguments,
+			WorkingDirectory = clientUiDir,
+	}))
+	{
+		process.WaitForExit();
+		if (process.GetExitCode() != 0)
+		{
+			throw new Exception(String.Format(errorFormatMessage, "Build-ClientUi-Production"));
+		}
+	}
+});
+
+Task("Publish-ClientUi")
+    .IsDependentOn("Build-ClientUi-Production")
+    .Does(() =>
+{
+	CopyFiles("./ClientUi/dist/ClientUi/**/*.*", "D:/publish/TimeIn", true);
+});
+
+Task("Clean-Solution")
     .Does(() =>
 {
     CleanDirectory(buildDir);
@@ -48,13 +94,13 @@ Task("Clean")
 });
 
 Task("Restore-NuGet-Packages")
-    .IsDependentOn("Clean")
+    .IsDependentOn("Clean-Solution")
     .Does(() =>
 {
     NuGetRestore("./" + solutionName + ".sln");
 });
 
-Task("Build")
+Task("Build-Solution")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
 {
@@ -62,14 +108,25 @@ Task("Build")
 		settings.SetConfiguration(configuration));
 });
 
-Task("UnitTests")
-    .IsDependentOn("Build")
+Task("Test-Solution-UnitTests")
+    .IsDependentOn("Build-Solution")
     .Does(() =>
 {
     NUnit3(testsAssemblyPath, new NUnit3Settings {
         NoResults = false,
 		OutputFile = new FilePath("./unitTestOutput.xml"),
 	});
+});
+
+Task("Publish-Api-Test")
+    .IsDependentOn("Test-Solution-UnitTests")
+    .Does(() =>
+{
+	MSBuild("TimeIn.Api/TimeIn.Api.csproj", settings =>
+		settings.SetConfiguration(configuration).
+		WithProperty("DeployOnBuild", "true").
+		WithProperty("PublishProfile", testPublishProfileName)
+	);
 });
 
 Task("ResetTestData")
@@ -92,70 +149,10 @@ Task("ResetTestData")
 
 });
 
-Task("Publish-Test")
-    .IsDependentOn("UnitTests")
-    .Does(() =>
-{
-	MSBuild("TimeIn.Api/TimeIn.Api.csproj", settings =>
-		settings.SetConfiguration(configuration).
-		WithProperty("DeployOnBuild", "true").
-		WithProperty("PublishProfile", testPublishProfileName)
-	);
-});
-
-Task("ClientUiTests")
-    .Does(() =>
-{
-	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("test");
-	arguments.Append("--watch=false");
-	using(var process = StartAndReturnProcess(ngCliCommand,
-		new ProcessSettings{
-			Arguments = arguments,
-			WorkingDirectory = clientUiDir,
-	}))
-	{
-		process.WaitForExit();
-		if (process.GetExitCode() != 0)
-		{
-			throw new Exception(String.Format(errorFormatMessage, "ClientUiTests"));
-		}
-	}
-});
-
-Task("ClientUiBuild")
-    .IsDependentOn("ClientUiTests")
-    .Does(() =>
-{
-	var arguments = new ProcessArgumentBuilder();
-	arguments.Append("build");
-	arguments.Append("--prod");
-	using(var process = StartAndReturnProcess(ngCliCommand,
-		new ProcessSettings{
-			Arguments = arguments,
-			WorkingDirectory = clientUiDir,
-	}))
-	{
-		process.WaitForExit();
-		if (process.GetExitCode() != 0)
-		{
-			throw new Exception(String.Format(errorFormatMessage, "ClientUiBuild"));
-		}
-	}
-});
-
-Task("ClientUiPublish")
-    .IsDependentOn("ClientUiBuild")
-    .Does(() =>
-{
-	CopyFiles("./ClientUi/dist/ClientUi/**/*.*", "D:/publish/TimeIn", true);
-});
-
-// ClientUi must be served in production mode (`--prod` flag passed to `ng serve`)
-Task("EndToEndTests")
+Task("Test-EndToEnd")
+    .IsDependentOn("Publish-Api-Test")
+    .IsDependentOn("Publish-ClientUi")
     .IsDependentOn("ResetTestData")
-    .IsDependentOn("Publish-Test")
-    .IsDependentOn("ClientUiPublish")
    .Does(() =>
 {
 	var arguments = new ProcessArgumentBuilder();
@@ -169,13 +166,13 @@ Task("EndToEndTests")
 		process.WaitForExit();
 		if (process.GetExitCode() != 0)
 		{
-			throw new Exception(String.Format(errorFormatMessage, "EndToEndTests"));
+			throw new Exception(String.Format(errorFormatMessage, "Test-EndToEnd"));
 		}
 	}
 });
 
-Task("Publish")
-    .IsDependentOn("EndToEndTests")
+Task("Publish-Production")
+    .IsDependentOn("Test-EndToEnd")
     .Does(() =>
 {
 	MSBuild("TimeIn.Api/TimeIn.Api.csproj", settings =>
@@ -183,6 +180,7 @@ Task("Publish")
 		WithProperty("DeployOnBuild", "true").
 		WithProperty("PublishProfile", finalPublishProfileName)
 	);
+	CopyFiles("./ClientUi/dist/ClientUi/**/*.*", "D:/publish/TimeIn", true);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -190,7 +188,7 @@ Task("Publish")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Publish");
+    .IsDependentOn("Publish-Production");
 
 //////////////////////////////////////////////////////////////////////
 // HELPERS

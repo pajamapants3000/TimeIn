@@ -1,0 +1,52 @@
+%title ClientUi Test Mark as Complete (Task 0002) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Paths|Paths]]
+        - [[#Paths#Good|Good]]
+        - [[#Paths#Bad|Bad]]
+        - [[#Paths#Ugly|Ugly]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+SubTask of 0001
+* Add `isCompleted` property to reminder model
+* add `isCompleted` values to test data
+* 
+= Paths =
+== Good ==
+* User clicks "complete" (or performs some appropriate action)
+    * item now shows clearly as being completed
+    * e.g. box is checked or item is crossed-out
+== Bad ==
+* User clicks "complete" and Client fails to update item
+    * Message should appear indicating a failure to update
+== Ugly ==
+* User is unable to click "complete"
+* User clicks "complete" but another instance has since deleted the data
+= Solution Proposal =
+* add column to reminder table/type - `IsComplete`
+* add button to reminder list items that calls `CompleteReminder`
+* add service method that calls API to set IsComplete to true on reminder
+* add API call to `CompleteReminder` that takes a reminder ID
+* display completed reminders at the bottom of the page, crossed out
+= Solution Breakdown =
+== Backend ==
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+
+
