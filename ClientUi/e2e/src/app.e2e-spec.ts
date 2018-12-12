@@ -1,10 +1,15 @@
 import { by, element } from 'protractor';
 import { AppPage } from './app.po';
-import { REMINDERS } from '../../src/app/mock-reminders';
+import { Reminder } from '../../src/app/reminder';
+import * as json from '../../../testData.json';
 
 
 describe('TimeIn ClientUi', () => {
   let page: AppPage;
+  let testData: Reminder[] = json.Reminder.map(i => {
+    return { id: +i.id, value: i.value }
+  });
+  let testData_empty: Reminder[] = [];
 
 // Helpers
 let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => {
@@ -43,14 +48,14 @@ let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => 
 
   it('should initially list seeded reminders', () => {
     page.navigateTo();
-    assertRemindersListAsExpected(REMINDERS.map(rem => rem.value));
+    assertRemindersListAsExpected(testData.map(rem => rem.value));
   });
 
   it('should update reminders list when reminder is added', () => {
     page.navigateTo();
     let reminderToAdd: string = 'My New Reminder';
     page.submitAddReminder(reminderToAdd);
-    let updatedRemindersList = [...REMINDERS.map(rem => rem.value), reminderToAdd];
+    let updatedRemindersList = [...testData.map(rem => rem.value), reminderToAdd];
 
     assertRemindersListAsExpected(updatedRemindersList);
   });

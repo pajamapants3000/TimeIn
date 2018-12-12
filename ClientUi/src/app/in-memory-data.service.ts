@@ -1,7 +1,6 @@
 import { InMemoryDbService, ParsedRequestUrl } from 'angular-in-memory-web-api';
 import { Injectable } from '@angular/core';
-import { REMINDERS } from './mock-reminders'
-import { REMINDERS_EMPTY } from './mock-reminders-empty'
+import * as json from '../../../testData.json';
 import { Reminder } from './reminder';
 
 @Injectable({
@@ -11,7 +10,9 @@ export class InMemoryDataService implements InMemoryDbService {
   public useEmptyRemindersList: Boolean = false;
 
   createDb() {
-    const reminder = this.useEmptyRemindersList ? REMINDERS_EMPTY : REMINDERS;
+    const reminder: Reminder[] = this.useEmptyRemindersList ?
+      [] as Reminder[] :
+      json.Reminder.map(i => { return { id: +i.id, value: i.value }; });
 
     return {reminder};
   }

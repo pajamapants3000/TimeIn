@@ -4,10 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ListRemindersComponent } from './list-reminders.component';
 import { ReminderFakeService } from '../reminder.fake.service';
 import { ReminderService } from '../reminder.service';
-import { REMINDERS } from '../mock-reminders'
-import { REMINDERS_EMPTY } from '../mock-reminders-empty'
 import { doArraysContainSameValues } from '../common';
 import { Reminder } from '../reminder';
+import * as json from '../../../../testData.json';
 
 @Component({selector: 'mat-list', template: '<ng-content></ng-content>'})
 class MatListStub {
@@ -23,6 +22,10 @@ describe('ListRemindersComponent', () => {
   let component: ListRemindersComponent;
   let fixture: ComponentFixture<ListRemindersComponent>;
   let fakeService: ReminderFakeService = new ReminderFakeService();
+  let testData: Reminder[] = json.Reminder.map(i => {
+    return { id: i.id, value: i.value }
+  });
+  let testData_empty: Reminder[] = [];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -36,7 +39,7 @@ describe('ListRemindersComponent', () => {
         { provide: ReminderService, useValue: fakeService }
       ]
     })
-    fakeService.fakeData = REMINDERS_EMPTY;
+    fakeService.fakeData = testData_empty;
 
     fixture = TestBed.createComponent(ListRemindersComponent);
     component = fixture.componentInstance;
@@ -64,7 +67,7 @@ describe('ListRemindersComponent', () => {
 
   it('should render an empty list when storage is empty',
      () => {
-    fakeService.fakeData = REMINDERS_EMPTY;
+    fakeService.fakeData = testData_empty;
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -86,7 +89,7 @@ describe('ListRemindersComponent', () => {
 
   it('should render list matching result of `listReminders` when non-empty',
      () => {
-    fakeService.fakeData = REMINDERS;
+    fakeService.fakeData = testData;
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -96,7 +99,7 @@ describe('ListRemindersComponent', () => {
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].textContent)
     }
-    let reminderExpectedValues = REMINDERS.map(reminder => reminder.value);
+    let reminderExpectedValues = testData.map(reminder => reminder.value);
 
     expect(doArraysContainSameValues(reminderExpectedValues, listValues))
       .toBeTruthy();
@@ -104,10 +107,10 @@ describe('ListRemindersComponent', () => {
 
   it('should render updated list when data changes',
      () => {
-    let expectedResult: Reminder[] = [...REMINDERS,
+    let expectedResult: Reminder[] = [...testData,
       { value:'new reminder' } as Reminder];
 
-    fakeService.fakeData = REMINDERS;
+    fakeService.fakeData = testData;
     component.ngOnInit();
     fixture.detectChanges();
 

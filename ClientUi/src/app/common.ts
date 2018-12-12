@@ -3,6 +3,9 @@ import { DebugElement } from '@angular/core';
 export const reminderUrl: string = 'http://TimeIn.Lilu-WindXPro/api/reminder';
 export const inMemoryUrlBase: string = 'in_memory/api/';
 export const reminderTestUrl: string = inMemoryUrlBase + 'reminder';
+// note: as of now, can't really use this in import statement
+// this is just for manual referencing
+export const testDataJsonPath: string = '../testData.json';
 
 // write string[] comparison method
 export function doArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): boolean {

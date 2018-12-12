@@ -164,4 +164,145 @@ class MatFormFieldStub {
 }}}
     * add this stub to the `TestBed.configureTestingModule` `declarations`
         metadata property
+= Working with JSON =
+== ... and SQL Server ==
+* read data from json file and convert to table:
+{{{sql
+SELECT id, value
+    FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
+CROSS APPLY OPENJSON(BulkColumn)
+    WITH (
+        id int,
+        value varchar(100)
+    )
+}}}
+* I've confirmed that this works great!
+    * however, I don't understand much of it (yet)
+* reset test data:
+{{{sql
+SET IDENTITY_INSERT [Reminder] ON;
+INSERT [Reminder] (id, value)
+    SELECT id, value FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
+    CROSS APPLY OPENJSON(BulkColumn)
+        WITH
+        (
+            id int,
+            value varchar(100)
+        )
+SET IDENTITY_INSERT [Reminder] OFF;
+}}}
+* NOTE: you could just copy the tables without specifying the column, but since
+    we are including the identity column, SQL Server requires the columns to
+    be explicit
+* columns must be specified for both tables (from and to)
+=== Multiple Tables ===
+* this was a b-and-a-half, but I got it!
+* JSON:
+{{{json
+{
+        "Reminder": [
+            {
+                "id": 1,
+                "value": "Reminder One"
+            },
+            {
+                "id": 2,
+                "value": "Reminder Two"
+            },
+            {
+                "id": 3,
+                "value": "Reminder Three"
+            },
+            {
+                "id": 4,
+                "value": "Reminder Four"
+            }
+        ],
+    "OtherTable": [
+        {
+            "id": 1,
+            "value1": "testOne",
+            "value2": "testTwo"
+        },
+        {
+            "id": 3,
+            "value1": "testThree",
+            "value2": "testFour"
+        },
+        {
+            "id": 5,
+            "value1": "testFive",
+            "value2": "testSix"
+        }
+    ]
+}
+}}}
+* sql:
+{{{sql
+SET IDENTITY_INSERT [Reminder] ON;
+INSERT [Reminder] (id, value)
+    SELECT id, value FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
+    CROSS APPLY OPENJSON(BulkColumn, '$."Reminder"')
+        WITH
+        (
+            id int,
+            value varchar(100)
+        )
+SET IDENTITY_INSERT [Reminder] OFF;
+}}}
+* for the other table, we'd do:
+{{{sql
+SET IDENTITY_INSERT [OtherTable] ON;
+INSERT [Reminder] (id, value)
+    SELECT id, value FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
+    CROSS APPLY OPENJSON(BulkColumn, '$."OtherTable"')
+        WITH
+        (
+            id int,
+            value1 varchar(100),
+            value2 varchar(100)
+        )
+SET IDENTITY_INSERT [Reminder] OFF;
+}}}
+
+== ... and Angular/TypeScript ==
+* here is what I used:
+{{{ts
+import * as json from '../../../testData.json';
+
+let testData: Reminder[] = json.map(i => {
+    return { id: i.id, value: i.value }
+});
+let testData_empty: Reminder[] = [];
+}}}
+* this replaced the REMINDERS and REMINDERS_EMPTY test data objects
+* JSON can have the following data types:
+    * strings
+    * numbers
+    * objects
+    * arrays
+    * Booleans (true or false)
+    * null
+* therefore, we shouldn't ever need to do any conversion to TypeScript types
+* however, the explicit mapping of items to objects as seen here, even though
+    the properties are the same and of the same type, is required
+* one thing I did learn (when I thought JSON _had_ to be strings:
+    * you can prefix a string with a unary `+` to parse it as a number
+* These changes will be seen as a problem by the TypeScript LanguageServer
+    parser
+    * it will think you can't import the json file
+    * it still works, but the parser says there's a problem
+    * to get around this, add the following line to the tsconfig.json, in the
+        `compilerOptions` section:
+        * "resolveJsonModule": true
+    * now the parser accepts the json file as importable
+=== Multiple Tables ===
+* much easier than it was in SQL!
+{{{ts
+let testData: Reminder[] = json.Reminder.map(i => {
+  return { id: i.id, value: i.value }
+});
+}}}
+* note: we just reference the table as a property of the json object - simple!
+* the LanguageServer even picks up on the json object's properties - amazing!
 

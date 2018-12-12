@@ -3,14 +3,17 @@ import { Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { ReminderService } from './reminder.service';
-import { REMINDERS } from './mock-reminders'
-import { REMINDERS_EMPTY } from './mock-reminders-empty'
 import { reminderTestUrl, doArraysContainSameValues } from './common'
 import { Reminder } from './reminder';
+import * as json from '../../../testData.json';
 
 describe('ReminderService', () => {
   let reminderService: ReminderService;
   let dataServiceSpy: jasmine.SpyObj<HttpClient>;
+  let testData: Reminder[] = json.Reminder.map(i => {
+    return { id: i.id, value: i.value }
+  });
+  let testData_empty: Reminder[] = [];
 
   const testReminder: Reminder = { value: "reminder to add" } as Reminder;
 
@@ -23,7 +26,7 @@ describe('ReminderService', () => {
     reminderService.apiUrl = reminderTestUrl;
     dataServiceSpy = TestBed.get(HttpClient);
     dataServiceSpy.post.and.returnValue(of(testReminder));
-    dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
+    dataServiceSpy.get.and.returnValue(of(testData_empty));
   });
 
   it('should be created', () => {
@@ -88,23 +91,23 @@ describe('ReminderService', () => {
 
   it('updateReminders` should trigger update for any subscribers to reminders',
      () => {
-      dataServiceSpy.get.and.returnValue(of(REMINDERS));
+      dataServiceSpy.get.and.returnValue(of(testData));
 
-      let reminderSubscriber: Reminder[] = REMINDERS_EMPTY;
+      let reminderSubscriber: Reminder[] = testData_empty;
       reminderService.reminders.subscribe(
         success => reminderSubscriber = success,
         error => fail('expected successful call')
       );
 
       reminderService.updateReminders();
-      expect(reminderSubscriber.length).toEqual(REMINDERS.length);
+      expect(reminderSubscriber.length).toEqual(testData.length);
    });
 
   it('#updateReminders should leave reminders with updated value - empty ',
      () => {
-      dataServiceSpy.get.and.returnValue(of(REMINDERS_EMPTY));
+      dataServiceSpy.get.and.returnValue(of(testData_empty));
 
-      let reminderSubscriber: Reminder[] = REMINDERS;
+      let reminderSubscriber: Reminder[] = testData;
       reminderService.reminders.subscribe(
         success => reminderSubscriber = success,
         error => fail('expected successful call')
@@ -112,13 +115,13 @@ describe('ReminderService', () => {
 
       reminderService.updateReminders();
 
-      expect(doArraysContainSameValues(REMINDERS_EMPTY, reminderSubscriber))
+      expect(doArraysContainSameValues(testData_empty, reminderSubscriber))
         .toBeTruthy();
    });
 
   it('#updateReminders should leave reminders with updated value - non-empty ',
      () => {
-      dataServiceSpy.get.and.returnValue(of(REMINDERS));
+      dataServiceSpy.get.and.returnValue(of(testData));
 
       let reminderSubscriber: Reminder[] = [];
       reminderService.reminders.subscribe(
@@ -128,7 +131,7 @@ describe('ReminderService', () => {
 
       reminderService.updateReminders();
 
-      expect(doArraysContainSameValues(REMINDERS, reminderSubscriber))
+      expect(doArraysContainSameValues(testData, reminderSubscriber))
         .toBeTruthy();
    });
 
@@ -149,7 +152,7 @@ describe('ReminderService', () => {
      () => {
       dataServiceSpy.get.and.returnValue(throwError('received error from server'));
 
-      let reminderSubscriber: Reminder[] = REMINDERS;
+      let reminderSubscriber: Reminder[] = testData;
       reminderService.reminders.subscribe(
         success => reminderSubscriber = success,
         error => fail('expected successful call')
@@ -157,7 +160,7 @@ describe('ReminderService', () => {
 
       reminderService.updateReminders();
 
-      expect(doArraysContainSameValues(reminderSubscriber, REMINDERS)).toBeTruthy();
+      expect(doArraysContainSameValues(reminderSubscriber, testData)).toBeTruthy();
    });
 });
 

@@ -3,7 +3,12 @@ import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
 
 import { Reminder } from './reminder';
-import { REMINDERS } from './mock-reminders';
+import * as json from '../../../testData.json';
+
+let testData: Reminder[] = json.Reminder.map(i => {
+  return { id: i.id, value: i.value }
+});
+let testData_empty: Reminder[] = [];
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +17,11 @@ export class ReminderFakeService {
 
   constructor() { }
 
-  fakeData: Reminder[] = REMINDERS;
+  fakeData: Reminder[] = testData;
   reminders: Subject<Reminder[]> = new Subject<Reminder[]>();
 
   public addReminder(newReminder: Reminder): Observable<Reminder> {
-    this.fakeData = [...REMINDERS, newReminder ];
+    this.fakeData = [...testData, newReminder ];
     this.updateReminders();
     return of(newReminder);
   }

@@ -1,0 +1,46 @@
+%title ClientUi Test Mark as Complete (Task 0002) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Paths|Paths]]
+        - [[#Paths#Good|Good]]
+        - [[#Paths#Bad|Bad]]
+        - [[#Paths#Ugly|Ugly]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+SubTask of 0001
+* before making further changes to model and data, I want to have the test data
+    used by both the API and ClientUi projects sourced from one location
+= Paths =
+== Good ==
+* ClientUi test, end-to-end test, and API test (though none yet) pull test data
+    from same place
+== Bad ==
+== Ugly ==
+= Solution Proposal =
+* create JSON file to store test data
+* should support full database - multiple tables
+* need to import this in SQL (reset_test_data.sql) as well as Angular/TypeScript
+= Solution Breakdown =
+== Backend ==
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+Done!
+= Next =
+
+
+
