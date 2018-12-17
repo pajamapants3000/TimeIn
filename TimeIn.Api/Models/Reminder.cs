@@ -9,5 +9,6 @@ namespace TimeIn.Api.Models
     {
         public int id { get; set; }
         public string value { get; set; }
+        public bool isCompleted { get; set; }
     }
 }

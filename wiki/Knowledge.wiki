@@ -1,5 +1,31 @@
 %title Knowledge | TimeIn | Projects
 
+    = Contents =
+    - [[#The Problem with UWP|The Problem with UWP]]
+    - [[#Web API Hosting|Web API Hosting]]
+        - [[#Web API Hosting#Kestrel|Kestrel]]
+        - [[#Web API Hosting#IIS|IIS]]
+        - [[#Web API Hosting#Connecting IIS to SQL Server Database|Connecting IIS to SQL Server Database]]
+        - [[#Web API Hosting#More on hosting|More on hosting]]
+    - [[#SQL Server|SQL Server]]
+        - [[#SQL Server#LocalDb|LocalDb]]
+        - [[#SQL Server#Entity Framework and SQL Server|Entity Framework and SQL Server]]
+    - [[#Customizing Services based on Configuration|Customizing Services based on Configuration]]
+    - [[#Random Lessons|Random Lessons]]
+        - [[#Random Lessons#No Form Tags on Components!|No Form Tags on Components!]]
+        - [[#Random Lessons#Ng-Content for Directive Elements that Wrap Content|Ng-Content for Directive Elements that Wrap Content]]
+    - [[#Working with JSON|Working with JSON]]
+        - [[#Working with JSON#... and SQL Server|... and SQL Server]]
+            - [[#Working with JSON#... and SQL Server#Multiple Tables|Multiple Tables]]
+        - [[#Working with JSON#... and Angular/TypeScript|... and Angular/TypeScript]]
+            - [[#Working with JSON#... and Angular/TypeScript#Multiple Tables|Multiple Tables]]
+            - [[#Working with JSON#... and Angular/TypeScript#In-Memory Web API|In-Memory Web API]]
+    - [[#Procedures|Procedures]]
+        - [[#Procedures#Model Updates|Model Updates]]
+    - [[#PATCH Requests|PATCH Requests]]
+        - [[#PATCH Requests#Routing Control|Routing Control]]
+    - [[#CORS|CORS]]
+
 = The Problem with UWP =
 * Universal Windows applications cannot use consoles as UI
     * there is a new, experimental project template to allow this, but it
@@ -305,4 +331,53 @@ let testData: Reminder[] = json.Reminder.map(i => {
 }}}
 * note: we just reference the table as a property of the json object - simple!
 * the LanguageServer even picks up on the json object's properties - amazing!
+=== In-Memory Web API ===
+* running `ng test` I was getting frustrated and confused because the data was
+    old data, despite the tests recompiling and rerunning many times
+    * turns out that if the data source is changed (or possibly just a JSON
+        data source), you must exit `ng test` entirely and restart it to get
+        the updated data in the in-memory web api
+= Procedures =
+== Model Updates ==
+e.g. to add a new column:
+* add to model in ClientUi (frontend)
+* add to model in API (backend)
+* API: `Add-Migration <Table><Column>`, then `Update-Database`
+* make sure all alternate databases are updated manually:
+    * `ALTER TABLE <table> ADD <column> <type> [[NOT] [NULL]] [DEFAULT <default value>];`
+* add column to test data (e.g. testData.json)
+* add column to test data reset script
+Summary:
+* update frontend model
+* update backend model
+* update migrations and any connected databases
+* update test data
+* update scripts
+= PATCH Requests =
+* create separate patch model class
+    * separate file, or include in model class file (or dbContext file)?
+    * same as model file, except:
+        * no `id` property
+        * all value types in the model are included as nullable types
+        * all reference types in the model are included
+== Routing Control ==
+* with attribute routing (which I am currently using and seems to be the common
+    way nowadays), you set the root path of the URL in the `Route` attribute
+    of the controller
+    * e.g. `[Route("api/[controller]")]` in the `ValuesController` will
+        process requests sent to e.g. localhost/api/values
+        * currently, I am working without the "api" previx
+            * that is, `[Route("[controller]")]`
+* to append additional route segments for an action, apply it as an argument to
+    the action attribute:
+    * `[HttpPatch("{id}")]`
+* this can include any constraints
+* great info for ASP.NET Core 2.2:
+    * https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/routing?view=aspnetcore-2.2
+= CORS =
+* For some reason, `AllowAnyMethod` is needed to use PATCH
+    * it worked without it for GET and POST (confirmed)
+    * lik
+* or, of course, explicitly setting the allowed methods (which I haven't gotten
+    into yet, but will need to at some point)
 

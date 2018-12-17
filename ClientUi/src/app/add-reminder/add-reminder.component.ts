@@ -14,7 +14,8 @@ export class AddReminderComponent {
 
   addReminder(newReminder: string): void {
     if (newReminder != '') {
-      this.service.addReminder({ value: newReminder } as Reminder).subscribe();
+      let reminderToAdd: Reminder = { value: newReminder, isCompleted: false } as Reminder;
+      this.service.addReminder(reminderToAdd).subscribe();
     }
   }
 }

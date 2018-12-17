@@ -10,6 +10,8 @@ namespace TimeIn.Api
 {
     public class Startup
     {
+        bool useCors = true;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +25,15 @@ namespace TimeIn.Api
             services.AddDbContext<ReminderContext>(opt =>
                opt.UseSqlServer(Configuration.GetConnectionString("TimeInDatabase")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            if (useCors)
+            {
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("ClientUi_Local",
+                        builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +49,7 @@ namespace TimeIn.Api
                 app.UseHsts();
             }
 
+            if (useCors) app.UseCors("ClientUi_Local");
             app.UseHttpsRedirection();
             app.UseMvc();
         }

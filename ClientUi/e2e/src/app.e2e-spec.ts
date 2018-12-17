@@ -1,24 +1,25 @@
 import { by, element } from 'protractor';
 import { AppPage } from './app.po';
 import { Reminder } from '../../src/app/reminder';
+import { reminderCompare } from '../../src/app/common';
 import * as json from '../../../testData.json';
 
 
 describe('TimeIn ClientUi', () => {
   let page: AppPage;
-  let testData: Reminder[] = json.Reminder.map(i => {
-    return { id: +i.id, value: i.value }
+  let testData = json.Reminder.map(i => {
+    return { id: +i.id, value: i.value, isCompleted: i.isCompleted }
   });
-  let testData_empty: Reminder[] = [];
+  let testData_empty: Reminder[];
 
 // Helpers
-let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => {
-    element.all(by.css('.reminder-list mat-list-item div.reminder-list-item-content span')).then(
+let assertRemindersListAsExpected: (expected: Reminder[]) => void = (expected) => {
+    element.all(by.css('.reminder-list mat-icon ~ span')).then(
       (reminders) => {
         expect(reminders).toBeTruthy();
         expect(reminders.length).toBe(expected.length);
         for (let i = 0; i < reminders.length; i++) {
-          expect(reminders[i].getText()).toBe(expected[i]);
+          expect(reminders[i].getText()).toBe(expected[i].value);
         }
       },
       (err) => {
@@ -29,6 +30,7 @@ let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => 
 
   beforeEach(() => {
     page = new AppPage();
+    testData_empty = [];
   });
 
   it('should display heading message - Welcome to TimeIn!', () => {
@@ -46,18 +48,34 @@ let assertRemindersListAsExpected: (expected: string[]) => void = (expected) => 
     expect(page.getComponent('app-list-reminders').isPresent()).toBe(true);
   });
 
-  it('should initially list seeded reminders', () => {
+  it('should initially list seeded reminders, ordered by isCompleted (asc), id (asc)', () => {
     page.navigateTo();
-    assertRemindersListAsExpected(testData.map(rem => rem.value));
+    assertRemindersListAsExpected(testData.sort(reminderCompare));
   });
 
   it('should update reminders list when reminder is added', () => {
     page.navigateTo();
-    let reminderToAdd: string = 'My New Reminder';
-    page.submitAddReminder(reminderToAdd);
-    let updatedRemindersList = [...testData.map(rem => rem.value), reminderToAdd];
+    let reminderToAdd: Reminder = {
+        value: 'My New Reminder',
+        isCompleted: false
+      } as Reminder;
+    page.submitAddReminder(reminderToAdd.value);
+    // update testData for this and subsequent tests
+    testData = [...testData, reminderToAdd]
+    let updatedReminderValuesList = testData.sort(reminderCompare);
 
-    assertRemindersListAsExpected(updatedRemindersList);
+    assertRemindersListAsExpected(updatedReminderValuesList);
+  });
+
+  it('should update reminders list when reminder is completed', () => {
+    page.navigateTo();
+    let reminderIdToComplete: number = 2;
+    page.completeReminder(reminderIdToComplete);
+    let updatedReminder: Reminder = testData.find(x => x.id == reminderIdToComplete);
+    updatedReminder.isCompleted = true;
+    let updatedReminderValuesList = testData.sort(reminderCompare);
+
+    assertRemindersListAsExpected(updatedReminderValuesList);
   });
 
 });

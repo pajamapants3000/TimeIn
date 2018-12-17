@@ -2,19 +2,38 @@
     "Reminder": [
         {
             "id": 1,
-            "value": "Reminder One"
+            "value": "Reminder One",
+            "isCompleted": false
         },
         {
             "id": 2,
-            "value": "Reminder Two"
+            "value": "Reminder Two",
+            "isCompleted": false
         },
         {
             "id": 3,
-            "value": "Reminder Three"
+            "value": "Reminder Three",
+            "isCompleted": true
         },
         {
             "id": 4,
-            "value": "Reminder Four"
+            "value": "Reminder Four",
+            "isCompleted": false
+        },
+        {
+            "id": 5,
+            "value": "Reminder Five",
+            "isCompleted": true
+        },
+        {
+            "id": 6,
+            "value": "Reminder Six",
+            "isCompleted": false
+        },
+        {
+            "id": 7,
+            "value": "Reminder Seven",
+            "isCompleted": false
         }
     ]
 }

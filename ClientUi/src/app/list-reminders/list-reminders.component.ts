@@ -4,6 +4,7 @@ import { MatIconRegistry } from '@angular/material';
 
 import { ReminderService } from '../reminder.service';
 import { Reminder } from '../reminder';
+import { reminderCompare } from '../common';
 
 @Component({
   selector: 'app-list-reminders',
@@ -18,11 +19,17 @@ export class ListRemindersComponent implements OnInit {
 
   ngOnInit() {
     this.service.reminders.subscribe(
-      next => this.reminders$ = of(next),
+      next => {
+        this.reminders$ = of(next.sort(reminderCompare))
+      },
       err => {},
       () => {}
     );
-    this.service.updateReminders();
+    this.service.refreshRemindersList().subscribe();
+  }
+
+  public completeReminder(id: number) {
+    this.service.updateReminder({id: id, value: null, isCompleted: true}).subscribe();
   }
 }
 

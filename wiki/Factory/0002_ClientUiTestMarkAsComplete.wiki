@@ -2,16 +2,11 @@
 
     = Contents =
     - [[#User Story|User Story]]
-    - [[#Paths|Paths]]
-        - [[#Paths#Good|Good]]
-        - [[#Paths#Bad|Bad]]
-        - [[#Paths#Ugly|Ugly]]
-    - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
-        - [[#Solution Breakdown#Backend|Backend]]
-        - [[#Solution Breakdown#Frontend|Frontend]]
-        - [[#Solution Breakdown#Integration|Integration]]
-        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+        - [[#Solution Breakdown#Unit Tests|Unit Tests]]
+            - [[#Solution Breakdown#Unit Tests#ListReminders|ListReminders]]
+            - [[#Solution Breakdown#Unit Tests#Service|Service]]
+        - [[#Solution Breakdown#Changes to existing tests|Changes to existing tests]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
@@ -19,34 +14,43 @@
 
 = User Story =
 SubTask of 0001
-* Add `isCompleted` property to reminder model
-* add `isCompleted` values to test data
-* 
-= Paths =
-== Good ==
-* User clicks "complete" (or performs some appropriate action)
-    * item now shows clearly as being completed
-    * e.g. box is checked or item is crossed-out
-== Bad ==
-* User clicks "complete" and Client fails to update item
-    * Message should appear indicating a failure to update
-== Ugly ==
-* User is unable to click "complete"
-* User clicks "complete" but another instance has since deleted the data
-= Solution Proposal =
-* add column to reminder table/type - `IsComplete`
+* user should be able to click "Completed" and have the associated list item
+    reappear at/toward the bottom of the list, crossed out
+    * completed items ordered ascending by id
+= Solution Breakdown =
+* add column to reminder table/type - `isCompleted`
 * add button to reminder list items that calls `CompleteReminder`
 * add service method that calls API to set IsComplete to true on reminder
-* add API call to `CompleteReminder` that takes a reminder ID
-* display completed reminders at the bottom of the page, crossed out
-= Solution Breakdown =
-== Backend ==
-== Frontend ==
-== Integration ==
-== Coat of Paint ==
+    * makes PATCH request to update reminder, with reminder ID in URL
+== Unit Tests ==
+=== ListReminders ===
+* lists reminders in order by `isCompleted` (asc) then by `id` (asc)
+* should render updated, properly ordered list when data changes
+* should render a Completed button in each incomplete list item
+* should NOT render a Completed button on complete list items
+* should render text on completed items with reminder-list-item-complete css class
+* should render text on non-completed items with reminder-list-item-incomplete css class
+  should call service method updateReminder with patch values when Completed button clicked
+    * patch values: id and changed values, with unchanged values set to null
+=== Service ===
+* #updateReminder should call PATCH API with reminder patch values
+* #updateReminder should refresh reminders list if successful
+* #updateReminder should not update reminders list if unsuccessful
+* #updateReminder should return error response when API call is not successful
+== Changes to existing tests ==
+* ~~none necessary, since none of the tests check ordering~~
+    * perhaps they should have, since it is an expectation of the behavior
+    * scratch that, the end-to-end test does test items one by one, so ordering
+        is enforced already
+* change test data to include some completed reminders
+    * to be realistic, order by id, but have a random few with `isCompleted`
+        set to `true`
+    * make sure all tests that compare displayed list to test data sort the
+        test data before comparing
 = Additional Tasks =
 = To-Do =
 = Progress =
+* Complete!
 = Next =
 
 

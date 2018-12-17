@@ -43,6 +43,29 @@ namespace TimeIn.Api.Controllers
 
             return CreatedAtAction("Post", newReminder);
         }
+
+        // PATCH api/<controller>/<id>
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<Reminder>> Patch([FromRoute] int id, [FromBody] ReminderPatchRequest reminderPatchrequest)
+        {
+            Reminder reminderToPatch = _context.Reminder.FirstOrDefault(rem => rem.id == id);
+
+            if (reminderToPatch == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                reminderToPatch.value = (reminderPatchrequest.value ?? reminderToPatch.value);
+                reminderToPatch.isCompleted = (reminderPatchrequest.isCompleted.HasValue ?
+                    reminderPatchrequest.isCompleted.Value :
+                    reminderToPatch.isCompleted);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
     }
 }
 

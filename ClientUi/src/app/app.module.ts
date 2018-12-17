@@ -30,14 +30,8 @@ import { ReminderService } from './reminder.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    // remove this when ready to use real server
-    environment.production ?
-      [] : HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService,
-      {
-        dataEncapsulation: false
-      }
-    ),
+    // uncomment for simple, WebAPI-free hands-on testing only
+    //HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {dataEncapsulation: false}),
     MatListModule,
     MatButtonModule,
     MatInputModule,

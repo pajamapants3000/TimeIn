@@ -9,13 +9,14 @@ GO
 
 PRINT 'Begin inserting test data'
 SET IDENTITY_INSERT [Reminder] ON;
-INSERT [Reminder] (id, value)
-    SELECT id, value FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
+INSERT [Reminder] (id, value, isCompleted)
+    SELECT id, value, isCompleted FROM OPENROWSET (BULK 'G:\GoogleDrive-otripleg\Workspace\TimeIn\testData.json', SINGLE_CLOB) as j
     CROSS APPLY OPENJSON(BulkColumn, '$."Reminder"')
         WITH
         (
             id int,
-            value varchar(100)
+            value varchar(100),
+            isCompleted bit
         )
 SET IDENTITY_INSERT [Reminder] OFF;
 PRINT 'End inserting test data'

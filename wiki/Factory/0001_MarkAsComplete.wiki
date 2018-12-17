@@ -9,8 +9,10 @@
     - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
         - [[#Solution Breakdown#Backend|Backend]]
+            - [[#Solution Breakdown#Backend#Unit Tests|Unit Tests]]
         - [[#Solution Breakdown#Frontend|Frontend]]
         - [[#Solution Breakdown#Integration|Integration]]
+            - [[#Solution Breakdown#Integration#End-to-End Tests|End-to-End Tests]]
         - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
@@ -24,26 +26,61 @@ complete.
 == Good ==
 * User clicks "complete" (or performs some appropriate action)
     * item now shows clearly as being completed
-    * e.g. box is checked or item is crossed-out
 == Bad ==
 * User clicks "complete" and Client fails to update item
-    * Message should appear indicating a failure to update
 == Ugly ==
 * User is unable to click "complete"
 * User clicks "complete" but another instance has since deleted the data
 = Solution Proposal =
-* add column to reminder table/type - `IsComplete`
-* add button to reminder list items that calls `CompleteReminder`
-* add service method that calls API to set IsComplete to true on reminder
-* add API call to `CompleteReminder` that takes a reminder ID
-* display completed reminders at the bottom of the page, crossed out
+* each reminder has a button next to it that can be used to set the item to
+    completed
+* clicking the button should move the item to the bottom of the list and change
+    the appearance of the item
+    * it doesn't have to be the _very_ bottom, but all incomplete reminders
+        should come before all complete ones
+    * appearance can be experimented on - nothing specific, just whatever works
+        * all that matters is that items that are completed are clearly
+            distinguishable from incomplete items
+    * in addition, I think it'll be good to remove the completed button from
+        these items
+        * it may get added back in later as a toggle button to allow for re-
+            activating a reminder, such as if it was accidentally set to
+            completed
 = Solution Breakdown =
 == Backend ==
+* add column to reminder table/type - `isCompleted`
+* add PATCH API call to update reminder that takes a reminder ID in the route
+    * created a separate `ReminderPatchRequest` model
+    * this can be a standard approach
+        * currently a separate class file, but may want to include it in the
+            regular model file
+=== Unit Tests ===
 == Frontend ==
+* ~~[[0002_ClientUiTestMarkAsComplete]]~~
 == Integration ==
+=== End-to-End Tests ===
+* User clicks complete on a list item
+    * list is reordered so that it maintains ordering by `isCompleted`, then
+        by `id`, both ascending
+    * completed button is no longer visible
+* when page loads, list items are ordered by `isCompleted`, then by `id`
+    * both ascending orders
 == Coat of Paint ==
+* display completed reminders at the bottom of the page, crossed out (or
+    somehow distinctive)
+    * I think greyed out
+    * I like the list in the Alexa app
+        * some sort of bullet or checkbox that you click to complete
+        * doubles as list bullets
+        * aligned
+            * will be tricky - want centered but also aligned
+* for now, completion is one-way
 = Additional Tasks =
 = To-Do =
 = Progress =
+* completed front end
+* completed back end
+* e2e passing
 = Next =
+* finish up with some styling and fine-tuning the presentation
 

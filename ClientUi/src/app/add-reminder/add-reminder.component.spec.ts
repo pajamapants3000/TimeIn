@@ -16,7 +16,7 @@ describe('AddReminderComponent', () => {
   let component: AddReminderComponent;
   let fixture: ComponentFixture<AddReminderComponent>;
   let reminderServiceSpy: jasmine.SpyObj<ReminderService>;
-  const reminderToAdd: Reminder = { value: "reminderToAdd" } as Reminder;
+  const reminderToAdd: Reminder = { value: "reminderToAdd", isCompleted: false } as Reminder;
 
   beforeEach(() => {
     let spy = jasmine.createSpyObj('ReminderService',

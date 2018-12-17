@@ -2,6 +2,9 @@
 }
 .reminder-list-item {
 }
-.reminder-list-item-content {
+.reminder-list-item-complete {
+    width: 100%;
+}
+.reminder-list-item-incomplete {
     width: 100%;
 }
