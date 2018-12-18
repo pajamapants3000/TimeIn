@@ -31,5 +31,8 @@ export class ListRemindersComponent implements OnInit {
   public completeReminder(id: number) {
     this.service.updateReminder({id: id, value: null, isCompleted: true}).subscribe();
   }
+  public uncompleteReminder(id: number) {
+    this.service.updateReminder({id: id, value: null, isCompleted: false}).subscribe();
+  }
 }
 

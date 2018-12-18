@@ -1,21 +1,27 @@
 <div class="mat-list">
-    <mat-list class="reminder-list">
-        <h2 class="mat-h2">Reminders</h2>
+  <mat-list class="reminder-list">
+    <h2 class="mat-h2">Reminders</h2>
 
-        <mat-list-item class="reminder-list-item"
-            *ngFor="let reminder of reminders$ | async">
-            <div id="reminder_{{reminder.id}}"
-                 class="reminder-list-item-{{reminder.isCompleted ?
-                 'complete' :
-                 'incomplete'}}">
-                <mat-icon>alarm</mat-icon>
-                <span>{{reminder.value}}</span>
-                    <button mat-button *ngIf="!reminder.isCompleted"
-                        (click)="completeReminder(reminder.id);">
-                        Completed
-                    </button>
-            </div>
-        </mat-list-item>
-    </mat-list>
+    <mat-list-item class="reminder-list-item"
+      *ngFor="let reminder of reminders$ | async">
+      <div id="reminder_{{reminder.id}}"
+           class="reminder-list-item-{{reminder.isCompleted ?
+           'complete' :
+           'incomplete'}}">
+        <div *ngIf="reminder.isCompleted;then completedIcon else todoButton"></div>
+          <ng-template #completedIcon>
+            <button mat-button (click)="uncompleteReminder(reminder.id);">
+              <mat-icon>done</mat-icon>
+            </button>
+          </ng-template>
+          <ng-template #todoButton>
+            <button mat-button (click)="completeReminder(reminder.id);">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          </ng-template>
+          <span>{{reminder.value}}</span>
+      </div>
+    </mat-list-item>
+  </mat-list>
 </div>
 

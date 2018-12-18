@@ -9,8 +9,9 @@
     - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
         - [[#Solution Breakdown#Backend|Backend]]
-            - [[#Solution Breakdown#Backend#Unit Tests|Unit Tests]]
         - [[#Solution Breakdown#Frontend|Frontend]]
+            - [[#Solution Breakdown#Frontend#Unit Tests|Unit Tests]]
+            - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
         - [[#Solution Breakdown#Integration|Integration]]
             - [[#Solution Breakdown#Integration#End-to-End Tests|End-to-End Tests]]
         - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
@@ -46,6 +47,10 @@ complete.
         * it may get added back in later as a toggle button to allow for re-
             activating a reminder, such as if it was accidentally set to
             completed
+* UPDATE: I have decided to make the complete button also work to un-complete
+    completed items
+    * if nothing else, this will help with testing so it isn't all one way in
+        the UI
 = Solution Breakdown =
 == Backend ==
 * add column to reminder table/type - `isCompleted`
@@ -54,9 +59,22 @@ complete.
     * this can be a standard approach
         * currently a separate class file, but may want to include it in the
             regular model file
-=== Unit Tests ===
 == Frontend ==
 * ~~[[0002_ClientUiTestMarkAsComplete]]~~
+* UPDATE: adding un-complete functionality
+=== Unit Tests ===
+* New:
+    * should call PATCH API with isCompleted false when button clicked on
+        completed reminder
+* Altered:
+    * should call PATCH API with isCompleted true when button clicked on
+        incomplete reminder
+    * should render a button on all list items
+* Removed:
+    * should render a disabled button on completed list items
+=== End-to-End Tests ===
+* Clicking button on completed reminder refreshes page with reminder now
+    incomplete
 == Integration ==
 === End-to-End Tests ===
 * User clicks complete on a list item
@@ -81,6 +99,8 @@ complete.
 * completed front end
 * completed back end
 * e2e passing
+* updated with un-complete capability
+* added strikethrough to completed items
+* Complete!
 = Next =
-* finish up with some styling and fine-tuning the presentation
 

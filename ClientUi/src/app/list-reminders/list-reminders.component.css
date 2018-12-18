@@ -3,8 +3,16 @@
 .reminder-list-item {
 }
 .reminder-list-item-complete {
-    width: 100%;
+    text-decoration: line-through;
 }
 .reminder-list-item-incomplete {
-    width: 100%;
 }
+.completedIconDiv {
+    padding: 0 16px;
+    width: 32px;
+    height: 36px;
+    display: inline-block;
+}
+.completedIcon {
+}
+

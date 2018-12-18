@@ -14,7 +14,7 @@ describe('TimeIn ClientUi', () => {
 
 // Helpers
 let assertRemindersListAsExpected: (expected: Reminder[]) => void = (expected) => {
-    element.all(by.css('.reminder-list mat-icon ~ span')).then(
+    element.all(by.css('mat-list-item button ~ span')).then(
       (reminders) => {
         expect(reminders).toBeTruthy();
         expect(reminders.length).toBe(expected.length);
@@ -56,9 +56,10 @@ let assertRemindersListAsExpected: (expected: Reminder[]) => void = (expected) =
   it('should update reminders list when reminder is added', () => {
     page.navigateTo();
     let reminderToAdd: Reminder = {
-        value: 'My New Reminder',
-        isCompleted: false
-      } as Reminder;
+      id: (testData.length + 1),
+      value: 'My New Reminder',
+      isCompleted: false
+    } as Reminder;
     page.submitAddReminder(reminderToAdd.value);
     // update testData for this and subsequent tests
     testData = [...testData, reminderToAdd]
@@ -69,12 +70,31 @@ let assertRemindersListAsExpected: (expected: Reminder[]) => void = (expected) =
 
   it('should update reminders list when reminder is completed', () => {
     page.navigateTo();
-    let reminderIdToComplete: number = 2;
-    page.completeReminder(reminderIdToComplete);
-    let updatedReminder: Reminder = testData.find(x => x.id == reminderIdToComplete);
-    updatedReminder.isCompleted = true;
-    let updatedReminderValuesList = testData.sort(reminderCompare);
+    let reminderId: number = 2;
+    // confirm pre-condition - depends on properly initialized test data
+    expect(testData.find(x => x.id == reminderId).isCompleted).toBeFalsy()
 
+    page.completeReminder(reminderId);
+
+    let updatedReminder: Reminder = testData.find(x => x.id == reminderId);
+    updatedReminder.isCompleted = true;
+
+    let updatedReminderValuesList = testData.sort(reminderCompare);
+    assertRemindersListAsExpected(updatedReminderValuesList);
+  });
+
+  it('should update reminders list when reminder is un-completed', () => {
+    page.navigateTo();
+    let reminderId: number = 3;
+    // confirm pre-condition - depends on properly initialized test data
+    expect(testData.find(x => x.id == reminderId).isCompleted).toBeTruthy()
+
+    page.uncompleteReminder(reminderId);
+
+    let updatedReminder: Reminder = testData.find(x => x.id == reminderId);
+    updatedReminder.isCompleted = false;
+
+    let updatedReminderValuesList = testData.sort(reminderCompare);
     assertRemindersListAsExpected(updatedReminderValuesList);
   });
 

@@ -149,7 +149,7 @@ describe('ListRemindersComponent', () => {
       listValues)).toBeFalsy();
    });
 
-  it('should render a Completed button on each incomplete list item',
+  it('should render an button on all list items',
     () => {
     fakeService.fakeData = testData;
     component.ngOnInit();
@@ -157,28 +157,11 @@ describe('ListRemindersComponent', () => {
 
     let remindersListElement: HTMLElement = fixture.nativeElement
                                               .querySelector('mat-list')
-    let incompleteItems = remindersListElement.querySelectorAll('.reminder-list-item-incomplete');
-    expect(incompleteItems.length).toBeGreaterThan(0);
-    for (let i = 0; i < incompleteItems.length; i++) {
-      let completeButton =  incompleteItems[i].querySelector('button');
-      expect(completeButton).toBeTruthy();
-      expect(completeButton.textContent).toContain('Completed');
-    }
-  });
-
-  it('should NOT render a Completed button on complete list items',
-    () => {
-    fakeService.fakeData = testData;
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    let completeItems = remindersListElement.querySelectorAll('.reminder-list-item-complete');
-    expect(completeItems.length).toEqual(2);
-    for (let i = 0; i < completeItems.length; i++) {
-      let completeButton =  completeItems[i].querySelector('button');
-      expect(completeButton).toBeFalsy();
+    let listItems = remindersListElement.querySelectorAll('mat-list-item');
+    expect(listItems.length).toBeGreaterThan(0);
+    for (let i = 0; i < listItems.length; i++) {
+      let button = listItems[i].querySelector('button');
+      expect(button).toBeTruthy();
     }
   });
 
@@ -220,9 +203,10 @@ describe('ListRemindersComponent', () => {
     }
   });
 
-  it('should call service method updateReminder with patch values when Completed button clicked',
+  it('should call service method updateReminder with isCompleted true when button clicked on incomplete reminders',
     () => {
     const idToClick: number = 2;
+    testData[idToClick].isCompleted = false;
 
     fakeService.fakeData = testData;
     component.ngOnInit();
@@ -241,6 +225,30 @@ describe('ListRemindersComponent', () => {
     expect(fakeService.memberCalls.get("updateReminder")[0][0].id).toEqual(idToClick);
     expect(fakeService.memberCalls.get("updateReminder")[0][0].value).toBeNull();
     expect(fakeService.memberCalls.get("updateReminder")[0][0].isCompleted).toBeTruthy();
+  });
+
+  it('should call service method updateReminder with isCompleted false when button clicked on completed reminders',
+    () => {
+    const idToClick: number = 3;
+    testData[idToClick].isCompleted = true;
+
+    fakeService.fakeData = testData;
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(0);
+
+    let remindersListElement: HTMLElement = fixture.nativeElement
+                                              .querySelector('mat-list')
+    let listItems = remindersListElement.querySelector(`#reminder_${idToClick}`);
+    let completeButton = listItems.querySelector("button");
+
+    click(completeButton);
+
+    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(1);
+    expect(fakeService.memberCalls.get("updateReminder")[0][0].id).toEqual(idToClick);
+    expect(fakeService.memberCalls.get("updateReminder")[0][0].value).toBeNull();
+    expect(fakeService.memberCalls.get("updateReminder")[0][0].isCompleted).toBeFalsy();
   });
 
   /* Class-related tests */
