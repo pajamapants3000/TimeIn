@@ -1,7 +1,10 @@
 %title Factory | TimeIn | Projects
 
-* ~~[[0000_Initialize]]~~
-* ~~[[0001_MarkAsComplete]]~~
-* ~~[[0002_ClientUiTestMarkAsComplete]]~~
+* [[0006_WebApiScheduledEvents]]
+* [[0005_ClientUiScheduledEvents]]
+* [[0004_CreateScheduledEvents]]
 * ~~[[0003_InterProjectSharedTestData]]~~
+* ~~[[0002_ClientUiTestMarkAsComplete]]~~
+* ~~[[0001_MarkAsComplete]]~~
+* ~~[[0000_Initialize]]~~
 

@@ -1,26 +1,37 @@
 %title SuggestionBox | TimeIn | Projects
 
 = Contents =
-    - [[#Mark as complete|Mark as complete]]
-    - [[#Completion Details|Completion Details]]
     - [[#Create scheduled events|Create scheduled events]]
+    - [[#Partial Postback|Partial Postback]]
+    - [[#Full Keyboard Control|Full Keyboard Control]]
+    - [[#Container Deployment|Container Deployment]]
+    - [[#Continuous Integration|Continuous Integration]]
+    - [[#Completion Details|Completion Details]]
     - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
     - [[#User Profiles|User Profiles]]
     - [[#Completed Tasks|Completed Tasks]]
+        - [[#Completed Tasks#Mark as complete|Mark as complete]]
         - [[#Completed Tasks#Data Persistence|Data Persistence]]
         - [[#Completed Tasks#Initialize|Initialize]]
 
 
-= Mark as complete =
-Any reminder that has been created should have the ability to be marked as
-complete.
-- Created Task 0001
-= Completion Details =
-When completing a reminder, it should be possible to note whether the item
-was completed, disregarded, or whatever likely might have been the outcome.
 = Create scheduled events =
 In addition to simple reminders, I would like to be able to add items with
 specific date/times associated with them.
+- Created Task 0004
+= Partial Postback =
+When making a change to reminders, the full page seems to postback. It would be
+nice if this could be streamlined a bit, performing a partial postback to make
+a smoother UI experience.
+= Full Keyboard Control =
+Add keyboard shortcuts and maintain ways to perform any action with the keyboard
+= Container Deployment =
+Create containerized deployment of application.
+= Continuous Integration =
+Set up continuous integration for application.
+= Completion Details =
+When completing a reminder, it should be possible to note whether the item
+was completed, disregarded, or whatever likely might have been the outcome.
 = Schedule Nonscheduled Events =
 As someone who has a lot to do but doesn't always know when I'll have time, I
 would like to be able to record my todo list items and later schedule them when
@@ -30,6 +41,12 @@ Currently the application works for a single user. Add a login screen and store
 and access data on a per-user basis.
 
 = Completed Tasks =
+== Mark as complete ==
+Any reminder that has been created should have the ability to be marked as
+complete.
+- Created Task 0001
+- Created Task 0002
+- Completed
 == Data Persistence ==
 As a typical user, I just want to be able to close the application and still
 see my schedule the next time I open it, without having to re-enter everything.

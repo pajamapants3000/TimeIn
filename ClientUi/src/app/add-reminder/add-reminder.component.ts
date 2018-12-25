@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { ReminderService } from '../reminder.service';
-import { Reminder } from '../reminder';
+import { Reminder } from '../models/reminder';
 
 @Component({
   selector: 'app-add-reminder',
@@ -14,7 +14,10 @@ export class AddReminderComponent {
 
   addReminder(newReminder: string): void {
     if (newReminder != '') {
-      let reminderToAdd: Reminder = { value: newReminder, isCompleted: false } as Reminder;
+      let reminderToAdd: Reminder = new Reminder({
+        value: newReminder,
+        isCompleted: false
+      });
       this.service.addReminder(reminderToAdd).subscribe();
     }
   }

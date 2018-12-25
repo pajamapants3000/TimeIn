@@ -1,0 +1,33 @@
+<div class="scheduled-event-details-container">
+  <label>{{detailsId}}</label>
+  <div class="scheduled-event-details-inputs">
+    <mat-form-field class="scheduled-event-input">
+      <input type="text" id="nameInput"
+             placeholder="Name of scheduled event"
+             [(ngModel)]="model.name" />
+    </mat-form-field>
+    <mat-form-field class="scheduled-event-input">
+      <input matInput type="text" id="descriptionInput"
+             placeholder="Description of scheduled event"
+             [(ngModel)]="model.description" />
+    </mat-form-field>
+    <mat-form-field class="scheduled-event-input">
+      <input matInput type="datetime-local" id="whenInput" name="whenInput"
+             [ngModel]="model.when | date:'yyyy-MM-ddThh:mm:ss'"
+             (ngModelChange)="setModelWhen($event)">
+    </mat-form-field>
+    <mat-form-field class="scheduled-event-input">
+      <input matInput type="number" id="durationInput"
+             [(ngModel)]="model.durationInMinutes" />
+    </mat-form-field>
+    <button mat-button class="clientui-button" id="cancel"
+            (click)="closeDetails(false);">
+      Cancel
+    </button>
+    <button mat-button class="clientui-button" id="ok"
+            (click)="closeDetails(true);">
+      Ok
+    </button>
+  </div>
+</div>
+

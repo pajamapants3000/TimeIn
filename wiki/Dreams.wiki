@@ -1,10 +1,17 @@
 %title Dreams | TimeIn | Projects
 
-* Integrate with Alexa
+= Background scheduling and updating =
+* enable automatic updating of event list so that as future events become past
+    events, the list automatically re-orders itself
+* enable snackbar alerts when an event is nearing
+    * combine with notifications, alarms, etc. when implemented
+= Integrate with Alexa =
     * schedule should integrate with the schedule/calendar maintained in Alexa/
         Amazon account
     * create skills?
-* Find a way in both Angular and C# to import JSON (or xml or whatever) to
-    instantiate model instances
+= ~~Inter-Project Shared Data~~ =
+* ~~Find a way in both Angular and C# to import JSON (or xml or whatever) to~~
+    ~~instantiate model instances~~
     * generate test data that can be sourced from one location for both projects
+    * Done!
 

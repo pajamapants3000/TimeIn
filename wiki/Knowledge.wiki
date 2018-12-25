@@ -25,6 +25,11 @@
     - [[#PATCH Requests|PATCH Requests]]
         - [[#PATCH Requests#Routing Control|Routing Control]]
     - [[#CORS|CORS]]
+    - [[#TypeScript|TypeScript]]
+        - [[#TypeScript#Dates and Times|Dates and Times]]
+    - [[#Angular Testing|Angular Testing]]
+        - [[#Angular Testing#fakeAsync|fakeAsync]]
+        - [[#Angular Testing#ngModel|ngModel]]
 
 = The Problem with UWP =
 * Universal Windows applications cannot use consoles as UI
@@ -380,4 +385,18 @@ Summary:
     * lik
 * or, of course, explicitly setting the allowed methods (which I haven't gotten
     into yet, but will need to at some point)
+= TypeScript =
+== Dates and Times ==
+* use the `Date` data type for datetimes
+* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+* when using 'datetime-local' input, do _not_ include any time zone information
+    * e.g. the `Z` suffix - leave it out!
+= Angular Testing =
+== fakeAsync ==
+* doesn't seem to go through for-loops, just skips over
+== ngModel ==
+* testing two-way binding requires using `fakeAsync` with `detectChanges` and
+    `tick`
+* putting `detectChanges` in the `beforeEach` breaks it!
+* somehow this prevents the two-way binding on ngModel from working - sheesh!
 

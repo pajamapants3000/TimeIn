@@ -1,0 +1,20 @@
+<div class="scheduled-events-container">
+  <mat-sidenav-container class="mat-sidenav-container">
+    <mat-sidenav #sidenav mode="over" [(opened)]="isDetailsOpen">
+
+      <app-scheduled-event-details class="scheduled-event"
+        [detailsId]="detailsId"
+                          (closeDetailsEvent)="onCloseDetails($event)">
+      </app-scheduled-event-details>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="mat-sidenav-content">
+  <app-list-scheduled-events class="list-scheduled-events"
+    [isUpdateAvailable]="isUpdated"
+                        (openDetailsEvent)="onOpenDetails($event)">
+  </app-list-scheduled-events>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>
+

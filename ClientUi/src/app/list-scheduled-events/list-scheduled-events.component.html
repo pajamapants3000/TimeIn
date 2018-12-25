@@ -1,0 +1,26 @@
+<div class="list-scheduled-events-container">
+  <button mat-button class="clientui-button"
+          (click)="openDetails();">
+    Add new event
+  </button>
+  <mat-list>
+    <mat-list-item class="scheduled-event-list-item"
+                   *ngFor="let scheduledEvent of scheduledEvents$ | async">
+      <div id="scheduledEvent_{{scheduledEvent.id}}"
+           class="scheduled-event-list-item-{{isPast(scheduledEvent.when) ?
+           'past' :
+           'future'}}">
+        <span id="scheduledEvent_{{scheduledEvent.id}}_when">
+          {{scheduledEvent.when.valueOf() | date }}
+        </span>
+        <span id="scheduledEvent_{{scheduledEvent.id}}_name">
+          {{scheduledEvent.name}}
+        </span>
+        <button mat-button id="scheduledEvent_{{scheduledEvent.id}}_details"
+                           class="clientui-button"
+                           (click)="openDetails(scheduledEvent.id);">
+        </button>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</div>

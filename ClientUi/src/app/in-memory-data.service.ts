@@ -7,33 +7,41 @@ import { STATUS } from 'angular-in-memory-web-api/http-status-codes';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as json from '../../../testData.json';
-import { Reminder } from './reminder';
+import { Reminder } from './models/reminder';
+import { ScheduledEvent } from './models/scheduled-event';
+import { Identifiable } from './models/identifiable';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InMemoryDataService implements InMemoryDbService {
-  public useEmptyRemindersList: Boolean = false;
+  public useEmptyData: Boolean = false;
 
   createDb() {
-    const reminder: Reminder[] = this.useEmptyRemindersList ?
+    const reminder: Reminder[] = this.useEmptyData ?
       [] as Reminder[] :
       json.Reminder.map(i => {
-      return {
+      return new Reminder({
         id: i.id,
         value: i.value,
         isCompleted: i.isCompleted
-      } as Reminder;
+      });
     });
 
-    return {reminder};
+    const scheduledEvent: ScheduledEvent[] = this.useEmptyData ?
+      [] as ScheduledEvent[] :
+      json.ScheduledEvent.map(i => {
+      return new ScheduledEvent().deserialize(i)
+    });
+
+    return {reminder, scheduledEvent};
   }
 
   constructor() { }
 
-  genId(reminders: Reminder[]): number {
-    return reminders.length > 0 ?
-      Math.max(...reminders.map(reminder => reminder.id)) + 1 :
+  genId(entities: Identifiable[]): number {
+    return entities.length > 0 ?
+      Math.max(...entities.map(entity => entity.id)) + 1 :
       11;
   }
 

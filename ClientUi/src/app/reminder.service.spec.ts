@@ -4,17 +4,20 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 
 import { ReminderService } from './reminder.service';
-import { reminderUrl, doArraysContainSameValues } from './common'
-import { Reminder } from './reminder';
+import { doArraysContainSameValues, apiUrl } from './common'
+import { Reminder } from './models/reminder';
 import * as json from '../../../testData.json';
 
 describe('ReminderService', () => {
   let testData: Reminder[] = json.Reminder.map(i => {
-    return { id: i.id, value: i.value, isCompleted: i.isCompleted }
+    return new Reminder().deserialize(i);
   });
   let testData_empty: Reminder[] = [];
 
-  const testReminder: Reminder = { value: "reminder to add", isCompleted: true } as Reminder;
+  const testReminder: Reminder = new Reminder({
+    value: "reminder to add",
+    isCompleted: true
+  });
   const errorEvent: ErrorEvent = new ErrorEvent('Network error', {
     message: 'Network error'
   });
@@ -36,7 +39,7 @@ describe('ReminderService', () => {
         error => fail('expected successful call')
       );
 
-      const reqPost = httpMock.expectOne(reminderUrl);
+      const reqPost = httpMock.expectOne(`${apiUrl}/reminder`);
       expect(reqPost.request.method).toEqual("POST");
       expect(reqPost.request.body).toEqual(testReminder);
       reqPost.flush(testReminder);
@@ -49,11 +52,14 @@ describe('ReminderService', () => {
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       service.addReminder(testReminder).subscribe(
-        success => { /* Success! */ },
+        success => {
+          expect(success.value).toEqual(testReminder.value);
+          expect(success.isCompleted).toEqual(testReminder.isCompleted);
+        },
         error => fail('expected successful call')
       );
 
-      const req = httpMock.match(reminderUrl)[0];
+      const req = httpMock.match(`${apiUrl}/reminder`)[0];
       expect(req).toBeTruthy();
 
       req.flush(testReminder);
@@ -67,7 +73,7 @@ describe('ReminderService', () => {
       error => {/* expected failure */}
     );
 
-    const req = httpMock.match(reminderUrl)[0];
+    const req = httpMock.match(`${apiUrl}/reminder`)[0];
     expect(req).toBeTruthy();
 
     req.error(errorEvent);
@@ -90,14 +96,14 @@ describe('ReminderService', () => {
 
     service.addReminder(testReminder).subscribe(
       success => {
-        reqGet = httpMock.expectOne(reminderUrl);
+        reqGet = httpMock.expectOne(`${apiUrl}/reminder`);
         expect(reqGet.request.method).toEqual("GET");
         reqGet.flush([testReminder]);
       },
       error => fail('expected successful POST call')
     );
 
-    const reqPost = httpMock.expectOne(reminderUrl);
+    const reqPost = httpMock.expectOne(`${apiUrl}/reminder`);
     expect(reqPost.request.method).toEqual("POST");
 
     reqPost.flush(testReminder);
@@ -108,7 +114,7 @@ describe('ReminderService', () => {
             (httpMock: HttpTestingController, service: ReminderService) => {
       service.refreshRemindersList().subscribe();
 
-      const reqGet = httpMock.expectOne(reminderUrl);
+      const reqGet = httpMock.expectOne(`${apiUrl}/reminder`);
       expect(reqGet.request.method).toEqual("GET");
 
       reqGet.flush([testReminder]);
@@ -130,7 +136,7 @@ describe('ReminderService', () => {
 
       service.refreshRemindersList().subscribe();
 
-      const reqGet = httpMock.match(reminderUrl)[0];
+      const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData);
    }));
 
@@ -150,7 +156,7 @@ describe('ReminderService', () => {
 
       service.refreshRemindersList().subscribe();
 
-      const reqGet = httpMock.match(reminderUrl)[0];
+      const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData_empty);
    }));
 
@@ -170,7 +176,7 @@ describe('ReminderService', () => {
 
       service.refreshRemindersList().subscribe();
 
-      const reqGet = httpMock.match(reminderUrl)[0];
+      const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData);
    }));
 
@@ -190,7 +196,7 @@ describe('ReminderService', () => {
         },
         error => { /* Success! ...err, Error! */ });
 
-      const reqGet = httpMock.match(reminderUrl)[0];
+      const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.error(errorEvent);
   }));
 
@@ -207,7 +213,7 @@ describe('ReminderService', () => {
         error => {}
       );
 
-      const reqGet = httpMock.match(reminderUrl)[0];
+      const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.error(errorEvent);
    }));
 
@@ -215,14 +221,18 @@ describe('ReminderService', () => {
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
 
-      let reminderPatch: Reminder = { id: 2, value: "", isCompleted: true };
+      let reminderPatch: Reminder = new Reminder({
+        id: 2,
+        value: "",
+        isCompleted: true
+      });
 
       service.updateReminder(reminderPatch).subscribe(
         success => { /* Success! */ },
         error => fail('expected successful call')
       );
 
-      const reqPatch = httpMock.expectOne(`${reminderUrl}/${reminderPatch.id}`);
+      const reqPatch = httpMock.expectOne(`${apiUrl}/reminder/${reminderPatch.id}`);
       expect(reqPatch.request.method).toEqual("PATCH");
       expect(reqPatch.request.body).toEqual(reminderPatch);
       expect(reqPatch.request.headers).toEqual(service.patchOptions.headers);
@@ -234,9 +244,21 @@ describe('ReminderService', () => {
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       const reminderValue: string = "A reminder";
-      const reminderToPatch: Reminder = { id: 2, value: reminderValue, isCompleted: false };
-      const patchedReminder: Reminder = { id: 2, value: reminderValue, isCompleted: true };
-      let reminderPatch: Reminder = { id: 2, value: null, isCompleted: true };
+      const reminderToPatch: Reminder = new Reminder({
+        id: 2,
+        value: reminderValue,
+        isCompleted: false
+      });
+      const patchedReminder: Reminder = new Reminder({
+        id: 2,
+        value: reminderValue,
+        isCompleted: true
+      });
+      let reminderPatch: Reminder = new Reminder({
+        id: 2,
+        value: null,
+        isCompleted: true
+      });
       let reqGet: TestRequest;
 
       let reminderSubscriber: Reminder[] = [reminderToPatch];
@@ -252,14 +274,14 @@ describe('ReminderService', () => {
 
       service.updateReminder(reminderPatch).subscribe(
         success => {
-          reqGet = httpMock.expectOne(reminderUrl);
+          reqGet = httpMock.expectOne(`${apiUrl}/reminder`);
           expect(reqGet.request.method).toEqual("GET");
           reqGet.flush([patchedReminder]);
         },
         error => fail('expected successful call')
       );
 
-      const reqPatch = httpMock.expectOne(`${reminderUrl}/${reminderPatch.id}`);
+      const reqPatch = httpMock.expectOne(`${apiUrl}/reminder/${reminderPatch.id}`);
       reqPatch.flush(null);
   }));
 
@@ -267,9 +289,21 @@ describe('ReminderService', () => {
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       const reminderValue: string = "A reminder";
-      const reminderToPatch: Reminder = { id: 2, value: reminderValue, isCompleted: false };
-      const patchedReminder: Reminder = { id: 2, value: reminderValue, isCompleted: true };
-      let reminderPatch: Reminder = { id: 2, value: null, isCompleted: true };
+      const reminderToPatch: Reminder = new Reminder({
+        id: 2,
+        value: reminderValue,
+        isCompleted: false
+      });
+      const patchedReminder: Reminder = new Reminder({
+        id: 2,
+        value: reminderValue,
+        isCompleted: true
+      });
+      let reminderPatch: Reminder = new Reminder({
+        id: 2,
+        value: null,
+        isCompleted: true
+      });
       let reqGet: TestRequest;
 
       let reminderSubscriber: Reminder[] = [reminderToPatch];
@@ -280,28 +314,32 @@ describe('ReminderService', () => {
 
       service.updateReminder(reminderPatch).subscribe(
         success => {
-          reqGet = httpMock.expectOne(reminderUrl);
+          reqGet = httpMock.expectOne(`${apiUrl}/reminder`);
           expect(reqGet.request.method).toEqual("GET");
           reqGet.flush([patchedReminder]);
         },
         error => {/* Success! (I mean... Error!) */}
       );
 
-      const reqPatch = httpMock.expectOne(`${reminderUrl}/${reminderPatch.id}`);
+      const reqPatch = httpMock.expectOne(`${apiUrl}/reminder/${reminderPatch.id}`);
       reqPatch.error(errorEvent);
   }));
 
   it('#updateReminder should return error response when API call is not successful',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
-      let reminderPatch: Reminder = { id: 2, value: null, isCompleted: true };
+      let reminderPatch: Reminder = new Reminder({
+        id: 2,
+        value: null,
+        isCompleted: true
+      });
 
       service.updateReminder(reminderPatch).subscribe(
         success => fail('expected error result'),
         error => {/* Success! (I mean... Error!) */}
       );
 
-      const reqPatch = httpMock.match(`${reminderUrl}/${reminderPatch.id}`)[0];
+      const reqPatch = httpMock.match(`${apiUrl}/reminder/${reminderPatch.id}`)[0];
       reqPatch.error(errorEvent);
    }));
 });

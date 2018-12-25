@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ReminderService } from './reminder.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +7,7 @@ import { ReminderService } from './reminder.service';
 })
 export class AppComponent {
   title = 'Welcome to TimeIn!';
+  static useInMemoryWebApi: boolean = true;
 
   constructor (){ }
 }

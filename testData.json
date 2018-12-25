@@ -35,5 +35,35 @@
             "value": "Reminder Seven",
             "isCompleted": false
         }
+    ],
+    "ScheduledEvent": [
+        {
+            "id": 1,
+            "name": "Event One",
+            "description": "Description of Event One.",
+            "when": "2013-10-21T13:28:06.419Z",
+            "durationInMinutes": 120
+        },
+        {
+            "id": 2,
+            "name": "Event Two",
+            "description": "Description of Event Two.",
+            "when": "2021-12-24T08:11:43.222Z",
+            "durationInMinutes": 2400
+        },
+        {
+            "id": 3,
+            "name": "Event Three",
+            "description": "Description of Event Three.",
+            "when": "1001-08-30T01:22:26.123Z",
+            "durationInMinutes": 14
+        },
+        {
+            "id": 4,
+            "name": "Event Four",
+            "description": "Description of Event Four.",
+            "when": "2048-02-13T22:44:55.999Z",
+            "durationInMinutes": 86
+        }
     ]
 }

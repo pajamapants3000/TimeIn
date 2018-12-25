@@ -1,0 +1,311 @@
+%title ClientUi Scheduled ScheduledEvents (Task 0005) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#End-to-End Tests|End-to-End Tests]]
+        - [[#Solution Breakdown#Unit Tests|Unit Tests]]
+            - [[#Solution Breakdown#Unit Tests#App|App]]
+            - [[#Solution Breakdown#Unit Tests#ScheduledEventService|ScheduledEventService]]
+            - [[#Solution Breakdown#Unit Tests#ScheduledEvents|ScheduledEvents]]
+            - [[#Solution Breakdown#Unit Tests#ListScheduledEvents|ListScheduledEvents]]
+            - [[#Solution Breakdown#Unit Tests#ScheduledEventDetails|ScheduledEventDetails]]
+    - [[#Design Decisions|Design Decisions]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+Sub-task of 0004:
+* In addition to simple reminders, I would like to be able to add items with
+specific date/times associated with them.
+= Solution Breakdown =
+* [X] add tabs to main component
+    * [X] put current content on "To-do" tab
+    * [X] put new ScheduledEvent content on "ScheduledEvents" tab
+* [X] create ScheduledEvent model
+    * id (number)
+    * name (string)
+    * description (string)
+    * when (Date)
+    * durationInMinutes (number)
+* [X] add new ScheduledEventService with methods:
+    * [X] getScheduledEvent
+    * [X] getScheduledEventList
+    * [X] addScheduledEvent
+    * [X] updateScheduledEvent
+* [ ] add ScheduledEvent data set to in-memory-web-api?
+* [ ] add test data to testData.json for events
+* [ ] create ScheduledEvents component
+    * this contains the ScheduledEventDetails and ListScheduledEvents components
+    * displays ListScheduledEvents in the main content area
+    * displays ScheduledEventDetails in a collapsible SideNav
+    * takes output id from ListScheduledEvents when `openDetails` event triggered
+    * `openDetails` event causes opening of ScheduledEventDetails SideNav
+    * ScheduledEventDetails takes id as input from ScheduledEvents parent component
+    * ScheduledEventDetails raises `closeDetails` event with true/false to indicate
+        whether Save (true) or Cancel (false) button was clicked
+* [ ] create ScheduledEventDetails component
+    * has input property for id
+    * can use null for adding new event? or negative integer?
+        * I was having trouble with null and changed to negative integer, but I
+            think null makes the most sense
+    * has output property for when/whether save/cancel was clicked
+* [ ] create ListScheduledEvents component
+    * has input property for "events updated"
+    * has output property for id to use for opening ScheduledEventDetails
+== End-to-End Tests ==
+* Use existing tests to maintain Reminder behavior on initial load
+* Click "ScheduledEvents" tab:
+    * [ ] displays ListScheduledEvents component
+    * [ ] should display events from test data
+    * [ ] events must be listed in order
+        * future events ascending
+        * past events descending, after all future events
+    * [ ] each event has a "Details" button
+        * on the right?
+    * [ ] each event shows name, date, and time
+    * Click details on a future event
+        * [ ] opens sideNav
+        * [ ] displays ScheduledEventDetails component
+        * [ ] ScheduledEventDetails shows event data for the selected event
+        * [ ] all fields are editable
+        * change name and date to past, click "Ok"
+            * [ ] ListScheduledEvents component displays
+            * [ ] ListScheduledEvents shows modified date as a past date, properly ordered
+    * Click details on past event
+        * [ ] opens sideNav
+        * [ ] displays ScheduledEventDetails component
+        * [ ] ScheduledEventDetails shows event data for the selected event
+        * [ ] only date field is editable
+        * change name and date to future, click "Ok"
+            * [ ] closes sideNav
+            * [ ] ListScheduledEvents component displays
+            * [ ] ListScheduledEvents shows modified date as a future date, properly ordered
+            * Click modified event details
+                * [ ] opens sideNav
+                * [ ] displays ScheduledEventDetails component
+                * [ ] ScheduledEventDetails shows event data for the selected event
+                * [ ] all fields are editable
+                * Change all fields, click "Cancel"
+                    * [ ] closes sideNav
+                    * [ ] ListScheduledEvents component displays
+                    * [ ] event we cancelled editing is unchanged from before
+    * Click "New ScheduledEvent"
+        * [ ] opens sideNav
+        * [ ] ScheduledEventDetails component displays
+        * [ ] all fields are set to defaults
+            * name field is blank
+            * description field is blank
+            * datetime is set to current datetime
+        * Edit fields and click "Save"
+            * [ ] closes sideNav
+            * [ ] ListScheduledEvents component displays
+            * [ ] new event is in list, properly ordered
+            * Click details on another event
+                * [ ] opens sideNav
+                * [ ] ScheduledEventDetails component displays
+                * [ ] correct values for clicked event
+                * change datetime to the same as previously-made new event; click "Ok"
+                    * [ ] closes sideNav
+                    * [ ] ListScheduledEvents component displays
+                    * [ ] changed event and new event are ordered alphabetically
+                            by name, since they have the same `when`
+== Unit Tests ==
+=== App ===
+* [X] should display tab element
+* [X] should have two tabs: "To-do" and "ScheduledEvents"
+* [X] should render ListScheduledEvents component
+    * NOTE: cannot utilize tab behavior in unit test; no showing/hiding
+        components
+        * I would have to write a stub that accomplishes this
+=== ScheduledEventService ===
+* [X] should make GET request to "api/event" when `getScheduledEventList` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should return list of events from response to successful GET request when `getScheduledEventList` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should throw error on failed GET response when `getScheduledEventList` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should make GET request to "api/event/<id>" when `getScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should return event from response to successful GET request when `getScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should throw error on failed GET response when `getScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should make POST request to "api/event" when `addScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should return newly-created event from successful POST response when `addScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should throw error on failed POST response when `addScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should make PATCH request to "api/event/<id>" when `updateScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should return null from successful PATCH response when `updateScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should throw error on failed PATCH response when `updateScheduledEvent` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+=== ScheduledEvents ===
+Use stubs for child components that have input properties and output events
+* [X] should render ListScheduledEvents component
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should render ScheduledEventDetails component iff isDetailsOpen is true
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should call `onOpenDetails` when openDetailsEvent event is emitted
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should open side nav when `onOpenDetails` is called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should open side nav when openDetailsEvent event is emitted
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should set ScheduledEventDetails id input to undefined when ListScheduledEvents raises `openDetails` event with no id
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should set ScheduledEventDetails id input to correct id when ListScheduledEvents raises `openDetails` event
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should close side nav when `closeDetails` event is triggered
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should set ListScheduledEvents `isUpdateAvailable` input to true when `closeDetailsEvent` is non-null
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should set ListScheduledEvents `isUpdateAvailable` input to false when `closeDetailsEvent` is null
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [ ] should call `addScheduledEvent` with model data when closeDetailsEvent argument has null id
+    * [ ] test written
+    * [ ] test build and fail
+    * [ ] test pass
+* [ ] should call `updateScheduledEvent` with model data when closeDetailsEvent argument has non-null id
+    * [ ] test written
+    * [ ] test build and fail
+    * [ ] test pass
+* [ ] should call neither `addScheduledEvent` nor `updateScheduledEvent` when closeDetailsEvent is null
+    * [ ] test written
+    * [ ] test build and fail
+    * [ ] test pass
+=== ListScheduledEvents ===
+* [X] should call `getScheduledEventList` service method in ngOnInit
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should display list of events from test data, listed in order
+    * future events ascending
+    * past events descending, after all future events
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should render "Add new event" button that calls openDetails with no id
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should display future events using 'event-list-item-future' css class
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should display past events using 'event-list-item-past' css class
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should display with date, name, and details button for each event
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should raise `openDetails` event with correct id when "Details" clicked
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should call `getScheduledEventList` service method when `isUpdateAvailable` changed to true
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should set `isUpdateAvailable` to false after `getScheduledEventList` called
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should emit `openDetailsEvent` with no id when `openDetails` is called without id
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should emit `openDetailsEvent` with correct id when `openDetails` is called with id
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+=== ScheduledEventDetails ===
+* [X] should render "Ok" button
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should render "Cancel" button
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should call `getScheduledEvent` service method with correct id when id changed
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [X] should display correct event details for requested event
+    * [X] test written
+    * [X] test build and fail
+    * [X] test pass
+* [o] should emit closeDetailsEvent with model data when "Ok" clicked
+    * [X] test written
+    * [X] test build and fail
+    * [ ] test pass
+* [ ] should emit `closeDetails(false)` with null when "Cancel" clicked
+    * [ ] test written
+    * [ ] test build and fail
+    * [ ] test pass
+= Design Decisions =
+* when determining whether an event is past or future, take "right-now" events
+    (the equals condition) as past
+    * reasoning: in the unlikely scenario where a scheduled event is exactly
+        right now, it is merely an instant away from being in the past
+        * treating it as already past means that information will remain valid
+= Additional Tasks =
+= To-Do =
+= Progress =
+* app-component updated with tabs; unit tests passing
+* event-service created and unit tests passing
+* it wasn't easy, but I got the `ScheduledEvents` tests completed and passing
+= Next =
+

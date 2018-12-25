@@ -1,0 +1,63 @@
+%title Create Scheduled Events (Task 0004) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Design Decisions|Design Decisions]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+In addition to simple reminders, I would like to be able to add items with
+specific date/times associated with them.
+= Solution Proposal =
+This is going to be a rather involved task
+* Allow users to add events with:
+    * name
+    * description
+    * when (datetime)
+    * duration
+* Allow users to view events, listed in order of `when`
+* Allow users to edit events, past, present, or future
+* Clearly separate past events from future events
+= Solution Breakdown =
+* Create two tabs on main page
+    * Reminders
+        * will show the existing reminders page
+    * Events
+        * will show the new events page
+* Create new events page
+    * need `Event` model, table, context, api controller
+    * events page should list events in order of `when`
+    * events page should have an "add event" button
+        * "add event" button opens form for creating new event
+            * side pane?
+    * each listed event has a "details" button for viewing and editing details
+        * this should probably use the same "add event" form, with perhaps a few
+            small variations, such as some fields being read-only (such as name)
+            * not actually sure anything will be read-only at this point
+== Design Decisions ==
+* new `Event` model could, instead, be an expansion of the `Reminder` model
+    * perhaps `Reminder` could be divided into `ToDo` and `Event` subclasses or
+        simply have an `isScheduled` property
+    * since you'll typically be working with these separately, I will keep them
+        as separate models/tables
+== Backend ==
+[[0005_ClientUiScheduledEvents]]
+== Frontend ==
+[[0006_WebApiScheduledEvents]]
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+
+

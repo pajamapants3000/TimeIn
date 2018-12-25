@@ -4,8 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ListRemindersComponent } from './list-reminders.component';
 import { ReminderFakeService } from '../reminder.fake.service';
 import { ReminderService } from '../reminder.service';
-import { doArraysContainSameValues, reminderCompare, click } from '../common';
-import { Reminder } from '../reminder';
+import { doArraysContainSameValues, click } from '../common';
+import { Reminder } from '../models/reminder';
 import * as json from '../../../../testData.json';
 
 @Component({selector: 'mat-list', template: '<ng-content></ng-content>'})
@@ -40,7 +40,7 @@ describe('ListRemindersComponent', () => {
 
     // NOTE: data gets sorted in NgOnInit
     testData = json.Reminder.map(i => {
-      return { id: i.id, value: i.value, isCompleted: i.isCompleted }
+      return new Reminder().deserialize(i);
     });
     testData_empty = [];
 
@@ -99,7 +99,7 @@ describe('ListRemindersComponent', () => {
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].textContent)
     }
-    let reminderExpectedValues = testData.sort(reminderCompare)
+    let reminderExpectedValues = testData.sort(Reminder.compare)
                                          .map(reminder => reminder.value);
 
     expect(doArraysContainSameValues(reminderExpectedValues, listValues))
@@ -117,7 +117,7 @@ describe('ListRemindersComponent', () => {
   it('should render updated, properly ordered list when data changes',
      () => {
     let expectedResult: Reminder[] = [...testData,
-      { value:'new reminder' } as Reminder].sort(reminderCompare);
+      new Reminder({ value:'new reminder' })].sort(Reminder.compare);
 
     fakeService.fakeData = testData;
     component.ngOnInit();

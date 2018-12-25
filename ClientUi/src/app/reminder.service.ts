@@ -4,8 +4,8 @@ import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { reminderUrl, reminderTestUrl } from './common'
-import { Reminder } from './reminder';
+import { apiUrl } from './common'
+import { Reminder } from './models/reminder';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +16,6 @@ export class ReminderService {
 
   reminders: Subject<Reminder[]> = new Subject<Reminder[]>();
 
-  // use reminderTestUrl with in-memory-web-api
-  apiUrl: string = reminderUrl;
-  //apiUrl: string = reminderTestUrl;
-
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -29,7 +25,7 @@ export class ReminderService {
   };
 
   public addReminder(newReminder: Reminder): Observable<Reminder> {
-    let result: Observable<Reminder> = this.http.post<Reminder>(this.apiUrl,
+    let result: Observable<Reminder> = this.http.post<Reminder>(`${apiUrl}/reminder`,
                                                             newReminder,
                                                             this.httpOptions);
     return result.pipe(tap(
@@ -39,29 +35,29 @@ export class ReminderService {
       },
       error => {
         throw new Error(`Failed to add reminder: ${newReminder.value}. ` +
-                                `URL: ${this.apiUrl}. ` +
+                                `URL: ${apiUrl}/reminder. ` +
                                 error.message);
     }));
   }
 
   public refreshRemindersList(): Observable<Reminder[]> {
-    let result: Observable<Reminder[]> = this.http.get<Reminder[]>(this.apiUrl);
+    let result: Observable<Reminder[]> = this.http.get<Reminder[]>(`${apiUrl}/reminder`);
 
     return result.pipe(tap(
       success => {
         this.reminders.next(success);
-        console.log(`Retrieved list of ${success.length.toString()} from server.`);
+        console.log(`Retrieved list of ${success.length.toString()} reminders from server.`);
       },
       error => {
         throw new Error("Failed to retrieve reminders. " +
-                                `URL: ${this.apiUrl}. ` +
+                                `URL: ${apiUrl}/reminder. ` +
                                 error.message);
     }));
   }
 
   public updateReminder(patchReminder: Reminder): Observable<void> {
     let result: Observable<void> = this.http.patch<void>(
-                                    `${this.apiUrl}/${patchReminder.id}`,
+                                    `${apiUrl}/reminder/${patchReminder.id}`,
                                     patchReminder,
                                     this.patchOptions);
     return result.pipe(tap(
@@ -71,7 +67,7 @@ export class ReminderService {
       },
       error => {
         throw new Error(`Failed to update reminder #${patchReminder.id}. ` +
-                                `URL: ${this.apiUrl}. ` +
+                                `URL: ${apiUrl}/reminder. ` +
                                 error.message);
     }));
   }

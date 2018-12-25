@@ -1,5 +1,12 @@
 <form class="app-component-form">
   <h1 class="mat-h1">{{ title }}</h1>
-  <app-add-reminder></app-add-reminder>
-  <app-list-reminders></app-list-reminders>
+  <mat-tab-group>
+    <mat-tab label="To-do">
+      <app-add-reminder></app-add-reminder>
+      <app-list-reminders></app-list-reminders>
+    </mat-tab>
+    <mat-tab label="Scheduled Events">
+      <app-scheduled-events></app-scheduled-events>
+    </mat-tab>
+  </mat-tab-group>
 </form>

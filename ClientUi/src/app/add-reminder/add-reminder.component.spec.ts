@@ -6,7 +6,7 @@ import { AddReminderComponent } from './add-reminder.component';
 
 import { ReminderService } from '../reminder.service';
 import { doArraysContainSameValues, click } from '../common';
-import { Reminder } from '../reminder';
+import { Reminder } from '../models/reminder';
 
 @Component({selector: 'mat-form-field', template: '<ng-content></ng-content>'})
 class MatFormFieldStub {
@@ -16,7 +16,10 @@ describe('AddReminderComponent', () => {
   let component: AddReminderComponent;
   let fixture: ComponentFixture<AddReminderComponent>;
   let reminderServiceSpy: jasmine.SpyObj<ReminderService>;
-  const reminderToAdd: Reminder = { value: "reminderToAdd", isCompleted: false } as Reminder;
+  const reminderToAdd: Reminder = new Reminder({
+    value: "reminderToAdd",
+    isCompleted: false
+  });
 
   beforeEach(() => {
     let spy = jasmine.createSpyObj('ReminderService',

@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
 
-import { Reminder } from './reminder';
+import { Reminder } from './models/reminder';
 import * as json from '../../../testData.json';
 
 let testData: Reminder[] = json.Reminder.map(i => {
-  return { id: i.id, value: i.value, isCompleted: i.isCompleted }
+  return new Reminder({
+    id: i.id,
+    value: i.value,
+    isCompleted: i.isCompleted
+  });
 });
 let testData_empty: Reminder[] = [];
 
