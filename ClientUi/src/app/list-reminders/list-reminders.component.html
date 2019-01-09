@@ -10,12 +10,14 @@
            'incomplete'}}">
         <div *ngIf="reminder.isCompleted;then completedIcon else todoButton"></div>
           <ng-template #completedIcon>
-            <button mat-button (click)="uncompleteReminder(reminder.id);">
+            <button mat-button id="uncomplete_{{reminder.id}}"
+              (click)="uncompleteReminder(reminder.id);">
               <mat-icon>done</mat-icon>
             </button>
           </ng-template>
           <ng-template #todoButton>
-            <button mat-button (click)="completeReminder(reminder.id);">
+            <button mat-button id="complete_{{reminder.id}}"
+              (click)="completeReminder(reminder.id);">
               <mat-icon>check_circle</mat-icon>
             </button>
           </ng-template>

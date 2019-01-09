@@ -46,6 +46,7 @@ export class InMemoryDataService implements InMemoryDbService {
   }
 
   /*
+   * I don't know if this is reasonable to accomplish, but maybe at some point...
   protected patch(reqInfo: RequestInfo): ResponseOptions {
     const collectionName: string = reqInfo.collectionName;
     const collection: Reminder[] = reqInfo.collection;

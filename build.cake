@@ -37,6 +37,13 @@ var sqlResetTestDataFile = Directory("./") + File("reset_test_data.sql");
 // TASKS
 //////////////////////////////////////////////////////////////////////
 
+// use this when ng serve and/or ng test are already running and auto-building
+Task("Publish-ClientUi-NoBuild")
+    .Does(() =>
+{
+	CopyFiles("./ClientUi/dist/ClientUi/**/*.*", "D:/publish/TimeIn", true);
+});
+
 Task("Test-ClientUi")
     .Does(() =>
 {
@@ -134,6 +141,7 @@ Task("ResetTestData")
 {
 	var arguments = new ProcessArgumentBuilder();
 	arguments.Append("-S LILU-WINDXPRO");
+	arguments.Append("-b");
 	arguments.Append("-i " + sqlResetTestDataFile.ToString());
 	using(var process = StartAndReturnProcess("sqlcmd",
 		new ProcessSettings{
@@ -149,9 +157,13 @@ Task("ResetTestData")
 
 });
 
-Task("Test-EndToEnd")
+Task("Publish-Dev")
     .IsDependentOn("Publish-Api-Test")
     .IsDependentOn("Publish-ClientUi")
+	.Does(() => {});
+
+Task("Test-EndToEnd")
+    .IsDependentOn("Publish-Dev")
     .IsDependentOn("ResetTestData")
    .Does(() =>
 {

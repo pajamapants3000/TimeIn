@@ -2,7 +2,8 @@
     <mat-form-field class="reminder-input">
         <input matInput type="text" #newReminder placeholder="Add new reminder" />
     </mat-form-field>
-    <button mat-button (click)="addReminder(newReminder.value); newReminder.value=''">
+    <button mat-button id="addReminderButton" class="clientui-button"
+      (click)="addReminder(newReminder.value); newReminder.value=''">
         Add
     </button>
 </div>

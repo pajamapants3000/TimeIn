@@ -14,9 +14,9 @@ namespace TimeIn.Api.Controllers
     [ApiController]
     public class ReminderController : ControllerBase
     {
-        private readonly ReminderContext _context;
+        private readonly ModelContext _context;
 
-        public ReminderController(ReminderContext context)
+        public ReminderController(ModelContext context)
         {
             _context = context;
 
@@ -34,6 +34,13 @@ namespace TimeIn.Api.Controllers
             return await _context.Reminder.ToListAsync();
         }
 
+        // GET: api/<controller>/<id>
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Reminder>> Get([FromRoute]int id)
+        {
+            return await _context.Reminder.FirstOrDefaultAsync(rem => rem.id == id);
+        }
+
         // POST api/<controller>
         [HttpPost]
         public async Task<ActionResult<Reminder>> Post([FromBody]Reminder newReminder)
@@ -46,7 +53,7 @@ namespace TimeIn.Api.Controllers
 
         // PATCH api/<controller>/<id>
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult<Reminder>> Patch([FromRoute] int id, [FromBody] ReminderPatchRequest reminderPatchrequest)
+        public async Task<ActionResult<Reminder>> Patch([FromRoute] int id, [FromBody] ReminderPatchRequest reminderPatchRequest)
         {
             Reminder reminderToPatch = _context.Reminder.FirstOrDefault(rem => rem.id == id);
 
@@ -56,9 +63,9 @@ namespace TimeIn.Api.Controllers
             }
             else
             {
-                reminderToPatch.value = (reminderPatchrequest.value ?? reminderToPatch.value);
-                reminderToPatch.isCompleted = (reminderPatchrequest.isCompleted.HasValue ?
-                    reminderPatchrequest.isCompleted.Value :
+                reminderToPatch.value = (reminderPatchRequest.value ?? reminderToPatch.value);
+                reminderToPatch.isCompleted = (reminderPatchRequest.isCompleted.HasValue ?
+                    reminderPatchRequest.isCompleted.Value :
                     reminderToPatch.isCompleted);
 
                 await _context.SaveChangesAsync();

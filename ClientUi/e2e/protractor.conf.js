@@ -8,11 +8,12 @@ exports.config = {
   specs: [
     'src/app.e2e-spec.ts'
   ],
+  SELENIUM_PROMISE_MANAGER: false,
   capabilities: {
     'browserName': 'chrome'
   },
-  //baseUrl: 'http://timein.lilu-windxpro',
-  baseUrl: 'http://localhost:4200',
+  baseUrl: 'http://timein.lilu-windxpro',
+  //baseUrl: 'http://localhost:4200',
   framework: 'jasmine',
   seleniumAddress: 'http://localhost:4444/wd/hub',
   jasmineNodeOpts: {

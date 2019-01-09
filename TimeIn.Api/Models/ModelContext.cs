@@ -2,12 +2,13 @@
 
 namespace TimeIn.Api.Models
 {
-    public class ReminderContext : DbContext
+    public class ModelContext : DbContext
     {
-        public ReminderContext(DbContextOptions<ReminderContext> options)
+        public ModelContext(DbContextOptions<ModelContext> options)
             : base(options) { }
 
         public DbSet<Reminder> Reminder { get; set; }
+        public DbSet<ScheduledEvent> ScheduledEvent { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

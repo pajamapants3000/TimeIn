@@ -22,10 +22,11 @@ export class ListScheduledEventsComponent implements OnInit, OnChanges {
   constructor(private service: ScheduledEventService) { }
 
   public scheduledEvents$: Observable<ScheduledEvent[]>;
-  @Input() isUpdateAvailable: boolean;
+  @Input() updateSwitch: boolean = false;
   @Output() openDetailsEvent = new EventEmitter<number>();
 
   ngOnInit() {
+    console.log("ngOnInit called for list-scheduled-events component.");
     this.service.getScheduledEventList().subscribe(
       success => {
         this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare))
@@ -33,16 +34,19 @@ export class ListScheduledEventsComponent implements OnInit, OnChanges {
       error => { /* what to do here? */ },
       () => {} /* complete */
     );
-    this.isUpdateAvailable = false;
   }
 
   ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
-    if (this.isUpdateAvailable = true) {
-      this.service.getScheduledEventList().subscribe(
-        success => { this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare)) },
-        error => { /* what to do here? */ }
-      );
-      this.isUpdateAvailable = false;
+    console.log("ngOnChanges called for list-scheduled-events component.");
+    for (let propName in changes) {
+      switch (propName) {
+        case "updateSwitch":
+          console.log("changes to updateSwitch detected in list-scheduled-events component.");
+          this.service.getScheduledEventList().subscribe(
+            success => { this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare)) },
+            error => { /* what to do here? */ }
+          );
+        }
     }
   }
 

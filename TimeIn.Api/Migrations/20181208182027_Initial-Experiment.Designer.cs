@@ -8,7 +8,7 @@ using TimeIn.Api.Models;
 
 namespace TimeIn.Api.Migrations
 {
-    [DbContext(typeof(ReminderContext))]
+    [DbContext(typeof(ModelContext))]
     [Migration("20181208182027_Initial-Experiment")]
     partial class InitialExperiment
     {

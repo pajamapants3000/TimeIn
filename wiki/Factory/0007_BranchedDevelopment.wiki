@@ -1,0 +1,21 @@
+%title Branched Development (Task 0007) | Tasks | ProjectName
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+Keep master branch clean, but create dev branch for committing incomplete tasks.
+Dev branch merges into master when task is complete.
+= Solution Proposal =
+* get some notes and info on git branching
+* apply procedure to next task
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+

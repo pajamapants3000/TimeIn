@@ -4,13 +4,14 @@
 
       <app-scheduled-event-details class="scheduled-event"
         [detailsId]="detailsId"
+        [detailsUpdateSwitch]="detailsUpdateSwitch"
                           (closeDetailsEvent)="onCloseDetails($event)">
       </app-scheduled-event-details>
     </mat-sidenav>
 
     <mat-sidenav-content class="mat-sidenav-content">
   <app-list-scheduled-events class="list-scheduled-events"
-    [isUpdateAvailable]="isUpdated"
+    [updateSwitch]="updateSwitch"
                         (openDetailsEvent)="onOpenDetails($event)">
   </app-list-scheduled-events>
     </mat-sidenav-content>

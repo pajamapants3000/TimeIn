@@ -5,6 +5,9 @@
     - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
         - [[#Solution Breakdown#Design Decisions|Design Decisions]]
+        - [[#Solution Breakdown#End-to-End Tests|End-to-End Tests]]
+            - [[#Solution Breakdown#End-to-End Tests#Reminder|Reminder]]
+            - [[#Solution Breakdown#End-to-End Tests#ScheduledEvent|ScheduledEvent]]
         - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
         - [[#Solution Breakdown#Integration|Integration]]
@@ -49,15 +52,94 @@ This is going to be a rather involved task
         simply have an `isScheduled` property
     * since you'll typically be working with these separately, I will keep them
         as separate models/tables
+== End-to-End Tests ==
+* check off when test written
+* tests themselves will handle tracking what is working and what isn't
+=== Reminder ===
+* Use existing tests to maintain Reminder behavior on initial load
+=== ScheduledEvent ===
+* [X] Should render updated list with correct styling when new scheduled event added
+    * [X] new event is unique, future
+    * [X] new event is unique, past
+    * [X] new event has same `when` as existing, future
+    * [X] new event has same `when` as existing, past
+    * [X] new event has same `when` and duration as existing, future
+    * [X] new event has same `when` and duration as existing, past
+* [X] Should render updated list with correct ordering when new scheduled event added
+    * [X] new event is unique, future
+    * [X] new event is unique, past
+    * [X] new event has same `when` as existing, future
+    * [X] new event has same `when` as existing, past
+    * [X] new event has same `when` and duration as existing, future
+    * [X] new event has same `when` and duration as existing, past
+* [X] Should render updated list with correct information when new scheduled event added
+    * [X] new event is unique, future
+    * [X] new event is unique, past
+    * [X] new event has same `when` as existing, future
+    * [X] new event has same `when` as existing, past
+    * [X] new event has same `when` and duration as existing, future
+    * [X] new event has same `when` and duration as existing, past
+* [X] Should render list with updated info when scheduled event updated
+    * [X] event is now unique, future
+    * [X] event is now unique, past
+    * [X] event now has same `when` as existing, future
+    * [X] event now has same `when` as existing, past
+    * [X] event now has same `when` and duration as existing, future
+    * [X] event now has same `when` and duration as existing, past
+* [X] Should render list with correct ordering when scheduled event updated
+    * [X] event is now unique, future
+    * [X] event is now unique, past
+    * [X] event now has same `when` as existing, future
+    * [X] event now has same `when` as existing, past
+    * [X] event now has same `when` and duration as existing, future
+    * [X] event now has same `when` and duration as existing, past
+* [X] Should render list with correct styling when scheduled event updated
+    * [X] event is now unique, future, was past
+    * [X] event is now unique, future, was future
+    * [X] event is now unique, past, was future
+    * [X] event is now unique, past, was past
+    * [X] event now has same `when` as existing, future, was past
+    * [X] event now has same `when` as existing, future, was future
+    * [X] event now has same `when` as existing, past, was future
+    * [X] event now has same `when` as existing, past, was past
+    * [X] event now has same `when` and duration as existing, future, was past
+    * [X] event now has same `when` and duration as existing, future, was future
+    * [X] event now has same `when` and duration as existing, past, was future
+    * [X] event now has same `when` and duration as existing, past, was past
+* [X] Should show updated details for previously modified scheduled event
+* [X] Should render list with no changes when edit scheduled event canceled
+* [X] Should render persisted details when previously canceled details edit re-opened
+* [X] Should populate details with defaults when adding new event
+    * [X] after editing another previously
+    * [X] after cancelling editing another previously
+* [X] Should populate persisted details when editing existing event, after
+    * [X] having added a separate event
+    * [X] having added the same event
+* [X] Should successfully add new scheduled event
+    * [X] with date 1900-01-01T12:00:00 (lower-limit)
+    * [X] with date 2079-06-05T12:00:00 (upper-limit)
+* [X] should do nothing (not close sideNav or save) when add new scheduled event
+    * [X] with date 1899-12-31T12:00:00 (below lower-limit)
+    * [X] with date 2079-06-07T12:00:00 (above upper-limit)
+    - alternatively: have date auto-edit to limit?
 == Backend ==
-[[0005_ClientUiScheduledEvents]]
+~~[[0005_ClientUiScheduledEvents]]~~
 == Frontend ==
-[[0006_WebApiScheduledEvents]]
+~~[[0006_WebApiScheduledEvents]]~~
 == Integration ==
+* nothing special here
 == Coat of Paint ==
+* use same elements and css as reminders
 = Additional Tasks =
 = To-Do =
+* ~~write end-to-end tests~~
+* ~~change msPerDay in test range to msPerHour to avoid missing time zone~~
 = Progress =
+* Done!
+* ~~I think we're done! just have to run the full end-to-end publish.~~
+* ~~down to just two failing tests!~~
+* ~~continue working on tests until all are passing~~
+    * mostly issues with the tests, not the app, but may be some fixes and
+        improvements needed in the app as well
 = Next =
-
 

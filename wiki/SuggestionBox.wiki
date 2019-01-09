@@ -2,13 +2,17 @@
 
 = Contents =
     - [[#Create scheduled events|Create scheduled events]]
+    - [[#Branched Development|Branched Development]]
+    - [[#Prevent Duplicates|Prevent Duplicates]]
     - [[#Partial Postback|Partial Postback]]
     - [[#Full Keyboard Control|Full Keyboard Control]]
     - [[#Container Deployment|Container Deployment]]
     - [[#Continuous Integration|Continuous Integration]]
+    - [[#Logging system|Logging system]]
     - [[#Completion Details|Completion Details]]
     - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
     - [[#User Profiles|User Profiles]]
+    - [[#Only request patch when model has changes|Only request patch when model has changes]]
     - [[#Completed Tasks|Completed Tasks]]
         - [[#Completed Tasks#Mark as complete|Mark as complete]]
         - [[#Completed Tasks#Data Persistence|Data Persistence]]
@@ -19,6 +23,15 @@
 In addition to simple reminders, I would like to be able to add items with
 specific date/times associated with them.
 - Created Task 0004
+- Created Task 0005
+- Created Task 0006
+= Branched Development =
+Keep master branch clean, but create dev branch for committing incomplete tasks.
+Dev branch merges into master when task is complete.
+= Prevent Duplicates =
+Add validation that prevents:
+* adding reminders that have same name as existing incomplete reminders
+* adding scheduled events that have same `when`, duration, and name as existing
 = Partial Postback =
 When making a change to reminders, the full page seems to postback. It would be
 nice if this could be streamlined a bit, performing a partial postback to make
@@ -29,6 +42,9 @@ Add keyboard shortcuts and maintain ways to perform any action with the keyboard
 Create containerized deployment of application.
 = Continuous Integration =
 Set up continuous integration for application.
+= Logging system =
+Create logging system that logs messages at various levels of verbosity. Should
+also support logging to database, as well as to the console.
 = Completion Details =
 When completing a reminder, it should be possible to note whether the item
 was completed, disregarded, or whatever likely might have been the outcome.
@@ -39,6 +55,10 @@ I decide when I will have time for them.
 = User Profiles =
 Currently the application works for a single user. Add a login screen and store
 and access data on a per-user basis.
+= Only request patch when model has changes =
+Currently, clicking "ok" when editing scheduled event details will always send
+a PATCH request. We don't want to do this unless we actually have changes to
+apply.
 
 = Completed Tasks =
 == Mark as complete ==

@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 
 import { ScheduledEventDetailsComponent } from './scheduled-event-details.component';
 import { ScheduledEvent } from '../models/scheduled-event';
-import { click } from '../common';
+import { click, storedUtcDateToDate } from '../common';
 
 import { ScheduledEventService } from '../scheduled-event.service';
 
@@ -32,11 +32,10 @@ describe('ScheduledEventDetailsComponent', () => {
   const testDay: number = 6;
   const testHour: number = 8;
   const testMinute: number = 37;
-  const testSecond: number = 44;
   const testIsPm: boolean = false;
   const testDuration: number = 60;
   const testDateTime: Date = new Date(testYear, testMonth, testDay,
-                     testHour + (testIsPm ? 12 : 0), testMinute, testSecond);
+                     testHour + (testIsPm ? 12 : 0), testMinute);
 
   beforeEach(() => {
     let spy = jasmine.createSpyObj('ScheduledEventService',
@@ -58,9 +57,14 @@ describe('ScheduledEventDetailsComponent', () => {
       ],
     })
 
-    testData = json.ScheduledEvent.map(
-      (scheduledEvent: any) => {
-        return (new ScheduledEvent()).deserialize(scheduledEvent)
+    testData = json.ScheduledEvent.map(i => {
+      return new ScheduledEvent({
+        id: i.id,
+        description: i.description,
+        name: i.name,
+        when: storedUtcDateToDate(new Date(i.when)),
+        durationInMinutes: i.durationInMinutes
+      });
     });
     testData_empty = [];
     testEvent = new ScheduledEvent({
@@ -72,6 +76,9 @@ describe('ScheduledEventDetailsComponent', () => {
     });
 
     eventServiceSpy = TestBed.get(ScheduledEventService);
+    eventServiceSpy.addScheduledEvent.and.returnValue(of(testEvent));
+    eventServiceSpy.getScheduledEvent.and.returnValue(of(testEvent));
+    eventServiceSpy.updateScheduledEvent.and.returnValue(of());
 
     fixture = TestBed.createComponent(ScheduledEventDetailsComponent);
     component = fixture.componentInstance;
@@ -83,18 +90,18 @@ describe('ScheduledEventDetailsComponent', () => {
   it('should render "Ok" button',
      () => {
        let element = fixture.nativeElement;
-       let button = element.querySelector("#ok");
+       let button = element.querySelector("#submitScheduledEventEditButton");
        expect(button).toBeTruthy();
        expect(button.textContent).toContain("Ok");
   });
   it('should render "Cancel" button',
      () => {
        let element = fixture.nativeElement;
-       let button = element.querySelector("#cancel");
+       let button = element.querySelector("#cancelScheduledEventEditButton");
        expect(button).toBeTruthy();
        expect(button.textContent).toContain("Cancel");
   });
-  it('should call `getScheduledEvent` service method with correct id when id changed',
+  it('should call `getScheduledEvent` service method with correct id when detailsId changed',
      () => {
       eventServiceSpy.getScheduledEvent.and.returnValue(of(testEvent));
       eventServiceSpy.getScheduledEvent.calls.reset();
@@ -130,85 +137,148 @@ describe('ScheduledEventDetailsComponent', () => {
       expect(new Date(whenInput.value)).toEqual(testDateTime, "when");
       expect(new Number(durationInput.value)).toEqual(testDuration, "duration");
   }));
-  it('should emit closeDetailsEvent with model data when "Ok" clicked',
-     fakeAsync(() => {
+  it('should emit closeDetailsEvent(true) when "Ok" clicked',
+     () => {
       fixture.detectChanges();
       let debugElement = fixture.debugElement;
       let element = debugElement.nativeElement;
-      let whenInput = element.querySelector("#whenInput");
+      let okButton = element.querySelector("#submitScheduledEventEditButton");
 
-      let whenDate = new Date(testEvent.when.valueOf());
-      let whenString = `${whenDate.getFullYear()}-` +
-        `${String(whenDate.getMonth()).padStart(2, '0')}-` +
-        `${String(whenDate.getDate()).padStart(2, '0')}` +
-        `T${String(whenDate.getHours()).padStart(2, '0')}:` +
-        `${String(whenDate.getMinutes()).padStart(2, '0')}:` +
-        `${String(whenDate.getSeconds()).padStart(2, '0')}`;
-      whenString = "1989-07-08T11:37:13";
-      whenInput.value = whenString;
-      expect(whenInput.value).toEqual(whenString + "test");
-      tick();
-      expect(whenInput.value).toEqual(whenString + "test");
+      component.closeDetailsEvent.subscribe(
+        success => {
+          expect(success).toBeTruthy();
+        },
+        error => fail('closeDetailsEvent call failed')
+      );
+
+      click(okButton);
+   });
+  it('should emit `closeDetailsEvent(false)` when "Cancel" clicked',
+     () => {
       fixture.detectChanges();
-      expect(whenInput.value).toEqual(whenString + "test");
-      whenInput.dispatchEvent(new Event('input'));
-      //component.model.when = testEvent.when;
+      let debugElement = fixture.debugElement;
+      let element = debugElement.nativeElement;
+      let cancelButton = element.querySelector("#cancelScheduledEventEditButton");
 
-      expect(whenInput.value).toEqual(whenString);
-  }));
-  /*
-  it('should emit closeDetailsEvent with model data when "Ok" clicked',
-     fakeAsync(() => {
+      component.closeDetailsEvent.subscribe(
+        success => {
+          expect(success).toBeFalsy();
+        },
+        error => fail('closeDetailsEvent call failed')
+      );
+
+      click(cancelButton);
+  });
+  it('should call `addScheduledEvent` with model data when "Ok" clicked with null Id',
+     () => {
       fixture.detectChanges();
       let debugElement = fixture.debugElement;
       let element = debugElement.nativeElement;
       let nameInput = element.querySelector("#nameInput");
+      let descriptionInput = element.querySelector("#descriptionInput");
+      let whenInput = element.querySelector("#whenInput");
+      let durationInput = element.querySelector("#durationInput");
+      let okButton = element.querySelector("#submitScheduledEventEditButton");
+
+      component.detailsId = null;
+
       nameInput.value = testEvent.name;
       nameInput.dispatchEvent(new Event('input'));
-      //component.model.name = testEvent.name;
-      let descriptionInput = element.querySelector("#descriptionInput");
+
       descriptionInput.value = testEvent.description;
       descriptionInput.dispatchEvent(new Event('input'));
-      //component.model.description = testEvent.description;
 
-      let whenInput = element.querySelector("#whenInput");
       let whenDate = new Date(testEvent.when.valueOf());
       let whenString = `${whenDate.getFullYear()}-` +
-        `${String(whenDate.getMonth()).padStart(2, '0')}-` +
+        `${String(whenDate.getMonth()+1).padStart(2, '0')}-` +
         `${String(whenDate.getDate()).padStart(2, '0')}` +
         `T${String(whenDate.getHours()).padStart(2, '0')}:` +
-        `${String(whenDate.getMinutes()).padStart(2, '0')}:` +
-        `${String(whenDate.getSeconds()).padStart(2, '0')}`;
-      whenString = "1989-07-08T11:37:13";
+        `${String(whenDate.getMinutes()).padStart(2, '0')}`;
       whenInput.value = whenString;
-      fixture.detectChanges();
-      tick();
       whenInput.dispatchEvent(new Event('input'));
-      //component.model.when = testEvent.when;
 
-      let durationInput = element.querySelector("#durationInput");
       durationInput.value = testEvent.durationInMinutes;
       durationInput.dispatchEvent(new Event('input'));
-      //component.model.durationInMinutes = testEvent.durationInMinutes;
-      fixture.detectChanges();
-      tick();
 
-      let okButton = element.querySelector("#ok");
+      let beforeCallsCount: number = eventServiceSpy.addScheduledEvent.calls.count();
 
-      component.closeDetailsEvent.subscribe(
-        success => {
-          expect(success.name).toEqual(testEvent.name);
-          expect(success.description).toEqual(testEvent.description);
-          expect(new Date(whenInput.value)).toEqual(testEvent.when);
-          expect(success.when).toEqual(testEvent.when);
-          expect(success.durationInMinutes).toEqual(testEvent.durationInMinutes);
-        },
-        error => fail('closeDetailsEvent call failed')
-      );
       click(okButton);
+
+      expect(eventServiceSpy.addScheduledEvent.calls.count())
+        .toEqual(beforeCallsCount + 1);
+
+      let callArgs = eventServiceSpy.addScheduledEvent.calls.allArgs()[0][0];
+      expect(callArgs.name).toEqual(testEvent.name);
+      expect(callArgs.description).toEqual(testEvent.description);
+      expect(callArgs.when).toEqual(testEvent.when);
+      expect(callArgs.durationInMinutes).toEqual(testEvent.durationInMinutes);
+  });
+  it('should call `updateScheduledEvent` with model data when "Ok" clicked with non-null id',
+     () => {
+      let testId = 99;
       fixture.detectChanges();
-      tick();
-   }));
-   */
+      let debugElement = fixture.debugElement;
+      let element = debugElement.nativeElement;
+      let nameInput = element.querySelector("#nameInput");
+      let descriptionInput = element.querySelector("#descriptionInput");
+      let whenInput = element.querySelector("#whenInput");
+      let durationInput = element.querySelector("#durationInput");
+      let okButton = element.querySelector("#submitScheduledEventEditButton");
+
+      component.detailsId = testId;
+      component.model.id = testId;
+
+      nameInput.value = testEvent.name;
+      nameInput.dispatchEvent(new Event('input'));
+
+      descriptionInput.value = testEvent.description;
+      descriptionInput.dispatchEvent(new Event('input'));
+
+      let whenDate = new Date(testEvent.when.valueOf());
+      let whenString = `${whenDate.getFullYear()}-` +
+        `${String(whenDate.getMonth()+1).padStart(2, '0')}-` +
+        `${String(whenDate.getDate()).padStart(2, '0')}` +
+        `T${String(whenDate.getHours()).padStart(2, '0')}:` +
+        `${String(whenDate.getMinutes()).padStart(2, '0')}`;
+      whenInput.value = whenString;
+      whenInput.dispatchEvent(new Event('input'));
+
+      durationInput.value = testEvent.durationInMinutes;
+      durationInput.dispatchEvent(new Event('input'));
+
+      let beforeCallsCount: number = eventServiceSpy.updateScheduledEvent.calls.count();
+
+      click(okButton);
+
+      expect(eventServiceSpy.updateScheduledEvent.calls.count())
+        .toEqual(beforeCallsCount + 1);
+
+      let callArgs = eventServiceSpy.updateScheduledEvent.calls.allArgs()[0][0];
+      expect(callArgs.id).toEqual(testId);
+      expect(callArgs.name).toEqual(testEvent.name);
+      expect(callArgs.description).toEqual(testEvent.description);
+      expect(callArgs.when).toEqual(testEvent.when);
+      expect(callArgs.durationInMinutes).toEqual(testEvent.durationInMinutes);
+  });
+  it('should call neither `addScheduledEvent` nor `updateScheduledEvent` when "Cancel" clicked',
+     () => {
+      let testId = 99;
+      fixture.detectChanges();
+      let element = fixture.nativeElement;
+      let cancelButton = element.querySelector("#cancelScheduledEventEditButton");
+
+      component.detailsId = testId;
+      component.model.id = testId;
+
+      let beforeCallsAddCount: number = eventServiceSpy.addScheduledEvent.calls.count();
+      let beforeCallsUpdateCount: number = eventServiceSpy.updateScheduledEvent.calls.count();
+
+      click(cancelButton);
+
+      expect(eventServiceSpy.addScheduledEvent.calls.count())
+        .toEqual(beforeCallsAddCount);
+      expect(eventServiceSpy.updateScheduledEvent.calls.count())
+        .toEqual(beforeCallsUpdateCount);
+  });
 });
 

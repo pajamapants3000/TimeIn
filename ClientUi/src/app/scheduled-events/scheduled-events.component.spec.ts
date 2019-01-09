@@ -6,12 +6,13 @@ import { ScheduledEvent } from '../models/scheduled-event';
 
 @Component({selector: 'app-list-scheduled-events', template: '<ng-content></ng-content>'})
 class ListScheduledEventsStub {
-  @Input() isUpdateAvailable: boolean;
+  @Input() updateSwitch: boolean;
   @Output() openDetailsEvent = new EventEmitter<number>();
 }
 @Component({selector: 'app-scheduled-event-details', template: '<ng-content></ng-content>'})
 class ScheduledEventDetailsStub {
   @Input() detailsId: number;
+  @Input() detailsUpdateSwitch: number;
   @Output() closeDetailsEvent = new EventEmitter<boolean>();
 }
 @Component({selector: 'mat-sidenav', template:
@@ -125,7 +126,7 @@ describe('ScheduledEventsComponent', () => {
       expect(nav.opened).toBeTruthy();
       expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
   });
-  it('should set ScheduledEventDetails id input to null when ListScheduledEvents raises `openDetailsEvent` event with no id',
+  it('should set ScheduledEventDetails detailsId input to null when ListScheduledEvents raises `openDetailsEvent` event with no id',
      () => {
       const arbitraryNumber: number = 2;
       const debugElement = fixture.debugElement;
@@ -144,7 +145,7 @@ describe('ScheduledEventsComponent', () => {
 
       expect(details.detailsId).toBeNull();
   });
-  it('should set ScheduledEventDetails id input to correct id when ListScheduledEvents raises `openDetailsEvent` event',
+  it('should set ScheduledEventDetails detailsId input to correct id when ListScheduledEvents raises `openDetailsEvent` event',
      () => {
       const arbitraryNumber: number = 2;
       const debugElement = fixture.debugElement;
@@ -182,14 +183,15 @@ describe('ScheduledEventsComponent', () => {
       expect(nav.opened).toEqual(false);
       expect(element.querySelector('app-scheduled-event-details')).toBeFalsy();
   });
-  it('should set ListScheduledEvents `isUpdateAvailable` input to true when `closeDetailsEvent` is non-null',
+  it('should toggle ListScheduledEvents `updateSwitch` input when `closeDetailsEvent` is true',
      () => {
-      const isDetailsUpdated: boolean = true;
       const arbitraryBoolean: boolean = false;
       const debugElement = fixture.debugElement;
       const element = debugElement.nativeElement;
       const list = debugElement.query(By.directive(ListScheduledEventsStub))
         .componentInstance;
+      list.updateSwitch = false;
+      const initialSwitchValue: boolean = list.updateSwitch;
       const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
       list.openDetailsEvent.emit()
@@ -202,7 +204,7 @@ describe('ScheduledEventsComponent', () => {
         .componentInstance;
 
       let testEvent: ScheduledEvent = new ScheduledEvent({
-        id: 5,
+        id: 99,
         name: "test",
         description: "test",
         when: new Date(),
@@ -211,16 +213,17 @@ describe('ScheduledEventsComponent', () => {
       details.closeDetailsEvent.emit(testEvent);
       fixture.detectChanges();
 
-      expect(list.isUpdateAvailable).toEqual(isDetailsUpdated);
+      expect(list.updateSwitch).toEqual(!initialSwitchValue);
   });
-  it('should set ListScheduledEvents `isUpdateAvailable` input to false when `closeDetailsEvent` is null',
+  it('should not toggle ListScheduledEvents `updateSwitch` input when `closeDetailsEvent` is false',
      () => {
-      const isDetailsUpdated: boolean = false;
       const arbitraryBoolean: boolean = false;
       const debugElement = fixture.debugElement;
       const element = debugElement.nativeElement;
       const list = debugElement.query(By.directive(ListScheduledEventsStub))
         .componentInstance;
+      list.updateSwitch = false;
+      const initialSwitchValue: boolean = list.updateSwitch;
       const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
       list.openDetailsEvent.emit()
@@ -235,6 +238,6 @@ describe('ScheduledEventsComponent', () => {
       details.closeDetailsEvent.emit(null);
       fixture.detectChanges();
 
-      expect(list.isUpdateAvailable).toEqual(isDetailsUpdated);
+      expect(list.updateSwitch).toEqual(initialSwitchValue);
   });
 });

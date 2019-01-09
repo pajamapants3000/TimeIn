@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Welcome to TimeIn!';
-  static useInMemoryWebApi: boolean = true;
+  static useInMemoryWebApi: boolean = false;
 
   constructor (){ }
 }

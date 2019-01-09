@@ -14,6 +14,8 @@
     - [[#Random Lessons|Random Lessons]]
         - [[#Random Lessons#No Form Tags on Components!|No Form Tags on Components!]]
         - [[#Random Lessons#Ng-Content for Directive Elements that Wrap Content|Ng-Content for Directive Elements that Wrap Content]]
+        - [[#Random Lessons#protractor: No getText() on inputs|protractor: No getText() on inputs]]
+        - [[#Random Lessons#protractor: sendKeys issues|protractor: sendKeys issues]]
     - [[#Working with JSON|Working with JSON]]
         - [[#Working with JSON#... and SQL Server|... and SQL Server]]
             - [[#Working with JSON#... and SQL Server#Multiple Tables|Multiple Tables]]
@@ -30,6 +32,9 @@
     - [[#Angular Testing|Angular Testing]]
         - [[#Angular Testing#fakeAsync|fakeAsync]]
         - [[#Angular Testing#ngModel|ngModel]]
+    - [[#Git|Git]]
+        - [[#Git#Branching and Merging|Branching and Merging]]
+            - [[#Git#Branching and Merging#In Visual Studio|In Visual Studio]]
 
 = The Problem with UWP =
 * Universal Windows applications cannot use consoles as UI
@@ -195,6 +200,26 @@ class MatFormFieldStub {
 }}}
     * add this stub to the `TestBed.configureTestingModule` `declarations`
         metadata property
+== protractor: No getText() on inputs ==
+* if you want to get the value of an input control in protractor, you cannot
+    use `getText()` like you would for other controls
+    * instead, use `getAttribute("value")`
+    * this works!
+== protractor: sendKeys issues ==
+* if `sendKeys` is doing weird things in protractor, try sending a single
+    character at a time
+    * I still can't figure out why I am getting the very strange behavior of
+        sendKeys jumping to another input mid-send and putting the text in the
+        wrong input
+        * only seems to happen after updating a scheduled event, but not for
+            adding
+            * one possibility is that add starts with blank inputs and does not
+                load-in any data before I call sendKeys, whereas update loads
+                the values of the scheduled event being updated
+                * I tried waiting for the data to be loaded; still seems to
+                    randomly decide to jump inputs
+                    * some kind of race-condition must be involved due to the
+                        unpredicability and nondeterministic way it happens
 = Working with JSON =
 == ... and SQL Server ==
 * read data from json file and convert to table:
@@ -371,7 +396,7 @@ Summary:
     of the controller
     * e.g. `[Route("api/[controller]")]` in the `ValuesController` will
         process requests sent to e.g. localhost/api/values
-        * currently, I am working without the "api" previx
+        * currently, I am working without the "api" prefix
             * that is, `[Route("[controller]")]`
 * to append additional route segments for an action, apply it as an argument to
     the action attribute:
@@ -391,6 +416,8 @@ Summary:
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 * when using 'datetime-local' input, do _not_ include any time zone information
     * e.g. the `Z` suffix - leave it out!
+* Date objects use a Unix Time Stamp, an integer value that is the number of
+    milliseconds since 1 January 1970 UTC
 = Angular Testing =
 == fakeAsync ==
 * doesn't seem to go through for-loops, just skips over
@@ -399,4 +426,32 @@ Summary:
     `tick`
 * putting `detectChanges` in the `beforeEach` breaks it!
 * somehow this prevents the two-way binding on ngModel from working - sheesh!
+= Git =
+== Branching and Merging ==
+* from https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
+* Create branch:
+    * `git branch myNewBranch`
+* Checkout branch:
+    * `git checkout myNewBranch`
+* Create and checkout (shorthand):
+    * `git checkout -b myNewBranch`
+    * Equivalent to:
+        * `git branch myNewBranch`
+        * `git checkout myNewBranch`
+* use `git checkout` to switch between branches, with the main branch typically
+    called "master"
+* commit changes to your currently checked-out branch as usual
+* "Fast-Forward"
+    * happens when there is a linear progression from the main branch to the
+        branch being merged into it
+        * the main branch simply needs to have the other branch's commits
+            applied
+* to merge:
+    * check out master branch, or whichever is the destination for the merge
+        * e.g. `git checkout master`
+    * merge the desired branch into the one currently checked-out
+        * e.g. `git merge myNewBranch`
+=== In Visual Studio ===
+* should be pretty straightforward with the above information
+* I will post any notes here once I've tried it, if there are any gotchas
 

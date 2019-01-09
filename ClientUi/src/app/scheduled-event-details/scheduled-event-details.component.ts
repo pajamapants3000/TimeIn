@@ -21,29 +21,35 @@ import { ScheduledEventService } from '../scheduled-event.service';
 export class ScheduledEventDetailsComponent implements OnInit, OnChanges {
 
   @Input() detailsId: number = null;
-  @Output() closeDetailsEvent = new EventEmitter<ScheduledEvent>();
+  @Input() detailsUpdateSwitch: boolean;
+  @Output() closeDetailsEvent = new EventEmitter<Boolean>();
 
   model: ScheduledEvent;
 
-  currentDateTime: Date = new Date(Date.now());
-
   constructor(private service: ScheduledEventService) { }
 
+  ngOnInit() {
+    console.log("ngOnInit called for scheduled-event-details component.");
+    this.setModelData();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    console.log("ngOnChanges called for scheduled-event-details component.");
     if (changes["detailsId"] != undefined) {
-      if (this.detailsId != null) {
-        this.service.getScheduledEvent(this.detailsId).subscribe(
-          success => this.model = success,
-          error => {},
-          () => {}
-        )
-      }
+      console.log("changes to detailsId detected in scheduled-event-details component.");
+      this.setModelData();
+    }
+    if (changes["detailsUpdateSwitch"] != undefined) {
+      console.log("changes to UpdateSwitch detected in scheduled-event-details component.");
+      this.setModelData();
     }
   }
 
-  ngOnInit() {
+  setModelData() {
     if (this.detailsId == null) {
       this.model = new ScheduledEvent({
+        name: "",
+        description: "",
         when: new Date(Date.now()),
         durationInMinutes: 60,
       });
@@ -58,18 +64,35 @@ export class ScheduledEventDetailsComponent implements OnInit, OnChanges {
     }
   }
 
-  closeDetails(isOk: boolean) {
-    if (isOk) {
-      this.closeDetailsEvent.emit(this.model);
-    } else {
-      this.closeDetailsEvent.emit(null);
-    }
+  setModelWhen(event: Date) {
+    this.model.when = new Date(event);
   }
 
-  setModelWhen(value: Date) {
-    console.log(`old value: ${this.model.when.toString()}`);
-    console.log(`test value: ${value}`);
-    this.model.when = value;
-    console.log(`model value: ${this.model.when.toString()}`);
+  closeDetails(isOk: boolean) {
+    if (isOk) {
+      if (this.model.when < ScheduledEvent.whenLowerLimit ||
+          this.model.when > ScheduledEvent.whenUpperLimit) {
+        console.log("Failed to save scheduled event.");
+        return;
+      }
+
+      if (this.detailsId == null) {
+        this.service.addScheduledEvent(this.model)
+          .subscribe(success => {
+            this.closeDetailsEvent.emit(true);
+          }, error => {
+            console.log("Server returned error on attempt to add: " + error.toString());
+          });
+      } else {
+        this.service.updateScheduledEvent(this.model)
+          .subscribe(success => {
+            this.closeDetailsEvent.emit(true);
+          }, error => {
+            console.log("Server returned error on attempt to update: " + error.toString());
+          });
+      }
+    } else {
+      this.closeDetailsEvent.emit(false);
+    }
   }
 }

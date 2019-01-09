@@ -10,6 +10,10 @@ export const apiUrl: string =
 // this is just for manual referencing
 export const testDataJsonPath: string = '../testData.json';
 
+export const msPerMinute: number = 1000 * 60;
+export const msPerHour: number = 60 * msPerMinute;
+export const msPerDay: number = 24 * msPerHour;
+
 // write string[] comparison method
 export function doArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): boolean {
   if ((a === null) != (b === null)) {
@@ -41,5 +45,18 @@ export function click(el: DebugElement | HTMLElement,
   } else {
     el.triggerEventHandler('click', eventObj);
   }
+}
+
+export function storedUtcDateToDate(stored: Date) {
+  let initial = new Date(stored);
+  return new Date(Date.UTC(
+    initial.getFullYear(),
+    initial.getMonth(),
+    initial.getDate(),
+    initial.getHours(),
+    initial.getMinutes(),
+    initial.getSeconds(),
+    initial.getMilliseconds()
+  ));
 }
 

@@ -1,5 +1,5 @@
 <div class="list-scheduled-events-container">
-  <button mat-button class="clientui-button"
+  <button mat-button class="clientui-button" id="addScheduledEventButton"
           (click)="openDetails();">
     Add new event
   </button>
@@ -11,7 +11,10 @@
            'past' :
            'future'}}">
         <span id="scheduledEvent_{{scheduledEvent.id}}_when">
-          {{scheduledEvent.when.valueOf() | date }}
+          {{scheduledEvent.when | date:'yyyy-MM-dd hh:mm aa' }}
+        </span>
+        <span id="scheduledEvent_{{scheduledEvent.id}}_durationInMinutes">
+          {{scheduledEvent.durationInMinutes}}
         </span>
         <span id="scheduledEvent_{{scheduledEvent.id}}_name">
           {{scheduledEvent.name}}
@@ -19,6 +22,7 @@
         <button mat-button id="scheduledEvent_{{scheduledEvent.id}}_details"
                            class="clientui-button"
                            (click)="openDetails(scheduledEvent.id);">
+          Details
         </button>
       </div>
     </mat-list-item>

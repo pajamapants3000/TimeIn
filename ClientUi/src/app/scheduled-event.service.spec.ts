@@ -4,15 +4,25 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 
 import { ScheduledEventService } from './scheduled-event.service';
-import { apiUrl, doArraysContainSameValues } from './common'
+import {
+  apiUrl,
+  doArraysContainSameValues,
+  storedUtcDateToDate
+} from './common'
 import { ScheduledEvent } from './models/scheduled-event';
+import { AppComponent } from './app.component';
 import * as json from '../../../testData.json';
 
 
 describe('ScheduledEventService', () => {
-  let testData: ScheduledEvent[] = json.ScheduledEvent.map(
-    (scheduledEvent: any) => {
-      return (new ScheduledEvent()).deserialize(scheduledEvent)
+  let testData = json.ScheduledEvent.map(i => {
+    return new ScheduledEvent({
+      id: i.id,
+      description: i.description,
+      name: i.name,
+      when: storedUtcDateToDate(new Date(i.when)),
+      durationInMinutes: i.durationInMinutes
+    });
   });
   let testData_empty: ScheduledEvent[] = [];
 
@@ -187,12 +197,25 @@ describe('ScheduledEventService', () => {
         description: null,
         durationInMinutes: null,
       });
-      service.updateScheduledEvent(eventPatch).subscribe();
 
-      const reqPatch = httpMock.expectOne(`${apiUrl}/scheduledEvent/${patchId}`);
-      expect(reqPatch.request.method).toEqual("PATCH");
+      if (AppComponent.useInMemoryWebApi) {
+        const _testScheduledEvent = testScheduledEvent;
+        _testScheduledEvent.id = patchId;
+        _testScheduledEvent.name = eventPatch.name;
+        _testScheduledEvent.when = eventPatch.when;
+        service.updateScheduledEvent(_testScheduledEvent).subscribe();
 
-      reqPatch.flush(null);
+        const reqPut = httpMock.expectOne(`${apiUrl}/scheduledEvent`);
+        expect(reqPut.request.method).toEqual("PUT");
+
+        reqPut.flush(_testScheduledEvent);
+      } else {
+        service.updateScheduledEvent(eventPatch).subscribe();
+        const reqPatch = httpMock.expectOne(`${apiUrl}/scheduledEvent/${patchId}`);
+        expect(reqPatch.request.method).toEqual("PATCH");
+
+        reqPatch.flush(null);
+      }
   }));
   it('#updateScheduledEvent should return null from successful PATCH response',
      inject([HttpTestingController, ScheduledEventService],
@@ -205,16 +228,34 @@ describe('ScheduledEventService', () => {
         description: null,
         durationInMinutes: null,
       });
-      service.updateScheduledEvent(eventPatch).subscribe(
-        success => { /* Success! */ },
-        error => fail('expected successful call')
-      );
+
+      if (AppComponent.useInMemoryWebApi) {
+        const _testScheduledEvent = testScheduledEvent;
+        _testScheduledEvent.id = patchId;
+        _testScheduledEvent.name = eventPatch.name;
+        _testScheduledEvent.when = eventPatch.when;
+
+        service.updateScheduledEvent(_testScheduledEvent).subscribe(
+          success => { /* Success! */ },
+          error => fail('expected successful call')
+        );
+
+        const reqPut = httpMock.match(`${apiUrl}/scheduledEvent`)[0];
+        expect(reqPut).toBeTruthy();
+
+        reqPut.flush(null);
+      } else {
+        service.updateScheduledEvent(eventPatch).subscribe(
+          success => { expect(success).toBeNull() },
+          error => fail('expected successful call')
+        );
 
 
-      const reqPatch = httpMock.match(`${apiUrl}/scheduledEvent/${patchId}`)[0];
-      expect(reqPatch).toBeTruthy();
+        const reqPatch = httpMock.match(`${apiUrl}/scheduledEvent/${patchId}`)[0];
+        expect(reqPatch).toBeTruthy();
 
-      reqPatch.flush(null);
+        reqPatch.flush(null);
+      }
   }));
   it('#updateScheduledEvent should throw error on failed PATCH response',
      inject([HttpTestingController, ScheduledEventService],
@@ -227,14 +268,32 @@ describe('ScheduledEventService', () => {
         description: null,
         durationInMinutes: null,
       });
-    service.updateScheduledEvent(eventPatch).subscribe(
-      success => fail('expected failure'),
-      error => {/* expected failure */}
-    );
 
-    const reqPatch = httpMock.match(`${apiUrl}/scheduledEvent/${patchId}`)[0];
-    expect(reqPatch).toBeTruthy();
+      if (AppComponent.useInMemoryWebApi) {
+        const _testScheduledEvent = testScheduledEvent;
+        _testScheduledEvent.id = patchId;
+        _testScheduledEvent.name = eventPatch.name;
+        _testScheduledEvent.when = eventPatch.when;
 
-    reqPatch.error(errorScheduledEvent);
+        service.updateScheduledEvent(_testScheduledEvent).subscribe(
+          success => fail('expected failure'),
+          error => {/* expected failure */}
+        );
+
+        const reqPut = httpMock.match(`${apiUrl}/scheduledEvent`)[0];
+        expect(reqPut).toBeTruthy();
+
+        reqPut.error(errorScheduledEvent);
+      } else {
+        service.updateScheduledEvent(eventPatch).subscribe(
+          success => fail('expected failure'),
+          error => {/* expected failure */}
+        );
+
+        const reqPatch = httpMock.match(`${apiUrl}/scheduledEvent/${patchId}`)[0];
+        expect(reqPatch).toBeTruthy();
+
+        reqPatch.error(errorScheduledEvent);
+      }
   }));
 });

@@ -8,6 +8,9 @@ export class ScheduledEvent implements Deserializable, Identifiable {
   when: Date;
   durationInMinutes: number;
 
+  static whenUpperLimit: Date = new Date(2079, 5, 6);
+  static whenLowerLimit: Date = new Date(1900, 0, 1);
+
   constructor (init?:Partial<ScheduledEvent>) {
     if (init !== undefined) {
       Object.assign(this, init);
@@ -23,16 +26,24 @@ export class ScheduledEvent implements Deserializable, Identifiable {
     return this;
   }
 
-  isPast(when: Date): boolean {
-    if (when == null) return undefined;
-    return (new Date(when.valueOf())).getTime() < Date.now();
+  isPast(): boolean {
+    if (this.when == null) return undefined;
+    return (new Date(this.when.valueOf())).getTime() < Date.now();
   }
 
   static compare(a: ScheduledEvent, b: ScheduledEvent): number {
     let aDate = new Date(a.when.valueOf());
     let bDate = new Date(b.when.valueOf());
 
-    if (aDate.getTime() == bDate.getTime()) return 0;
+    if (aDate.getTime() == bDate.getTime()) {
+      if (a.durationInMinutes < b.durationInMinutes) return -1;
+      else if (a.durationInMinutes > b.durationInMinutes) return 1;
+      else {
+        if (a.name < b.name) return -1;
+        else if (a.name > b.name) return 1;
+        else return 0;
+      }
+    }
 
     if (aDate.getTime() >= Date.now() &&
        bDate.getTime() >= Date.now())

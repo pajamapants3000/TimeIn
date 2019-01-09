@@ -12,23 +12,33 @@ export class ScheduledEventsComponent {
 
   isDetailsOpen: boolean = false;
   detailsId: number = null;
-  isUpdated: boolean;
+  detailsUpdateSwitch: boolean = false;
+  updateSwitch: boolean = false;
 
   onOpenDetails(id?: number) {
     if (id == null) {
-      this.detailsId = null;
+      console.log(`Opening dialog to add new scheduled event.`);
+      if (this.detailsId == null) {
+        this.detailsUpdateSwitch = !this.detailsUpdateSwitch;
+      } else {
+        this.detailsId = null;
+      }
     } else {
-      this.detailsId = id;
+      console.log(`Opening scheduled event details for id: ${id}`);
+      if (this.detailsId == id) {
+        this.detailsUpdateSwitch = !this.detailsUpdateSwitch;
+      } else {
+        this.detailsId = id;
+      }
     }
 
     this.isDetailsOpen = true;
   }
 
-  onCloseDetails(model: ScheduledEvent) {
-    if (model == null) {
-      this.isUpdated = false;
-    } else {
-      this.isUpdated = true;
+  onCloseDetails(_isUpdated: boolean) {
+    console.log(`Closed scheduled event details.`);
+    if (_isUpdated) {
+      this.updateSwitch = !this.updateSwitch;
     }
 
     this.isDetailsOpen = false;

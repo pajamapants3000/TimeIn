@@ -4,7 +4,11 @@ import { of } from 'rxjs';
 
 import { ListScheduledEventsComponent } from './list-scheduled-events.component';
 import { ScheduledEventService } from '../scheduled-event.service';
-import { doArraysContainSameValues, click } from '../common';
+import {
+  doArraysContainSameValues,
+  click,
+  storedUtcDateToDate
+} from '../common';
 import { ScheduledEvent } from '../models/scheduled-event';
 import * as json from '../../../../testData.json';
 
@@ -36,9 +40,14 @@ describe('ListScheduledEventsComponent', () => {
       ]
     });
 
-    testData = json.ScheduledEvent.map(
-      (scheduledEvent: any) => {
-        return (new ScheduledEvent()).deserialize(scheduledEvent)
+    testData = json.ScheduledEvent.map(i => {
+      return new ScheduledEvent({
+        id: i.id,
+        description: i.description,
+        name: i.name,
+        when: storedUtcDateToDate(new Date(i.when)),
+        durationInMinutes: i.durationInMinutes
+      });
     });
     testData_empty = [];
 
@@ -54,7 +63,7 @@ describe('ListScheduledEventsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('calls `getListScheduledEvents` service method in ngOnInit',
+  it('should call `getScheduledEventList` service method in ngOnInit',
      () => {
     let callsBefore: number = eventServiceSpy.getScheduledEventList.calls.count();
     component.ngOnInit();
@@ -135,7 +144,7 @@ describe('ListScheduledEventsComponent', () => {
     }
   });
 
-  it('should render with date, name, and details button for each event',
+  it('should render with date, name, and "Details" button for each event',
      () => {
     component.ngOnInit();
     fixture.detectChanges();
@@ -155,6 +164,7 @@ describe('ListScheduledEventsComponent', () => {
       expect(eventDate).toBeTruthy();
       expect(eventName).toBeTruthy();
       expect(eventDetailsButton.tagName).toBe("button".toUpperCase());
+      expect(eventDetailsButton.textContent).toContain("Details");
     }
   });
 
@@ -175,13 +185,13 @@ describe('ListScheduledEventsComponent', () => {
     }
   }));
 
-  it('should call `getScheduledEventList` service method when `isUpdateAvailable` changed to true',
+  it('should call `getScheduledEventList` service method when `updateSwitch` changed to true',
      () => {
     component.ngOnInit();
     fixture.detectChanges();
 
     let changes: SimpleChanges = {};
-    changes["isUpdateAvailable"] = new SimpleChange(false, true, false);
+    changes["updateSwitch"] = new SimpleChange(false, true, false);
 
     eventServiceSpy.getScheduledEventList.calls.reset();
     component.ngOnChanges(changes);
@@ -189,20 +199,6 @@ describe('ListScheduledEventsComponent', () => {
     expect(eventServiceSpy.getScheduledEventList.calls.count()).toEqual(1);
   });
 
-  it('should set `isUpdateAvailable` to false after `getScheduledEventList` called',
-     () => {
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    component.isUpdateAvailable = true;
-    let changes: SimpleChanges = {};
-    changes["isUpdateAvailable"] = new SimpleChange(false, true, false);
-
-    eventServiceSpy.getScheduledEventList.calls.reset;
-    component.ngOnChanges(changes);
-
-    expect(component.isUpdateAvailable).toBeFalsy();
-  });
   it('should emit `openDetailsEvent` with no id when `openDetails` is called without id',
      (done) => {
        component.openDetailsEvent.subscribe(o => {
