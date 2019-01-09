@@ -1,5 +1,10 @@
 %title Factory | TimeIn | Projects
 
+* [[0012_CalendarDisplaySelect]]
+* [[0011_DayPlanner]]
+* [[0010_WeeklySchedule]]
+* [[0009_MonthlyCalendar]]
+* [[0008_ScheduledEventDisplays]]
 * [[0007_BranchedDevelopment]]
 * ~~[[0004_CreateScheduledEvents]]~~
 * ~~[[0006_WebApiScheduledEvents]]~~

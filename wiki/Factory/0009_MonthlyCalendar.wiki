@@ -1,0 +1,58 @@
+%title Monthly Calendar (Task 0009) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+* create a month calendar that displays scheduled events
+= Solution Proposal =
+= Solution Breakdown =
+* Once a button toggle is added (Task-0008), add an option for "Month"
+* When "Month" is selected, replace the current scheduled event list display
+    with a basic outline of a monthly calendar
+    * requirements:
+        * seven columns
+        * header row displaying days SUN - SAT
+        * six additional rows, adjustable count but for now fixed to six
+        * expands/contracts with display size
+        * each cell has a border
+* Once this basic layout is in place, add the heading and dates to show the
+    current month
+    * requirements:
+        * rows now add to necessary count to show days in month
+        * days are correctly numbered for current month
+* next, add paging that will allow the user to change to different months
+    * requirements:
+        * Month Year shown
+        * increment/decrement by month
+        * correctly changes year as increment past December or decrement past
+            January
+        * increment/decrement disabled when max/min date reached
+            * Max: May, 2079
+            * Min: Jan, 1900 
+        * calendar dates correctly update, rows adjust as needed
+* finally, insert events for the currently displayed month
+    * requirements:
+        * list scheduled events, by name, in cell for each date, below date
+            number
+== Backend ==
+* this is an all-frontend task; at least, I don't currently see any need for
+    changes to the backend.
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+

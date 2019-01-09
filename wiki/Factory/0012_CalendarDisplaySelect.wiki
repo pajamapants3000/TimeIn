@@ -1,0 +1,41 @@
+%title Calendar Display Select (Task 0012) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+Make it possible for the user to switch between available displays for the list
+of scheduled events.
+= Solution Proposal =
+* use Material's Button toggle as the user interface element
+= Solution Breakdown =
+* add button toggle
+    * I think it should go on the same row as the "Add new event" button
+    * left or right?
+        * I think the button toggle should be to the right of the add button
+* current options for button toggle should be "Full List" and "Calendar"
+    * this is, of course, only a starting point, until we have the actual
+        displays implemented
+    * for now, "Full List" will show the current display, whereas "Calendar"
+        will show a blank page (or perhaps just some simple text, like "I am
+        a calendar"
+== Backend ==
+N/A
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+

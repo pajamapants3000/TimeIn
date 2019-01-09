@@ -1,8 +1,8 @@
 %title SuggestionBox | TimeIn | Projects
 
 = Contents =
-    - [[#Create scheduled events|Create scheduled events]]
     - [[#Branched Development|Branched Development]]
+    - [[#Scheduled Events Displays/Calendars|Scheduled Events Displays/Calendars]]
     - [[#Prevent Duplicates|Prevent Duplicates]]
     - [[#Partial Postback|Partial Postback]]
     - [[#Full Keyboard Control|Full Keyboard Control]]
@@ -13,21 +13,23 @@
     - [[#Schedule Nonscheduled Events|Schedule Nonscheduled Events]]
     - [[#User Profiles|User Profiles]]
     - [[#Only request patch when model has changes|Only request patch when model has changes]]
+    - [[#User can create multiple lists|User can create multiple lists]]
     - [[#Completed Tasks|Completed Tasks]]
+        - [[#Completed Tasks#Create scheduled events|Create scheduled events]]
         - [[#Completed Tasks#Mark as complete|Mark as complete]]
         - [[#Completed Tasks#Data Persistence|Data Persistence]]
         - [[#Completed Tasks#Initialize|Initialize]]
 
 
-= Create scheduled events =
-In addition to simple reminders, I would like to be able to add items with
-specific date/times associated with them.
-- Created Task 0004
-- Created Task 0005
-- Created Task 0006
 = Branched Development =
 Keep master branch clean, but create dev branch for committing incomplete tasks.
 Dev branch merges into master when task is complete.
+- Created Task 0007
+= Scheduled Events Displays/Calendars =
+We want our scheduled events to be viewable in multiple convenient ways:
+* Monthly Calendar
+* Weekly Schedule
+* Day PLanner
 = Prevent Duplicates =
 Add validation that prevents:
 * adding reminders that have same name as existing incomplete reminders
@@ -59,8 +61,18 @@ and access data on a per-user basis.
 Currently, clicking "ok" when editing scheduled event details will always send
 a PATCH request. We don't want to do this unless we actually have changes to
 apply.
+= User can create multiple lists =
+In addition to "Reminders", which is a main list, add the ability to create
+"Lists", each working similarly to the reminders, so the user can create
+separate custom lists of associated reminders.
 
 = Completed Tasks =
+== Create scheduled events ==
+In addition to simple reminders, I would like to be able to add items with
+specific date/times associated with them.
+- Created Task 0004
+- Created Task 0005
+- Created Task 0006
 == Mark as complete ==
 Any reminder that has been created should have the ability to be marked as
 complete.

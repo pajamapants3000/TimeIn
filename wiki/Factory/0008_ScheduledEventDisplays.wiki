@@ -1,0 +1,61 @@
+%title Scheduled Event Displays/Calendars (Task 0008) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+    - [[#Design Decisions|Design Decisions]]
+
+= User Story =
+We want our scheduled events to be viewable in multiple convenient ways:
+* Monthly Calendar
+* Weekly Schedule
+* Day PLanner
+= Solution Proposal =
+* First, break each of these displays into separate tasks
+* implement each display
+* Add a feature, such as tabs, to allow easy switching between displays
+    * actually, I think Material's Button toggle is a good choice:
+        * https://material.angular.io/components/button-toggle/overview
+= Solution Breakdown =
+* create a ScheduledEventDisplay module
+* add MonthlyCalendar component to the new module
+    * all this component should do for now is display a message
+* complete task 0012_CalendarDisplaySelect
+* complete tasks 0009-0011
+== Backend ==
+* this is an all-frontend task; at least, I don't currently see any need for
+    changes to the backend.
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+* [[0009_MonthlyCalendar]]
+* [[0010_WeeklySchedule]]
+* [[0011_DayPlanner]]
+* [[0012_CalendarDisplaySelect]]
+= To-Do =
+= Progress =
+= Next =
+= Design Decisions =
+* I think this is where I will start branching off to additional modules
+    * should I have a separate module for each calendar display, or just one for
+        all of them?
+    * I think it makes sense to have a module dedicated to displaying scheduled
+        events
+        * so, my "design decision" is to create a ScheduledEventDisplay module
+            * this module will have:
+                * Components:
+                    * DayPlanner
+                    * WeeklySchedule
+                    * MonthlyCalendar
+                * I don't think there will be any need for models or services
+

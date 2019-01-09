@@ -17,6 +17,8 @@ import {
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ScheduledEventDisplayModule } from './scheduled-event-display/scheduled-event-display.module';
+
 import { AppComponent } from './app.component';
 import { AddReminderComponent } from './add-reminder/add-reminder.component';
 import { ListRemindersComponent } from './list-reminders/list-reminders.component';
@@ -52,6 +54,7 @@ import { ScheduledEventService } from './scheduled-event.service';
     MatTabsModule,
     BrowserAnimationsModule,
     FormsModule,
+    ScheduledEventDisplayModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

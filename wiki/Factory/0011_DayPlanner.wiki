@@ -1,0 +1,35 @@
+%title Day Planner (Task 0011) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Paths|Paths]]
+        - [[#Paths#Happy|Happy]]
+        - [[#Paths#Sad|Sad]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+= Paths =
+== Happy ==
+== Sad ==
+= Solution Proposal =
+= Solution Breakdown =
+== Backend ==
+* this is an all-frontend task; at least, I don't currently see any need for
+    changes to the backend.
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+
