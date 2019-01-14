@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { Component, Input, Output, EventEmitter } from '@angular/core
+import { By } from '@angular/platform-browser
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ScheduledEvent } from '../models/scheduled-event';
+import { ComponentFixture, TestBed } from '@angular/core/testing
+import { ScheduledEvent } from '../models/scheduled-event
 
 @Component({selector: 'app-list-scheduled-events', template: '<ng-content></ng-content>'})
 class ListScheduledEventsStub {
@@ -29,7 +29,7 @@ class MatSideNavContainerStub { }
 @Component({selector: 'mat-sidenav-content', template: '<ng-content></ng-content>' })
 class MatSideNavContentStub { }
 
-import { ScheduledEventsComponent } from './scheduled-events.component';
+import { ScheduledEventsComponent } from './scheduled-events.component
 
 describe('ScheduledEventsComponent', () => {
   let component: ScheduledEventsComponent;
