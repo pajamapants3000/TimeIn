@@ -34,6 +34,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="angular.json" />
     <Content Include="e2e\tsconfig.e2e.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -43,6 +45,12 @@
     <Content Include="src\app\app.component.html" />
     <Content Include="src\app\list-reminders\list-reminders.component.css" />
     <Content Include="src\app\list-reminders\list-reminders.component.html" />
+    <Content Include="src\app\list-scheduled-events\list-scheduled-events.component.css" />
+    <Content Include="src\app\list-scheduled-events\list-scheduled-events.component.html" />
+    <Content Include="src\app\scheduled-event-details\scheduled-event-details.component.css" />
+    <Content Include="src\app\scheduled-event-details\scheduled-event-details.component.html" />
+    <Content Include="src\app\scheduled-events\scheduled-events.component.css" />
+    <Content Include="src\app\scheduled-events\scheduled-events.component.html" />
     <Content Include="src\assets\.gitkeep" />
     <Content Include="src\browserslist" />
     <Content Include="src\favicon.ico" />
@@ -51,7 +59,9 @@
     <Content Include="src\tsconfig.app.json" />
     <Content Include="src\tsconfig.spec.json" />
     <Content Include="src\tslint.json" />
+    <Content Include="timein.vim" />
     <Content Include="tsconfig.json" />
+    <Content Include="tslint.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="e2e\" />
@@ -60,6 +70,10 @@
     <Folder Include="src\app\" />
     <Folder Include="src\app\add-reminder\" />
     <Folder Include="src\app\list-reminders\" />
+    <Folder Include="src\app\list-scheduled-events\" />
+    <Folder Include="src\app\models\" />
+    <Folder Include="src\app\scheduled-event-details\" />
+    <Folder Include="src\app\scheduled-events\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\environments\" />
   </ItemGroup>
@@ -71,17 +85,27 @@
     <TypeScriptCompile Include="src\app\app.component.spec.ts" />
     <TypeScriptCompile Include="src\app\app.component.ts" />
     <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\app\common.spec.ts" />
     <TypeScriptCompile Include="src\app\common.ts" />
     <TypeScriptCompile Include="src\app\in-memory-data.service.spec.ts" />
     <TypeScriptCompile Include="src\app\in-memory-data.service.ts" />
     <TypeScriptCompile Include="src\app\list-reminders\list-reminders.component.spec.ts" />
     <TypeScriptCompile Include="src\app\list-reminders\list-reminders.component.ts" />
-    <TypeScriptCompile Include="src\app\mock-reminders-empty.ts" />
-    <TypeScriptCompile Include="src\app\mock-reminders.ts" />
+    <TypeScriptCompile Include="src\app\list-scheduled-events\list-scheduled-events.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\list-scheduled-events\list-scheduled-events.component.ts" />
+    <TypeScriptCompile Include="src\app\models\deserializable.ts" />
+    <TypeScriptCompile Include="src\app\models\identifiable.ts" />
+    <TypeScriptCompile Include="src\app\models\reminder.ts" />
+    <TypeScriptCompile Include="src\app\models\scheduled-event.ts" />
     <TypeScriptCompile Include="src\app\reminder.fake.service.ts" />
     <TypeScriptCompile Include="src\app\reminder.service.spec.ts" />
     <TypeScriptCompile Include="src\app\reminder.service.ts" />
-    <TypeScriptCompile Include="src\app\reminder.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event.service.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-events\scheduled-events.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-events\scheduled-events.component.ts" />
     <TypeScriptCompile Include="src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="src\environments\environment.ts" />
     <TypeScriptCompile Include="src\main.ts" />
