@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core
-import { By } from '@angular/platform-browser
+import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { By } from '@angular/platform-browser'
 
-import { ComponentFixture, TestBed } from '@angular/core/testing
-import { ScheduledEvent } from '../models/scheduled-event
+import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { ScheduledEvent } from '../models/scheduled-event'
+import { click } from '../common';
 
 @Component({selector: 'app-list-scheduled-events', template: '<ng-content></ng-content>'})
 class ListScheduledEventsStub {
@@ -29,7 +30,7 @@ class MatSideNavContainerStub { }
 @Component({selector: 'mat-sidenav-content', template: '<ng-content></ng-content>' })
 class MatSideNavContentStub { }
 
-import { ScheduledEventsComponent } from './scheduled-events.component
+import { ScheduledEventsComponent } from './scheduled-events.component'
 
 describe('ScheduledEventsComponent', () => {
   let component: ScheduledEventsComponent;
@@ -63,7 +64,6 @@ describe('ScheduledEventsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
   it('should render ListScheduledEvents component',
      () => {
     const element = fixture.debugElement.nativeElement;
@@ -125,25 +125,6 @@ describe('ScheduledEventsComponent', () => {
 
       expect(nav.opened).toBeTruthy();
       expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
-  });
-  it('should set ScheduledEventDetails detailsId input to null when ListScheduledEvents raises `openDetailsEvent` event with no id',
-     () => {
-      const arbitraryNumber: number = 2;
-      const debugElement = fixture.debugElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
-        .componentInstance;
-
-      list.openDetailsEvent.emit(arbitraryNumber);
-      fixture.detectChanges();
-
-      const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
-        .componentInstance;
-      expect(details.detailsId).toEqual(arbitraryNumber);
-
-      list.openDetailsEvent.emit();
-      fixture.detectChanges();
-
-      expect(details.detailsId).toBeNull();
   });
   it('should set ScheduledEventDetails detailsId input to correct id when ListScheduledEvents raises `openDetailsEvent` event',
      () => {
@@ -239,5 +220,34 @@ describe('ScheduledEventsComponent', () => {
       fixture.detectChanges();
 
       expect(list.updateSwitch).toEqual(initialSwitchValue);
+  });
+  it('should render "Add new event" button',
+     () => {
+    const element = fixture.debugElement.nativeElement;
+    expect(element.querySelector('#addScheduledEventButton')).toBeTruthy();
+  });
+  it('should call onAddClicked when addScheduledEvent button clicked',
+     () => {
+    spyOn(component, "onAddClicked");
+    const element = fixture.debugElement.nativeElement;
+    const addButton = element.querySelector('#addScheduledEventButton');
+
+    click(addButton);
+
+    expect(component.onAddClicked).toHaveBeenCalled();
+  });
+  it('should set opened property of side nav to true when onAddClicked called',
+     () => {
+      const debugElement = fixture.debugElement;
+      const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
+
+      component.onAddClicked();
+      fixture.detectChanges();
+
+      const element = fixture.nativeElement;
+      const details = element.querySelector("app-scheduled-event-details");
+
+      expect(nav.opened).toBeTruthy();
+      expect(details).toBeTruthy();
   });
 });

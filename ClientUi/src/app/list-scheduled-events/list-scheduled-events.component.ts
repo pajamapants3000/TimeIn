@@ -50,8 +50,8 @@ export class ListScheduledEventsComponent implements OnInit, OnChanges {
     }
   }
 
-  public openDetails(id?: number): void {
-    this.openDetailsEvent.emit(id == null ? null : id);
+  public openDetails(id: number): void {
+    this.openDetailsEvent.emit(id);
   }
 
   public isPast(when: Date): boolean {

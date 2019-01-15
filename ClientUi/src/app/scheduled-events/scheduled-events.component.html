@@ -1,4 +1,10 @@
 <div class="scheduled-events-container">
+  <div class="scheduled-events-toolbar">
+    <button mat-button class="clientui-button" id="addScheduledEventButton"
+            (click)="onAddClicked();">
+      Add new event
+    </button>
+  </div>
   <mat-sidenav-container class="mat-sidenav-container">
     <mat-sidenav #sidenav mode="over" [(opened)]="isDetailsOpen">
 

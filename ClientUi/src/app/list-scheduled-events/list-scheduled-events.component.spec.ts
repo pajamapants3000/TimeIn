@@ -62,7 +62,6 @@ describe('ListScheduledEventsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
   it('should call `getScheduledEventList` service method in ngOnInit',
      () => {
     let callsBefore: number = eventServiceSpy.getScheduledEventList.calls.count();
@@ -71,7 +70,6 @@ describe('ListScheduledEventsComponent', () => {
     expect(eventServiceSpy.getScheduledEventList)
       .toHaveBeenCalledTimes(callsBefore + 1);
   });
-
   it('should display list of scheduled events from test data, listed in order',
      () => {
     component.ngOnInit();
@@ -91,21 +89,6 @@ describe('ListScheduledEventsComponent', () => {
     expect(doArraysContainSameValues(eventExpectedIds, listValues))
       .toBeTruthy();
   });
-
-  it('should render "Add new event" button that calls openDetails with no argument',
-     async(() => {
-    component.ngOnInit();
-    fixture.detectChanges();
-    spyOn(component, 'openDetails');
-
-    // first button on the screen will be the add button
-    let button: HTMLElement = fixture.nativeElement.querySelector('button')
-    button.click();
-    fixture.whenStable().then(() => {
-      expect(component.openDetails).toHaveBeenCalledWith();
-    });
-  }));
-
   it('should render future events using scheduled-event-list-item-future css class',
      () => {
     component.ngOnInit();
@@ -124,7 +107,6 @@ describe('ListScheduledEventsComponent', () => {
       expect(completedItem.className).toEqual(expectedCssClassName);
     }
   });
-
   it('should render past events using scheduled-event-list-item-past css class',
      () => {
     component.ngOnInit();
@@ -143,7 +125,6 @@ describe('ListScheduledEventsComponent', () => {
       expect(completedItem.className).toEqual(expectedCssClassName);
     }
   });
-
   it('should render with date, name, and "Details" button for each event',
      () => {
     component.ngOnInit();
@@ -167,7 +148,6 @@ describe('ListScheduledEventsComponent', () => {
       expect(eventDetailsButton.textContent).toContain("Details");
     }
   });
-
   it('should call openDetails with correct id when "Details" clicked',
      async(() => {
     component.ngOnInit();
@@ -184,7 +164,6 @@ describe('ListScheduledEventsComponent', () => {
       });
     }
   }));
-
   it('should call `getScheduledEventList` service method when `updateSwitch` changed to true',
      () => {
     component.ngOnInit();
@@ -197,15 +176,6 @@ describe('ListScheduledEventsComponent', () => {
     component.ngOnChanges(changes);
 
     expect(eventServiceSpy.getScheduledEventList.calls.count()).toEqual(1);
-  });
-
-  it('should emit `openDetailsEvent` with no id when `openDetails` is called without id',
-     (done) => {
-       component.openDetailsEvent.subscribe(o => {
-         expect(o).toBeNull()
-         done();
-       });
-       component.openDetails();
   });
   it('should emit `openDetailsEvent` with correct id when `openDetails` is called with id',
      (done) => {

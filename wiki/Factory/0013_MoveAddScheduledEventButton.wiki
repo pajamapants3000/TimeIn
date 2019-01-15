@@ -4,10 +4,18 @@
     - [[#User Story|User Story]]
     - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
-        - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
-        - [[#Solution Breakdown#Integration|Integration]]
-        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+            - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
+                - [[#Solution Breakdown#Frontend#End-to-End Tests#Updates|Updates]]
+                - [[#Solution Breakdown#Frontend#End-to-End Tests#New|New]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventsComponent|ScheduledEventsComponent]]
+                - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests|Tests]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#Updates|Updates]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#New|New]]
+            - [[#Solution Breakdown#Frontend#ListScheduledEventsComponent|ListScheduledEventsComponent]]
+                - [[#Solution Breakdown#Frontend#ListScheduledEventsComponent#Tests|Tests]]
+                    - [[#Solution Breakdown#Frontend#ListScheduledEventsComponent#Tests#Updates|Updates]]
+                    - [[#Solution Breakdown#Frontend#ListScheduledEventsComponent#Tests#New|New]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
@@ -19,10 +27,29 @@ ScheduledEventsComponent
 * Behavior should be unchanged
 = Solution Proposal =
 = Solution Breakdown =
-== Backend ==
 == Frontend ==
-== Integration ==
-== Coat of Paint ==
+=== End-to-End Tests ===
+==== Updates ====
+==== New ====
+* all behavior should be unchanged
+=== ScheduledEventsComponent ===
+==== Tests ====
+===== Updates =====
+* should set ScheduledEventDetails detailsId input to null when ListScheduledEvents raises `openDetailsEvent` event with no id
+    * delete
+===== New =====
+* should render "Add new event" button
+* should call onAddClicked when addScheduledEvent button clicked
+* should set isOpen property of side nav to true when onAddClicked called
+=== ListScheduledEventsComponent ===
+==== Tests ====
+===== Updates =====
+* should render "Add new event" button that calls openDetails with no argument
+    * delete
+* should emit `openDetailsEvent` with no id when `openDetails` is called without id
+    * delete
+===== New =====
+* none
 = Additional Tasks =
 = To-Do =
 = Progress =
