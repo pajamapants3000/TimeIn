@@ -46,10 +46,10 @@ of scheduled events.
     * I think it should go on the same row as the "Add new event" button
     * left or right?
         * I think the button toggle should be to the right of the add button
-* current options for button toggle should be "Full List" and "Calendar"
+* current options for button toggle should be "List" and "Monthly"
     * this is, of course, only a starting point, until we have the actual
         displays implemented
-    * for now, "Full List" will show the current display, whereas "Calendar"
+    * for now, "List" will show the current display, whereas "Monthly"
         will show a blank page (or perhaps just some simple text, like "I am
         a calendar"
 == Backend ==
@@ -58,9 +58,11 @@ N/A
 * [ ] Need to move "Add new event" button from ListScheduledEventsComponent to
     ScheduledEventsComponent
     * probably should have been here in the first place
-* [ ] Place button toggle in same row as add button, to the right
+    * Task 13
 * [ ] move ListScheduledEventsComponent to ScheduledEventsDisplayModule\
     ListComponent
+    * Task 14
+* [ ] Place button toggle in same row as add button, to the right
 * [ ] Ensure button toggles between showing ListComponent and
     MonthlyCalendarComponent in the ScheduledEventsDisplayModule
 === End-to-End Tests ===
@@ -222,6 +224,9 @@ I think the best way to accomplish this is via a practice site...
 == Integration ==
 == Coat of Paint ==
 = Additional Tasks =
+* [[0013_MoveAddScheduledEventButton]]
+* [[0014_MoveListScheduledEvents]]
+* [[0015_ScheduledEventDisplayToggle]]
 = To-Do =
 * NOTE: the ScheduledEventsComponent tests import the full button toggle module
     * this isn't good practice, but I'm not sure writing an effective fake

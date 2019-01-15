@@ -1,0 +1,34 @@
+%title Scheduled Event Display Toggle (Task 0015) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+* Add a button toggle to ScheduledEventsComponent that tells the
+ScheduledEventDisplayModule which display to use to display the events
+* Add a trivial second display kind - MonthlyCalendarComponent - for testing and
+    demonstrating the ability of the button toggle
+    * this component will be built upon in a later task
+= Solution Proposal =
+= Solution Breakdown =
+== Backend ==
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+
+
+

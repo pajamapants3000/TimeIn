@@ -1,0 +1,30 @@
+%title Move 'Add Scheduled Event' Button (Task 0013) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+* Move the "Add new event" button from ListScheduledEventsComponent to
+ScheduledEventsComponent
+* Behavior should be unchanged
+= Solution Proposal =
+= Solution Breakdown =
+== Backend ==
+== Frontend ==
+== Integration ==
+== Coat of Paint ==
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+

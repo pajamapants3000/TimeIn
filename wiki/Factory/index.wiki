@@ -1,5 +1,8 @@
 %title Factory | TimeIn | Projects
 
+* [[0015_ScheduledEventDisplayToggle]]
+* [[0014_MoveListScheduledEvents]]
+* [[0013_MoveAddScheduledEventButton]]
 * [[0012_CalendarDisplaySelect]]
 * [[0011_DayPlanner]]
 * [[0010_WeeklySchedule]]
