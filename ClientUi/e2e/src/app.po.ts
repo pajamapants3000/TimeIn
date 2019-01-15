@@ -357,6 +357,12 @@ export class AppPage {
   }
 
   async insertScheduledEventDetails(dataToInput: ScheduledEvent): Promise<void> {
+    let EC = protractor.ExpectedConditions;
+    let isDetailsOpen = EC.presenceOf(this.scheduledEventNameInput);
+    await browser.wait(isDetailsOpen,
+                       3000,
+                       "Details pane should open.");
+
     await this.scheduledEventNameInput.clear();
     for (let i = 0; i < dataToInput.name.length; i++) {
       await this.scheduledEventNameInput.sendKeys(dataToInput.name[i]);
