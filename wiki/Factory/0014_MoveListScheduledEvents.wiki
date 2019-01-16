@@ -2,30 +2,49 @@
 
     = Contents =
     - [[#User Story|User Story]]
-    - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
-        - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
-        - [[#Solution Breakdown#Integration|Integration]]
-        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+            - [[#Solution Breakdown#Frontend#ListComponent|ListComponent]]
+                - [[#Solution Breakdown#Frontend#ListComponent#Tests|Tests]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventsComponent|ScheduledEventsComponent]]
+                - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests|Tests]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#Updates|Updates]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#New|New]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
     - [[#Next|Next]]
 
 = User Story =
-Move ListScheduledEventsComponent from the root module into a new feature
+* Move ListScheduledEventsComponent from the root module into a new feature
 module - ScheduledEventDisplayModule
-Behavior should be unchanged
-= Solution Proposal =
+* Behavior should be unchanged
 = Solution Breakdown =
-== Backend ==
+* [X] Create ScheduledEventDisplayModule
+* [ ] Create ListComponent in ScheduledEventDisplayModule
+* [ ] Create IntracomService in ScheduledEventDisplayModule
 == Frontend ==
-== Integration ==
-== Coat of Paint ==
+=== ListComponent ===
+==== Tests ====
+* [X] should create
+* [X] should display list of scheduled events from test data, listed in order',
+* [X] should render future events using scheduled-event-list-item-future css class',
+* [X] should render past events using scheduled-event-list-item-past css class',
+* [X] should render with date, name, and "Details" button for each event',
+* [X] should call onIdSelected on intracom-service with correct id when "Details" clicked',
+* [X] should update list when scheduledEvents subject receives new list
+* [X] should unsubscribe from scheduledEvents subscription in ngOnDestroy
+=== ScheduledEventsComponent ===
+* this component will now handle calls to the service to obtain scheduled events
+    to be listed
+==== Tests ====
+===== Updates =====
+===== New =====
 = Additional Tasks =
 = To-Do =
 = Progress =
+* ListComponent written and passing all tests
 = Next =
+* implement updates to ScheduledEventsComponent
 
 

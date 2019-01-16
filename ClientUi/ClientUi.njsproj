@@ -49,6 +49,8 @@
     <Content Include="src\app\list-scheduled-events\list-scheduled-events.component.html" />
     <Content Include="src\app\scheduled-event-details\scheduled-event-details.component.css" />
     <Content Include="src\app\scheduled-event-details\scheduled-event-details.component.html" />
+    <Content Include="src\app\scheduled-event-display\list\list.component.css" />
+    <Content Include="src\app\scheduled-event-display\list\list.component.html" />
     <Content Include="src\app\scheduled-events\scheduled-events.component.css" />
     <Content Include="src\app\scheduled-events\scheduled-events.component.html" />
     <Content Include="src\assets\.gitkeep" />
@@ -73,6 +75,8 @@
     <Folder Include="src\app\list-scheduled-events\" />
     <Folder Include="src\app\models\" />
     <Folder Include="src\app\scheduled-event-details\" />
+    <Folder Include="src\app\scheduled-event-display\" />
+    <Folder Include="src\app\scheduled-event-display\list\" />
     <Folder Include="src\app\scheduled-events\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\environments\" />
@@ -102,6 +106,11 @@
     <TypeScriptCompile Include="src\app\reminder.service.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.spec.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\intracom.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\intracom.service.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\list\list.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\list\list.component.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\scheduled-event-display.module.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event.service.spec.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event.service.ts" />
     <TypeScriptCompile Include="src\app\scheduled-events\scheduled-events.component.spec.ts" />

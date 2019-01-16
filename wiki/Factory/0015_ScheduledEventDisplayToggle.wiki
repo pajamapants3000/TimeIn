@@ -16,6 +16,7 @@
 = User Story =
 * Add a button toggle to ScheduledEventsComponent that tells the
 ScheduledEventDisplayModule which display to use to display the events
+* Expand ScheduledEventDisplayModule to support multiple display kinds
 * Add a trivial second display kind - MonthlyCalendarComponent - for testing and
     demonstrating the ability of the button toggle
     * this component will be built upon in a later task

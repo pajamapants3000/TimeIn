@@ -1,18 +1,14 @@
-/* Module: ScheduledEventDisplay
- * Purpose: Provide convenient views for displaying and selecting scheduled
- *  events
- */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MonthlyCalendarComponent } from './monthly-calendar/monthly-calendar.component';
+import { AppModule } from '../app.module';
+
+import { ListComponent } from './list/list.component';
+
 
 @NgModule({
-  declarations: [MonthlyCalendarComponent],
+  declarations: [ListComponent],
   imports: [
-    CommonModule
-  ],
-  exports: [
-    MonthlyCalendarComponent,
-  ],
+    CommonModule,
+  ]
 })
 export class ScheduledEventDisplayModule { }

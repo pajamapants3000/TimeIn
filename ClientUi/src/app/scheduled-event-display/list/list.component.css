@@ -1,0 +1,15 @@
+.list-container {
+    min-height: 600px;
+}
+
+.clientui-button {
+}
+
+.scheduled-event-list-item-past {
+    text-decoration: line-through;
+}
+
+.scheduled-event-list-item-future {
+}
+
+

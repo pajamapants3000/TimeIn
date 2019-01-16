@@ -42,7 +42,6 @@ import { ScheduledEventService } from './scheduled-event.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    // uncomment for simple, WebAPI-free hands-on testing only
     (!AppComponent.useInMemoryWebApi || environment.production) ? [] :
       HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {dataEncapsulation: false}),
     MatListModule,
