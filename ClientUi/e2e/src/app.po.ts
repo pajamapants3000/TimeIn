@@ -20,7 +20,7 @@ const addReminderButtonId: string = "addReminderButton";
 const addScheduledEventButtonId: string = "addScheduledEventButton";
 const addReminderComponentId: string = "app-add-reminder";
 const listRemindersComponentId: string = "app-list-reminders";
-const listScheduledEventsComponentId: string = "app-list-scheduled-events";
+const listScheduledEventsComponentId: string = "app-list";
 const scheduledEventDetailsComponentId: string = "app-scheduled-event-details";
 const scheduledEventsComponentId: string = "app-scheduled-events";
 const scheduledEventDetailsButtonId: string = "scheduledEvent_{}_details";
@@ -90,12 +90,12 @@ export class AppPage {
     this.scheduledEventTab = $("#mat-tab-label-0-1");
     this.scheduledEventsComponent = $("app-scheduled-events");
     this.scheduledEventDetailsComponent = $("app-scheduled-event-details");
-    this.listScheduledEventsComponent = $("app-list-scheduled-events");
+    this.listScheduledEventsComponent = $("app-list");
     this.addReminderButton = $("#addReminderButton");
     this.addScheduledEventButton = $("#addScheduledEventButton")
     this.submitScheduledEventEditButton = $("#submitScheduledEventEditButton");
     this.cancelScheduledEventEditButton = $("#cancelScheduledEventEditButton");
-    this.scheduledEventList = $$("app-list-scheduled-events mat-list-item.scheduled-event-list-item div div[id^='scheduledEvent_'] ");
+    this.scheduledEventList = $$("app-list mat-list-item.scheduled-event-list-item div div[id^='scheduledEvent_'] ");
     this.reminderInput = this.addReminderComponent.$("input");
     this.scheduledEventNameInput = $("#nameInput");
     this.scheduledEventDescriptionInput = $("#descriptionInput");
@@ -124,7 +124,7 @@ export class AppPage {
   }
 
   scheduledEventListItem(id: number): ElementFinder {
-    return $(`app-list-scheduled-events div.mat-list-item-content #scheduledEvent_${id.toString()}`);
+    return $(`app-list div.mat-list-item-content #scheduledEvent_${id.toString()}`);
   }
 
   scheduledEventListItemName(_scheduledEventListItem: ElementFinder): ElementFinder {
@@ -483,7 +483,7 @@ export class AppPage {
   }
 
   async getScheduledEventList(): Promise<ElementFinder[]> {
-    let listItemCss = "app-list-scheduled-events mat-list-item.scheduled-event-list-item";
+    let listItemCss = "app-list mat-list-item.scheduled-event-list-item";
     let EC = protractor.ExpectedConditions;
     await browser.wait(EC.presenceOf(element(by.css(listItemCss))),
                      3000,

@@ -1,14 +1,22 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { By } from '@angular/platform-browser'
+import { Observable, of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ScheduledEvent } from '../models/scheduled-event'
-import { click } from '../common';
+import { ScheduledEventService } from '../scheduled-event.service';
+import {
+  doArraysContainSameValues,
+  click,
+  storedUtcDateToDate
+} from '../common';
 
-@Component({selector: 'app-list-scheduled-events', template: '<ng-content></ng-content>'})
-class ListScheduledEventsStub {
-  @Input() updateSwitch: boolean;
-  @Output() openDetailsEvent = new EventEmitter<number>();
+import * as json from '../../../../testData.json';
+
+@Component({selector: 'app-list', template: '<ng-content></ng-content>'})
+class ListComponentStub {
+  @Input() scheduledEvents$: Observable<ScheduledEvent[]>;
+  @Output() idSelected = new EventEmitter<number>();
 }
 @Component({selector: 'app-scheduled-event-details', template: '<ng-content></ng-content>'})
 class ScheduledEventDetailsStub {
@@ -35,26 +43,46 @@ import { ScheduledEventsComponent } from './scheduled-events.component'
 describe('ScheduledEventsComponent', () => {
   let component: ScheduledEventsComponent;
   let fixture: ComponentFixture<ScheduledEventsComponent>;
-  let fakelist: ListScheduledEventsStub = new ListScheduledEventsStub();
+  let fakelist: ListComponentStub = new ListComponentStub();
   let fakeDetails: ScheduledEventDetailsStub = new ScheduledEventDetailsStub();
   let fakeNav: MatSideNavStub = new MatSideNavStub();
+  let eventServiceSpy: jasmine.SpyObj<ScheduledEventService>;
+
+  let testData: ScheduledEvent[];
+  let testData_empty: ScheduledEvent[];
 
   beforeEach(() => {
+    let spy = jasmine.createSpyObj('ScheduledEventService', ['getScheduledEventList']);
     TestBed.configureTestingModule({
       declarations: [
         ScheduledEventsComponent,
-        ListScheduledEventsStub,
+        ListComponentStub,
         ScheduledEventDetailsStub,
         MatSideNavStub,
         MatSideNavContainerStub,
         MatSideNavContentStub
       ],
       providers: [
-        { provide: ListScheduledEventsStub, useValue: fakelist },
+        { provide: ListComponentStub, useValue: fakelist },
         { provide: ScheduledEventDetailsStub, useValue: fakeDetails },
-        { provide: MatSideNavStub, useValue: fakeNav }
+        { provide: MatSideNavStub, useValue: fakeNav },
+        { provide: ScheduledEventService, useValue: spy },
       ]
     });
+
+    testData = json.ScheduledEvent.map(i => {
+      return new ScheduledEvent({
+        id: i.id,
+        description: i.description,
+        name: i.name,
+        when: storedUtcDateToDate(new Date(i.when)),
+        durationInMinutes: i.durationInMinutes
+      });
+    });
+    testData_empty = [];
+
+    eventServiceSpy = TestBed.get(ScheduledEventService);
+    eventServiceSpy.getScheduledEventList.and.returnValue(of(testData));
 
     fixture = TestBed.createComponent(ScheduledEventsComponent);
     component = fixture.componentInstance;
@@ -64,10 +92,10 @@ describe('ScheduledEventsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should render ListScheduledEvents component',
+  it('should render ListComponent',
      () => {
     const element = fixture.debugElement.nativeElement;
-    expect(element.querySelector('app-list-scheduled-events')).toBeTruthy();
+    expect(element.querySelector('app-list')).toBeTruthy();
   });
   it('should render ScheduledEventDetails component iff isDetailsOpen is true',
      () => {
@@ -81,18 +109,18 @@ describe('ScheduledEventsComponent', () => {
     fixture.detectChanges();
     expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
   });
-  it('should call `onOpenDetails` when openDetailsEvent event is emitted',
+  it('should call `openDetails` when idSelected event is emitted',
      () => {
       const debugElement = fixture.debugElement;
       const arbitraryNumber: number = 2;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
+      const list = debugElement.query(By.directive(ListComponentStub))
         .componentInstance;
-      spyOn(component, "onOpenDetails");
+      spyOn(component, "openDetails");
 
-      list.openDetailsEvent.emit(arbitraryNumber)
-      expect(component.onOpenDetails).toHaveBeenCalledWith(arbitraryNumber);
+      list.idSelected.emit(arbitraryNumber)
+      expect(component.openDetails).toHaveBeenCalledWith(arbitraryNumber);
   });
-  it('should open side nav when `onOpenDetails` is called',
+  it('should open side nav when `openDetails` is called',
      () => {
       const arbitraryNumber: number = 2;
       const debugElement = fixture.debugElement;
@@ -102,38 +130,38 @@ describe('ScheduledEventsComponent', () => {
       expect(nav.opened).toBeFalsy();
       expect(element.querySelector('app-scheduled-event-details')).toBeFalsy();
 
-      component.onOpenDetails(arbitraryNumber);
+      component.openDetails(arbitraryNumber);
       fixture.detectChanges();
 
       expect(nav.opened).toBeTruthy();
       expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
   });
-  it('should open side nav when openDetailsEvent event is emitted',
+  it('should open side nav when idSelected event is emitted',
      () => {
       const arbitraryNumber: number = 2;
       const debugElement = fixture.debugElement;
       const element = debugElement.nativeElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
+      const list = debugElement.query(By.directive(ListComponentStub))
         .componentInstance;
       const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
       expect(nav.opened).toBeFalsy();
       expect(element.querySelector('app-scheduled-event-details')).toBeFalsy();
 
-      list.openDetailsEvent.emit(arbitraryNumber)
+      list.idSelected.emit(arbitraryNumber)
       fixture.detectChanges();
 
       expect(nav.opened).toBeTruthy();
       expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
   });
-  it('should set ScheduledEventDetails detailsId input to correct id when ListScheduledEvents raises `openDetailsEvent` event',
+  it('should set ScheduledEventDetails detailsId input to correct id when ListComponent raises `idSelected` event',
      () => {
       const arbitraryNumber: number = 2;
       const debugElement = fixture.debugElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
+      const list = debugElement.query(By.directive(ListComponentStub))
         .componentInstance;
 
-      list.openDetailsEvent.emit(arbitraryNumber);
+      list.idSelected.emit(arbitraryNumber);
       fixture.detectChanges();
 
       const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
@@ -145,11 +173,11 @@ describe('ScheduledEventsComponent', () => {
       const arbitraryBoolean: boolean = false;
       const debugElement = fixture.debugElement;
       const element = debugElement.nativeElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
+      const list = debugElement.query(By.directive(ListComponentStub))
         .componentInstance;
       const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
-      list.openDetailsEvent.emit()
+      component.onAddClicked();
       fixture.detectChanges();
 
       expect(nav.opened).toEqual(true);
@@ -164,62 +192,69 @@ describe('ScheduledEventsComponent', () => {
       expect(nav.opened).toEqual(false);
       expect(element.querySelector('app-scheduled-event-details')).toBeFalsy();
   });
-  it('should toggle ListScheduledEvents `updateSwitch` input when `closeDetailsEvent` is true',
+  it('should call getScheduledEventList when `closeDetailsEvent` is true',
      () => {
-      const arbitraryBoolean: boolean = false;
-      const debugElement = fixture.debugElement;
-      const element = debugElement.nativeElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
-        .componentInstance;
-      list.updateSwitch = false;
-      const initialSwitchValue: boolean = list.updateSwitch;
-      const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
+    component.ngOnInit();
+    fixture.detectChanges();
+    let callsBefore: number = eventServiceSpy.getScheduledEventList.calls.count();
 
-      list.openDetailsEvent.emit()
-      fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const element = debugElement.nativeElement;
+    const list = debugElement.query(By.directive(ListComponentStub))
+      .componentInstance;
+    list.updateSwitch = false;
+    const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
-      expect(nav.opened).toEqual(true);
-      expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
+    component.onAddClicked();
+    fixture.detectChanges();
 
-      const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
-        .componentInstance;
+    expect(nav.opened).toEqual(true);
+    expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
 
-      let testEvent: ScheduledEvent = new ScheduledEvent({
-        id: 99,
-        name: "test",
-        description: "test",
-        when: new Date(),
-        durationInMinutes: 0
-      });
-      details.closeDetailsEvent.emit(testEvent);
-      fixture.detectChanges();
+    const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
+      .componentInstance;
 
-      expect(list.updateSwitch).toEqual(!initialSwitchValue);
+    details.closeDetailsEvent.emit(true);
+    fixture.detectChanges();
+
+    expect(eventServiceSpy.getScheduledEventList)
+      .toHaveBeenCalledTimes(callsBefore + 1);
   });
-  it('should not toggle ListScheduledEvents `updateSwitch` input when `closeDetailsEvent` is false',
+  it('should not call getScheduledEventList when `closeDetailsEvent` is false',
      () => {
-      const arbitraryBoolean: boolean = false;
-      const debugElement = fixture.debugElement;
-      const element = debugElement.nativeElement;
-      const list = debugElement.query(By.directive(ListScheduledEventsStub))
-        .componentInstance;
-      list.updateSwitch = false;
-      const initialSwitchValue: boolean = list.updateSwitch;
-      const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
+    component.ngOnInit();
+    fixture.detectChanges();
+    let callsBefore: number = eventServiceSpy.getScheduledEventList.calls.count();
 
-      list.openDetailsEvent.emit()
-      fixture.detectChanges();
+    const debugElement = fixture.debugElement;
+    const element = debugElement.nativeElement;
+    const list = debugElement.query(By.directive(ListComponentStub))
+      .componentInstance;
+    list.updateSwitch = false;
+    const nav = debugElement.query(By.directive(MatSideNavStub)).componentInstance;
 
-      expect(nav.opened).toEqual(true);
-      expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
+    component.onAddClicked();
+    fixture.detectChanges();
 
-      const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
-        .componentInstance;
+    expect(nav.opened).toEqual(true);
+    expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
 
-      details.closeDetailsEvent.emit(null);
-      fixture.detectChanges();
+    const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
+      .componentInstance;
 
-      expect(list.updateSwitch).toEqual(initialSwitchValue);
+    details.closeDetailsEvent.emit(false);
+    fixture.detectChanges();
+
+    expect(eventServiceSpy.getScheduledEventList)
+      .toHaveBeenCalledTimes(callsBefore);
+  });
+  it('should call `getScheduledEventList` service method in ngOnInit',
+     () => {
+    let callsBefore: number = eventServiceSpy.getScheduledEventList.calls.count();
+    component.ngOnInit();
+    fixture.detectChanges();
+    expect(eventServiceSpy.getScheduledEventList)
+      .toHaveBeenCalledTimes(callsBefore + 1);
   });
   it('should render "Add new event" button',
      () => {

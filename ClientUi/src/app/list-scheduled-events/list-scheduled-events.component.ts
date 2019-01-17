@@ -2,10 +2,8 @@ import {
   Component,
   EventEmitter,
   OnInit,
-  OnChanges,
   Input,
   Output,
-  SimpleChange
 } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -17,37 +15,15 @@ import { ScheduledEvent } from '../models/scheduled-event';
   templateUrl: './list-scheduled-events.component.html',
   styleUrls: ['./list-scheduled-events.component.css']
 })
-export class ListScheduledEventsComponent implements OnInit, OnChanges {
+export class ListScheduledEventsComponent implements OnInit {
 
   constructor(private service: ScheduledEventService) { }
 
-  public scheduledEvents$: Observable<ScheduledEvent[]>;
-  @Input() updateSwitch: boolean = false;
+  @Input() scheduledEvents$: Observable<ScheduledEvent[]>;
   @Output() openDetailsEvent = new EventEmitter<number>();
 
   ngOnInit() {
     console.log("ngOnInit called for list-scheduled-events component.");
-    this.service.getScheduledEventList().subscribe(
-      success => {
-        this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare))
-      },
-      error => { /* what to do here? */ },
-      () => {} /* complete */
-    );
-  }
-
-  ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
-    console.log("ngOnChanges called for list-scheduled-events component.");
-    for (let propName in changes) {
-      switch (propName) {
-        case "updateSwitch":
-          console.log("changes to updateSwitch detected in list-scheduled-events component.");
-          this.service.getScheduledEventList().subscribe(
-            success => { this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare)) },
-            error => { /* what to do here? */ }
-          );
-        }
-    }
   }
 
   public openDetails(id: number): void {

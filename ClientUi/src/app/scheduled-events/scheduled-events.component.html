@@ -11,15 +11,15 @@
       <app-scheduled-event-details class="scheduled-event"
         [detailsId]="detailsId"
         [detailsUpdateSwitch]="detailsUpdateSwitch"
-                          (closeDetailsEvent)="onCloseDetails($event)">
+                          (closeDetailsEvent)="closeDetails($event)">
       </app-scheduled-event-details>
     </mat-sidenav>
 
     <mat-sidenav-content class="mat-sidenav-content">
-  <app-list-scheduled-events class="list-scheduled-events"
-    [updateSwitch]="updateSwitch"
-                        (openDetailsEvent)="onOpenDetails($event)">
-  </app-list-scheduled-events>
+  <app-list class="list-scheduled-events"
+    [scheduledEvents$]="scheduledEvents$"
+                        (idSelected)="openDetails($event)">
+  </app-list>
     </mat-sidenav-content>
 
   </mat-sidenav-container>

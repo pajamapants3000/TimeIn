@@ -33,6 +33,17 @@ export function doArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): boolea
   return true;
 }
 
+/* `expect` only present in test run
+export function assertArraysContainSameValues<TItem>(a: TItem[], b: TItem[]): void {
+  expect(a === null).toEqual(b === null);
+  expect(a.length).toEqual(b.length);
+
+  for (let i = 0; i < a.length; i++) {
+    expect(a[i]).toEqual(b[i]);
+  }
+}
+*/
+
 export const ButtonClickEvents = {
   left: { button: 0 },
   right: { button: 2 }

@@ -10,6 +10,8 @@
                 - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests|Tests]]
                     - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#Updates|Updates]]
                     - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#New|New]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventDisplayComponent|ScheduledEventDisplayComponent]]
+                - [[#Solution Breakdown#Frontend#ScheduledEventDisplayComponent#Tests|Tests]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
@@ -31,18 +33,44 @@ module - ScheduledEventDisplayModule
 * [X] should render future events using scheduled-event-list-item-future css class',
 * [X] should render past events using scheduled-event-list-item-past css class',
 * [X] should render with date, name, and "Details" button for each event',
-* [X] should call onIdSelected on intracom-service with correct id when "Details" clicked',
-* [X] should update list when scheduledEvents subject receives new list
+* ~~should call onIdSelected on intracom-service with correct id when "Details" clicked~~
+    * commented out until task 15
+* [ ] should emit onIdSelected with correct id when "Details" clicked
+    * keep
+* ~~should update list when scheduledEvents subject receives new list~~
+    * commented out until task 15
+* [X] should update list when scheduledEvents updated
+    * drop in task 15
 * [X] should unsubscribe from scheduledEvents subscription in ngOnDestroy
 === ScheduledEventsComponent ===
 * this component will now handle calls to the service to obtain scheduled events
     to be listed
 ==== Tests ====
 ===== Updates =====
+* should render ListScheduledEvents component
+    * should render ListComponent
+* should open side nav when `onOpenDetails` is called
+    * should open side nav when `openDetails` is called
+* should call `openDetails` when onIdSelected event is emitted',
+* should open side nav when openDetails event is emitted
+    * should open side nav when onIdSelected event is emitted
+* should set ScheduledEventDetails detailsId input to correct id when
+    ListScheduledEvents raises `openDetailsEvent` event
+    * should set ScheduledEventDetails detailsId input to correct id when
+        ListComponent raises `onIdSelected` event
+* should toggle ListScheduledEvents `updateSwitch` input when `closeDetailsEvent` is true
+    * should call getScheduledEventList when `closeDetailsEvent` is true
+* should not toggle ListScheduledEvents `updateSwitch` input when
+    `closeDetailsEvent` is false
+    * should not call getScheduledEventList when `closeDetailsEvent` is false
 ===== New =====
+* should call `getScheduledEventList` service method in ngOnInit
+=== ScheduledEventDisplayComponent ===
+==== Tests ====
 = Additional Tasks =
 = To-Do =
 = Progress =
+* All unit tests passing - working on end-to-end publish
 * ListComponent written and passing all tests
 = Next =
 * implement updates to ScheduledEventsComponent

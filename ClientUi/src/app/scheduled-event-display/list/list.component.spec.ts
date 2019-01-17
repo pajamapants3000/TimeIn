@@ -87,7 +87,8 @@ describe('ListComponent', () => {
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
     component.ngOnInit();
-    intracomScheduledEventsSource.next(testData);
+    //intracomScheduledEventsSource.next(testData);
+    component.scheduledEvents$ = of(testData.sort(ScheduledEvent.compare));
     fixture.detectChanges();
   });
 
@@ -107,6 +108,7 @@ describe('ListComponent', () => {
     let eventExpectedIds = testData.sort(ScheduledEvent.compare)
                                          .map(event => `scheduledEvent_${event.id}`);
 
+    //assertArraysContainSameValues(eventExpectedIds, listValues);
     expect(doArraysContainSameValues(eventExpectedIds, listValues))
       .toBeTruthy();
   });
@@ -160,19 +162,32 @@ describe('ListComponent', () => {
       expect(eventDetailsButton.textContent).toContain("Details");
     }
   });
+  /*
   it('should call onIdSelected on intracom-service with correct id when "Details" clicked',
      async(() => {
-    for (let eventId of testData.map(i => i.id)) {
-      let elementId = `scheduledEvent_${eventId}`;
-      let button: HTMLButtonElement = fixture.nativeElement
-        .querySelector(`#${elementId}_details`);
-      button.click();
-      fixture.whenStable().then(() => {
-        expect(intracomServiceSpy.onIdSelected).toHaveBeenCalledWith(eventId);
-      });
-    }
+    let arbitraryId: number = 2;
+    let elementId = `scheduledEvent_${arbitraryId}`;
+    let button: HTMLButtonElement = fixture.nativeElement
+      .querySelector(`#${elementId}_details`);
+    button.click();
+    fixture.whenStable().then(() => {
+      expect(intracomServiceSpy.onIdSelected).toHaveBeenCalledWith(eventId);
+    });
   }));
-  it('should should update list when scheduledEvents subject receives new list',
+  */
+  it('should emit onIdSelected with correct id when "Details" clicked',
+     async(() => {
+    let arbitraryId: number = 2;
+    spyOn(component, 'onIdSelected');
+    let elementId = `scheduledEvent_${arbitraryId}`;
+    let button: HTMLButtonElement = fixture.nativeElement
+      .querySelector(`#${elementId}_details`);
+    button.click();
+    fixture.whenStable().then(() => {
+      expect(component.onIdSelected).toHaveBeenCalledWith(arbitraryId);
+    });
+  }));
+  it('should should update list when scheduledEvents updated',
      () => {
     let newScheduledEvent = new ScheduledEvent({
       id: testData.length + 1,
@@ -183,7 +198,8 @@ describe('ListComponent', () => {
     });
 
     let newTestData: ScheduledEvent[] = [ ...testData, newScheduledEvent ];
-    intracomScheduledEventsSource.next(newTestData);
+    //intracomScheduledEventsSource.next(newTestData);
+    component.scheduledEvents$ = of(newTestData.sort(ScheduledEvent.compare));
     fixture.detectChanges();
 
     let eventListElement: HTMLElement = fixture.nativeElement.querySelector('mat-list')
@@ -201,7 +217,7 @@ describe('ListComponent', () => {
     expect(doArraysContainSameValues(eventExpectedIds, listValues))
       .toBeTruthy();
   });
-
+  /*
   it('should unsubscribe from scheduledEvents subscription in ngOnDestroy',
      () => {
        spyOn(component.subscription, 'unsubscribe');
@@ -209,4 +225,5 @@ describe('ListComponent', () => {
 
        expect(component.subscription.unsubscribe).toHaveBeenCalled();
   });
+  */
 });
