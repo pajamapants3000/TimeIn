@@ -109,6 +109,9 @@
     <TypeScriptCompile Include="src\app\reminder.service.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.spec.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-details\scheduled-event-details.component.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\display-kind.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\display.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\scheduled-event-display\display.service.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-display\intracom.service.spec.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-display\intracom.service.ts" />
     <TypeScriptCompile Include="src\app\scheduled-event-display\list\list.component.spec.ts" />

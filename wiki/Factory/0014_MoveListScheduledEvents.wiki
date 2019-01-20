@@ -70,6 +70,7 @@ module - ScheduledEventDisplayModule
 = Additional Tasks =
 = To-Do =
 = Progress =
+* Complete!
 * All unit tests passing - working on end-to-end publish
 * ListComponent written and passing all tests
 = Next =

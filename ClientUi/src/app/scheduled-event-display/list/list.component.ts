@@ -20,34 +20,30 @@ export class ListComponent implements OnInit, OnDestroy {
 
   @Input() scheduledEvents$: Observable<ScheduledEvent[]>;
   @Output() idSelected: EventEmitter<number> = new EventEmitter<number>();
-  //public subscription: Subscription;
+  public subscription: Subscription;
 
-  constructor(/*private intracom: IntracomService*/) { }
+  constructor(private intracom: IntracomService) { }
 
   ngOnInit() {
-    /*
     this.subscription = this.intracom.getScheduledEvents$().subscribe(
       success => {
         this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare));
       }, error => {
-        /* error /
+        /* error */
       }, () => {
-        /* complete /
+        /* complete */
       });
-    */
   }
 
   ngOnDestroy() {
-    //this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   public onIdSelected(id: number): void {
-    //this.intracom.onIdSelected(id);
-    this.idSelected.emit(id);
+    this.intracom.onIdSelected(id);
   }
 
-  public isPast(when: Date): boolean {
-    if (when == null) return undefined;
-    return (new Date(when.valueOf())).getTime() < Date.now();
+  public isPast(event: ScheduledEvent): boolean {
+    return event.isPast();
   }
 }

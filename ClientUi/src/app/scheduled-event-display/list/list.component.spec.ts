@@ -46,16 +46,11 @@ describe('ListComponent', () => {
 
   beforeEach(() => {
     intracomScheduledEventsSource = new Subject<ScheduledEvent[]>();
-    let spy = jasmine.createSpyObj('IntracomServiceStub',
+    let spy = jasmine.createSpyObj('IntracomService',
                                    [
       'getScheduledEvents$',
       'onIdSelected',
                                   ]);
-    Object.defineProperty(spy, 'scheduledEventsSource', {
-      value: intracomScheduledEventsSource,
-      writable: false,
-      get: () => { return intracomScheduledEventsSource; },
-    });
 
 
     TestBed.configureTestingModule({
@@ -87,7 +82,7 @@ describe('ListComponent', () => {
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
     component.ngOnInit();
-    //intracomScheduledEventsSource.next(testData);
+    intracomScheduledEventsSource.next(testData);
     component.scheduledEvents$ = of(testData.sort(ScheduledEvent.compare));
     fixture.detectChanges();
   });
@@ -108,7 +103,6 @@ describe('ListComponent', () => {
     let eventExpectedIds = testData.sort(ScheduledEvent.compare)
                                          .map(event => `scheduledEvent_${event.id}`);
 
-    //assertArraysContainSameValues(eventExpectedIds, listValues);
     expect(doArraysContainSameValues(eventExpectedIds, listValues))
       .toBeTruthy();
   });
@@ -162,7 +156,6 @@ describe('ListComponent', () => {
       expect(eventDetailsButton.textContent).toContain("Details");
     }
   });
-  /*
   it('should call onIdSelected on intracom-service with correct id when "Details" clicked',
      async(() => {
     let arbitraryId: number = 2;
@@ -171,10 +164,9 @@ describe('ListComponent', () => {
       .querySelector(`#${elementId}_details`);
     button.click();
     fixture.whenStable().then(() => {
-      expect(intracomServiceSpy.onIdSelected).toHaveBeenCalledWith(eventId);
+      expect(intracomServiceSpy.onIdSelected).toHaveBeenCalledWith(arbitraryId);
     });
   }));
-  */
   it('should emit onIdSelected with correct id when "Details" clicked',
      async(() => {
     let arbitraryId: number = 2;
@@ -198,7 +190,7 @@ describe('ListComponent', () => {
     });
 
     let newTestData: ScheduledEvent[] = [ ...testData, newScheduledEvent ];
-    //intracomScheduledEventsSource.next(newTestData);
+    intracomScheduledEventsSource.next(newTestData);
     component.scheduledEvents$ = of(newTestData.sort(ScheduledEvent.compare));
     fixture.detectChanges();
 
@@ -217,7 +209,6 @@ describe('ListComponent', () => {
     expect(doArraysContainSameValues(eventExpectedIds, listValues))
       .toBeTruthy();
   });
-  /*
   it('should unsubscribe from scheduledEvents subscription in ngOnDestroy',
      () => {
        spyOn(component.subscription, 'unsubscribe');
@@ -225,5 +216,4 @@ describe('ListComponent', () => {
 
        expect(component.subscription.unsubscribe).toHaveBeenCalled();
   });
-  */
 });

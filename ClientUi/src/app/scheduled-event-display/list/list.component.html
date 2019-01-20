@@ -3,7 +3,7 @@
     <mat-list-item class="scheduled-event-list-item"
                    *ngFor="let scheduledEvent of scheduledEvents$ | async">
       <div id="scheduledEvent_{{scheduledEvent.id}}"
-           class="scheduled-event-list-item-{{isPast(scheduledEvent.when) ?
+           class="scheduled-event-list-item-{{isPast(scheduledEvent) ?
            'past' :
            'future'}}">
         <span id="scheduledEvent_{{scheduledEvent.id}}_when">

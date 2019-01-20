@@ -4,10 +4,23 @@
     - [[#User Story|User Story]]
     - [[#Solution Proposal|Solution Proposal]]
     - [[#Solution Breakdown|Solution Breakdown]]
-        - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
-        - [[#Solution Breakdown#Integration|Integration]]
-        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+            - [[#Solution Breakdown#Frontend#End-to-End Tests|End-to-End Tests]]
+                - [[#Solution Breakdown#Frontend#End-to-End Tests#Updates|Updates]]
+                - [[#Solution Breakdown#Frontend#End-to-End Tests#New|New]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventsComponent|ScheduledEventsComponent]]
+                - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests|Tests]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#Updates|Updates]]
+                    - [[#Solution Breakdown#Frontend#ScheduledEventsComponent#Tests#New|New]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventDisplayComponent|ScheduledEventDisplayComponent]]
+                - [[#Solution Breakdown#Frontend#ScheduledEventDisplayComponent#Tests|Tests]]
+            - [[#Solution Breakdown#Frontend#IntracomService|IntracomService]]
+                - [[#Solution Breakdown#Frontend#IntracomService#Tests|Tests]]
+            - [[#Solution Breakdown#Frontend#DisplayService|DisplayService]]
+                - [[#Solution Breakdown#Frontend#DisplayService#Tests|Tests]]
+            - [[#Solution Breakdown#Frontend#MonthlyCalendarComponent|MonthlyCalendarComponent]]
+                - [[#Solution Breakdown#Frontend#MonthlyCalendarComponent#Tests|Tests]]
+            - [[#Solution Breakdown#Frontend#Additional Changes|Additional Changes]]
     - [[#Additional Tasks|Additional Tasks]]
     - [[#To-Do|To-Do]]
     - [[#Progress|Progress]]
@@ -22,14 +35,95 @@ ScheduledEventDisplayModule which display to use to display the events
     * this component will be built upon in a later task
 = Solution Proposal =
 = Solution Breakdown =
-== Backend ==
+1. [X] re-apply intracom code in the ScheduledEventDisplayModule
+    * includes inserting ScheduledEventDisplayComponent between ScheduledEventsComponent and ListComponent
+2. [X] create trivial MonthlyCalendarComponent
+3. [X] add DisplayService; also needs DisplayKind
+4. [X] have ScheduledEventDisplayComponent use DisplayService to load display events in ScheduledEventDisplayComponent
+5. [ ] add toggle button to ScheduledEventsComponent that requests a display
 == Frontend ==
-== Integration ==
-== Coat of Paint ==
+=== End-to-End Tests ===
+==== Updates ====
+* [X] app-list will be replaced by app-scheduled-event-display/app-list
+* [ ] all existing scheduled event tests should click "List" in button toggle after
+    opening scheduled events tab, before doing anything else
+* otherwise, existing tests should all behave the same
+==== New ====
+* [ ] open scheduled events tab, click "Monthly" button toggle - should display
+    message "MonthlyCalendarComponent works!"
+* (I think that's it)
+=== ScheduledEventsComponent ===
+* [X] will load ScheduledEventDisplayComponent instead of ListComponent
+==== Tests ====
+===== Updates =====
+* [X] should render ListComponent
+    * should render ScheduledEventDisplayComponent
+    * [X] written
+    * [X] passing
+* [X] should set ScheduledEventDetails detailsId input to correct id when
+    ListComponent raises `idSelected` event
+    * should set ScheduledEventDetails detailsId input to correct id when
+        ScheduledEventDisplayComponent raises `idSelected` event
+    * [X] written
+    * [X] passing
+* [X] should call getScheduledEventList when `closeDetailsEvent` is true
+    * should call updateScheduledEvents when `closeDetailsEvent` is true
+    * [X] written
+    * [X] passing
+* [X] should not call getScheduledEventList when `closeDetailsEvent` is false
+    * should not call updateScheduledEvents when `closeDetailsEvent` is false
+    * [X] written
+    * [X] passing
+* [X] should call getScheduledEventList in ngOnInit
+    * should call updateScheduledEvents in ngOnInit
+    * [X] written
+    * [X] passing
+===== New =====
+* [X] should call getScheduledEventList on service when updateScheduledEvents called
+    * [X] written
+    * [X] passing
+* [X] should update scheduledEvents$ when updateScheduledEvents is called
+    * [X] written
+    * [X] passing
+    * I'll have to determine whether this properly updates the scheduledEvents$
+        observable in the ScheduledEventDisplayComponent in the end-to-end tests
+=== ScheduledEventDisplayComponent ===
+==== Tests ====
+* [X] should create
+    * [X] written
+    * [X] passing
+* [X] should call onScheduledEventsUpdated on intracom when scheduledEvents$ gets new value
+    * [X] written
+    * [X] passing
+* [X] should emit idSelected when intracom sends new idSelected
+    * [X] written
+    * [X] passing
+* [X] should call loadComponent with index when currentDisplayKind receives new value
+    * [X] written
+    * [X] passing
+* [X] should request component factory from display service when loadComponent is called
+    * seems to be no good way to test that the component is loaded
+        * will have to test this in end-to-end
+    * [X] written
+    * [X] passing
+=== IntracomService ===
+==== Tests ====
+* [X] should return scheduledEvents$ observable when getScheduledEvents$ called
+* [X] should return idSelected$ observable when getIdSelected$ called
+* [X] should update scheduledEventsSource subscribers when updateScheduledEvents called
+* [X] should update idSelectedSource subscribers when updateIdSelected called
+=== DisplayService ===
+* I'm not sure there is anything I can test here, since the only method is
+    dependent on other components and services
+==== Tests ====
+=== MonthlyCalendarComponent ===
+==== Tests ====
+* [X] should create
+* [X] should display message "MonthlyCalendarComponent works!"
+=== Additional Changes ===
+* [X] Add DisplayKind enum
 = Additional Tasks =
 = To-Do =
 = Progress =
 = Next =
-
-
 

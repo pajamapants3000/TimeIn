@@ -9,10 +9,11 @@ import {
 import { AppModule } from '../app.module';
 import { ListComponent } from './list/list.component';
 import { ScheduledEventDisplayComponent } from './scheduled-event-display/scheduled-event-display.component';
+import { MonthlyCalendarComponent } from './monthly-calendar/monthly-calendar.component';
 
 
 @NgModule({
-  declarations: [ListComponent, ScheduledEventDisplayComponent],
+  declarations: [ListComponent, ScheduledEventDisplayComponent, MonthlyCalendarComponent],
   imports: [
     CommonModule,
     MatListModule,
@@ -21,6 +22,10 @@ import { ScheduledEventDisplayComponent } from './scheduled-event-display/schedu
   exports: [
     ScheduledEventDisplayComponent,
     ListComponent,
+  ],
+  entryComponents: [
+    ListComponent,
+    MonthlyCalendarComponent,
   ],
 })
 export class ScheduledEventDisplayModule { }

@@ -22,10 +22,10 @@ export class IntracomService {
   }
 
   getScheduledEvents$(): Observable<ScheduledEvent[]> {
-    return this.scheduledEventsSource.asObservable();
+    return this.scheduledEvents$;
   }
 
   getIdSelected$(): Observable<number> {
-    return this.idSelectedSource.asObservable();
+    return this.idSelected$;
   }
 }

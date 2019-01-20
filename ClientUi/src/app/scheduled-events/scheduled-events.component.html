@@ -16,10 +16,10 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="mat-sidenav-content">
-  <app-list class="list-scheduled-events"
+  <app-scheduled-event-display class="display-scheduled-events"
     [scheduledEvents$]="scheduledEvents$"
                         (idSelected)="openDetails($event)">
-  </app-list>
+  </app-scheduled-event-display>
     </mat-sidenav-content>
 
   </mat-sidenav-container>
