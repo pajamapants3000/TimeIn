@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+} from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { ScheduledEvent } from '../../models/scheduled-event';
 
 @Component({
   selector: 'app-monthly-calendar',
   templateUrl: './monthly-calendar.component.html',
   styleUrls: ['./monthly-calendar.component.css']
 })
-export class MonthlyCalendarComponent implements OnInit {
+export class MonthlyCalendarComponent {
 
-  constructor() { }
+  title: string;
 
-  ngOnInit() {
+  constructor() {
+    this.title = "monthly-calendar works!";
   }
-
 }

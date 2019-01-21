@@ -1,25 +1,34 @@
 <div class="scheduled-events-container">
-  <div class="scheduled-events-toolbar">
-    <button mat-button class="clientui-button" id="addScheduledEventButton"
-            (click)="onAddClicked();">
-      Add new event
-    </button>
-  </div>
   <mat-sidenav-container class="mat-sidenav-container">
     <mat-sidenav #sidenav mode="over" [(opened)]="isDetailsOpen">
 
       <app-scheduled-event-details class="scheduled-event"
-        [detailsId]="detailsId"
-        [detailsUpdateSwitch]="detailsUpdateSwitch"
+                          [detailsId]="detailsId"
+                          [detailsUpdateSwitch]="detailsUpdateSwitch"
                           (closeDetailsEvent)="closeDetails($event)">
       </app-scheduled-event-details>
     </mat-sidenav>
 
     <mat-sidenav-content class="mat-sidenav-content">
-  <app-scheduled-event-display class="display-scheduled-events"
-    [scheduledEvents$]="scheduledEvents$"
-                        (idSelected)="openDetails($event)">
-  </app-scheduled-event-display>
+      <div class="scheduled-events-toolbar">
+        <button mat-button class="clientui-button" id="addScheduledEventButton"
+                (click)="onAddClicked();">
+          Add new event
+        </button>
+        <mat-button-toggle-group name="displayKind" id="displayKind"
+                                                    value="List"
+                                 (change)="onDisplayKindChanged($event.value);">
+          <mat-button-toggle value="List" id="toggleList">List</mat-button-toggle>
+          <mat-button-toggle value="Monthly" id="toggleMonthly">Monthly</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="display-scheduled-events-container">
+        <app-scheduled-event-display class="display-scheduled-events"
+                                     [scheduledEvents$]="scheduledEvents$"
+                                     [currentDisplayKind]="currentDisplayKind"
+                                     (idSelected)="openDetails($event)">
+        </app-scheduled-event-display>
+      </div>
     </mat-sidenav-content>
 
   </mat-sidenav-container>

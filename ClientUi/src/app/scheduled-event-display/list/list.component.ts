@@ -2,9 +2,6 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  Input,
-  Output,
-  EventEmitter,
 } from '@angular/core';
 import { Subscription, Observable, of } from 'rxjs';
 
@@ -18,8 +15,7 @@ import { IntracomService } from '../intracom.service';
 })
 export class ListComponent implements OnInit, OnDestroy {
 
-  @Input() scheduledEvents$: Observable<ScheduledEvent[]>;
-  @Output() idSelected: EventEmitter<number> = new EventEmitter<number>();
+  scheduledEvents$: Observable<ScheduledEvent[]>;
   public subscription: Subscription;
 
   constructor(private intracom: IntracomService) { }
@@ -43,7 +39,8 @@ export class ListComponent implements OnInit, OnDestroy {
     this.intracom.onIdSelected(id);
   }
 
-  public isPast(event: ScheduledEvent): boolean {
-    return event.isPast();
+  public isPast(when: Date): boolean {
+    if (when == null) return undefined;
+    return (new Date(when.valueOf())).getTime() < Date.now();
   }
 }

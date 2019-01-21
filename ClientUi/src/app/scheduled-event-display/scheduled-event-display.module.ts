@@ -22,6 +22,7 @@ import { MonthlyCalendarComponent } from './monthly-calendar/monthly-calendar.co
   exports: [
     ScheduledEventDisplayComponent,
     ListComponent,
+    MonthlyCalendarComponent,
   ],
   entryComponents: [
     ListComponent,

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { By } from '@angular/platform-browser'
 import { Observable, of } from 'rxjs';
+import { MatButtonToggleChange } from '@angular/material';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ScheduledEvent } from '../models/scheduled-event'
@@ -11,12 +12,14 @@ import {
   storedUtcDateToDate,
   msPerDay,
 } from '../common';
+import { DisplayKind } from '../scheduled-event-display/display-kind';
 
 import * as json from '../../../../testData.json';
 
 @Component({selector: 'app-scheduled-event-display', template: '<ng-content></ng-content>'})
 class ScheduledEventDisplayComponentStub {
   @Input() scheduledEvents$: Observable<ScheduledEvent[]>;
+  @Input() currentDisplayKind: DisplayKind;
   @Output() idSelected = new EventEmitter<number>();
 }
 @Component({selector: 'app-scheduled-event-details', template: '<ng-content></ng-content>'})
@@ -32,6 +35,15 @@ class ScheduledEventDetailsStub {
            })
 class MatSideNavStub {
   @Input() public opened: boolean;
+}
+
+@Component({selector: 'mat-button-toggle-group', template: '<ng-content></ng-content>' })
+class MatButtonToggleGroupStub {
+  @Input() value: any;
+}
+@Component({selector: 'mat-button-toggle', template: '<ng-content></ng-content>' })
+class MatButtonToggleStub {
+  @Input() value: any;
 }
 
 @Component({selector: 'mat-sidenav-container', template: '<ng-content></ng-content>' })
@@ -61,7 +73,9 @@ describe('ScheduledEventsComponent', () => {
         ScheduledEventDetailsStub,
         MatSideNavStub,
         MatSideNavContainerStub,
-        MatSideNavContentStub
+        MatSideNavContentStub,
+        MatButtonToggleGroupStub,
+        MatButtonToggleStub,
       ],
       providers: [
         { provide: ScheduledEventDisplayComponentStub, useValue: fakelist },
@@ -155,19 +169,32 @@ describe('ScheduledEventsComponent', () => {
       expect(nav.opened).toBeTruthy();
       expect(element.querySelector('app-scheduled-event-details')).toBeTruthy();
   });
-  it('should set ScheduledEventDetails detailsId input to correct id when ScheduledEventDisplayComponent raises `idSelected` event',
+  it('should set ScheduledEventDetails detailsId input to correct id when ScheduledEventDisplayComponent emits `idSelected` event',
      () => {
-      const arbitraryNumber: number = 2;
-      const debugElement = fixture.debugElement;
-      const list = debugElement.query(By.directive(ScheduledEventDisplayComponentStub))
-        .componentInstance;
+    const arbitraryNumber: number = 2;
+    const debugElement = fixture.debugElement;
+    const list = debugElement.query(By.directive(ScheduledEventDisplayComponentStub))
+      .componentInstance;
 
-      list.idSelected.emit(arbitraryNumber);
-      fixture.detectChanges();
+    list.idSelected.emit(arbitraryNumber);
+    fixture.detectChanges();
 
-      const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
-        .componentInstance;
-      expect(details.detailsId).toEqual(arbitraryNumber);
+    const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
+      .componentInstance;
+    expect(details.detailsId).toEqual(arbitraryNumber);
+  });
+  it('should set ScheduledEventDetails detailsId input to null when add button clicked',
+     () => {
+    const debugElement = fixture.debugElement;
+    const element = debugElement.nativeElement;
+    const addButton = element.querySelector('#addScheduledEventButton');
+
+    click(addButton);
+    fixture.detectChanges();
+
+    const details = debugElement.query(By.directive(ScheduledEventDetailsStub))
+      .componentInstance;
+    expect(details.detailsId).toEqual(null);
   });
   it('should close side nav when `closeDetailsEvent` event is triggered',
      () => {
@@ -198,7 +225,6 @@ describe('ScheduledEventsComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     spyOn(component, 'updateScheduledEvents');
-    let callsBefore: number = component.updateScheduledEvents.calls.count();
 
     const debugElement = fixture.debugElement;
     const element = debugElement.nativeElement;
@@ -218,14 +244,13 @@ describe('ScheduledEventsComponent', () => {
     details.closeDetailsEvent.emit(true);
     fixture.detectChanges();
 
-    expect(component.updateScheduledEvents).toHaveBeenCalledTimes(callsBefore + 1);
+    expect(component.updateScheduledEvents).toHaveBeenCalledTimes(1);
   });
   it('should not call updateScheduledEvents when `closeDetailsEvent` is false',
      () => {
     component.ngOnInit();
     fixture.detectChanges();
     spyOn(component, 'updateScheduledEvents');
-    let callsBefore: number = component.updateScheduledEvents.calls.count();
 
     const debugElement = fixture.debugElement;
     const element = debugElement.nativeElement;
@@ -245,15 +270,14 @@ describe('ScheduledEventsComponent', () => {
     details.closeDetailsEvent.emit(false);
     fixture.detectChanges();
 
-    expect(component.updateScheduledEvents).toHaveBeenCalledTimes(callsBefore);
+    expect(component.updateScheduledEvents).not.toHaveBeenCalled();
   });
-  it('should call `updateScheduledEvents` service method in ngOnInit',
+  it('should call `updateScheduledEvents` in ngOnInit',
      () => {
     spyOn(component, 'updateScheduledEvents');
-    let callsBefore: number = component.updateScheduledEvents.calls.count();
     component.ngOnInit();
     fixture.detectChanges();
-    expect(component.updateScheduledEvents).toHaveBeenCalledTimes(callsBefore + 1);
+    expect(component.updateScheduledEvents).toHaveBeenCalledTimes(1);
   });
   it('should render "Add new event" button',
      () => {
@@ -298,19 +322,8 @@ describe('ScheduledEventsComponent', () => {
 
     let newId: number = testData.length + 1;
 
-    let isNewIdPresent: boolean;
-    let isNewIdPresentBefore: boolean;
-    let isNewIdPresentAfter: boolean;
-    let hasNewIdBeenAdded: boolean = false;
-
-    // just make sure we aren't accidentally adding an existing id
-    component.scheduledEvents$.subscribe(
-      value => {
-        expect(value.findIndex(x => x.id == newId)).toEqual(-1);
-    });
-
     let newTestData = [...testData, new ScheduledEvent({
-      id: testData.length + 1,
+      id: newId,
       name: "test event",
       description: "another one",
       when: new Date(Date.now() - msPerDay),
@@ -318,13 +331,42 @@ describe('ScheduledEventsComponent', () => {
     })];
     eventServiceSpy.getScheduledEventList.and.returnValue(of(newTestData));
 
-    component.updateScheduledEvents();
-
     component.scheduledEvents$.subscribe(
       value => {
         expect(value.findIndex(x => x.id == newId)).not.toEqual(-1);
         done();
     });
+
+    component.updateScheduledEvents();
+  });
+  it('should render toggle button with options List and Monthly',
+     () => {
+    const element = fixture.debugElement.nativeElement;
+    const toggleGroup = element.querySelector('#displayKind');
+    expect(toggleGroup).toBeTruthy();
+    const toggleButtons = toggleGroup.querySelectorAll('mat-button-toggle');
+    expect(toggleButtons[0].innerText).toEqual("List");
+    expect(toggleButtons[1].innerText).toEqual("Monthly");
+  });
+  it('should set currentDisplayKind input property to DisplayKind.List when onDisplayKindChanged called with "List"',
+     () => {
+    const debugElement = fixture.debugElement;
+    component.onDisplayKindChanged("List");
+    fixture.detectChanges();
+
+    const display = debugElement.query(By.directive(ScheduledEventDisplayComponentStub))
+      .componentInstance;
+    expect(display.currentDisplayKind).toEqual(DisplayKind.List);
+  });
+  it('should set currentDisplayKind input property to DisplayKind.Monthly when onDisplayKindChanged called with "Monthly"',
+     () => {
+    const debugElement = fixture.debugElement;
+    component.onDisplayKindChanged("Monthly");
+    fixture.detectChanges();
+
+    const display = debugElement.query(By.directive(ScheduledEventDisplayComponentStub))
+      .componentInstance;
+    expect(display.currentDisplayKind).toEqual(DisplayKind.Monthly);
   });
 });
 

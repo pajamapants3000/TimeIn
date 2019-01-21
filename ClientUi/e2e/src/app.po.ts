@@ -36,6 +36,8 @@ const addScheduledEventDefaults_durationInMinutes: number = 60;
 const addScheduledEventDefaults_when: Date = new Date(Date.now());
 const reminderCompleteButtonText: string = "check_circle";
 const reminderUncompleteButtonText: string = "done";
+const listButtonToggleId: string = "toggleList";
+const monthlyButtonToggleId: string = "toggleMonthly";
 
 export class AppPage {
   title: ElementFinder;
@@ -46,7 +48,9 @@ export class AppPage {
   reminderButtonList: ElementArrayFinder;
   scheduledEventTab: ElementFinder;
   scheduledEventsComponent: ElementFinder;
+  displayScheduledEventsComponent: ElementFinder;
   listScheduledEventsComponent: ElementFinder;
+  monthlyScheduledEventsComponent: ElementFinder;
   scheduledEventDetailsComponent: ElementFinder;
   addReminderButton: ElementFinder;
   addScheduledEventButton: ElementFinder;
@@ -79,6 +83,8 @@ export class AppPage {
     ),
     durationInMinutes: addScheduledEventDefaults_durationInMinutes
   });
+  listButtonToggle: ElementFinder;
+  monthlyButtonToggle: ElementFinder;
 
   constructor() {
     this.title = $("app-root h1");
@@ -90,7 +96,9 @@ export class AppPage {
     this.scheduledEventTab = $("#mat-tab-label-0-1");
     this.scheduledEventsComponent = $("app-scheduled-events");
     this.scheduledEventDetailsComponent = $("app-scheduled-event-details");
+    this.displayScheduledEventsComponent = $("app-scheduled-event-display");
     this.listScheduledEventsComponent = $("app-list");
+    this.monthlyScheduledEventsComponent = $("app-monthly-calendar");
     this.addReminderButton = $("#addReminderButton");
     this.addScheduledEventButton = $("#addScheduledEventButton")
     this.submitScheduledEventEditButton = $("#submitScheduledEventEditButton");
@@ -103,6 +111,8 @@ export class AppPage {
     this.scheduledEventDurationInput = $("#durationInput");
     this.reminderCompleteButtonText = reminderCompleteButtonText;
     this.reminderUncompleteButtonText = reminderUncompleteButtonText;
+    this.listButtonToggle = $(`#${listButtonToggleId}`);
+    this.monthlyButtonToggle = $(`#${monthlyButtonToggleId}`);
 
   }
 

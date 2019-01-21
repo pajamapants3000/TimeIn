@@ -9,7 +9,7 @@ import { MonthlyCalendarComponent } from './monthly-calendar/monthly-calendar.co
 })
 export class DisplayService {
 
-  getDisplayComponent(kind: DisplayKind) {
+  getDisplayComponent(kind: DisplayKind): any {
     switch (kind) {
       case DisplayKind.None:
         return null;

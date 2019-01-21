@@ -1438,5 +1438,33 @@ describe('TimeIn ClientUi', () => {
     await expect(await page.scheduledEventList.count())
       .toEqual(expectedQuantity);
   });
+  it('should render message "monthly-calendar works!" when monthly button toggle clicked',
+     async () => {
+       await page.navigateTo();
+       await page.openScheduledEventTab();
+       await page.monthlyButtonToggle.click();
+
+       await expect(await page.monthlyScheduledEventsComponent.getText())
+        .toEqual("monthly-calendar works!");
+  });
+  it('should render List scheduled events display when List toggle button selected',
+     async () => {
+       await page.navigateTo();
+       await page.openScheduledEventTab();
+       await page.monthlyButtonToggle.click();
+       await page.listButtonToggle.click();
+
+       await expect(page.listScheduledEventsComponent.isPresent())
+        .toBeTruthy();
+  });
+  it('should render Monthly scheduled events display when Monthly toggle button selected',
+     async () => {
+       await page.navigateTo();
+       await page.openScheduledEventTab();
+       await page.monthlyButtonToggle.click();
+
+       await expect(page.monthlyScheduledEventsComponent.isPresent())
+        .toBeTruthy();
+  });
 });
 

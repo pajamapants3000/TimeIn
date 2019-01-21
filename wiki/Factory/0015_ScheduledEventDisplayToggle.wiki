@@ -40,17 +40,21 @@ ScheduledEventDisplayModule which display to use to display the events
 2. [X] create trivial MonthlyCalendarComponent
 3. [X] add DisplayService; also needs DisplayKind
 4. [X] have ScheduledEventDisplayComponent use DisplayService to load display events in ScheduledEventDisplayComponent
-5. [ ] add toggle button to ScheduledEventsComponent that requests a display
+5. [X] add toggle button to ScheduledEventsComponent that requests a display
 == Frontend ==
 === End-to-End Tests ===
 ==== Updates ====
 * [X] app-list will be replaced by app-scheduled-event-display/app-list
-* [ ] all existing scheduled event tests should click "List" in button toggle after
-    opening scheduled events tab, before doing anything else
-* otherwise, existing tests should all behave the same
 ==== New ====
-* [ ] open scheduled events tab, click "Monthly" button toggle - should display
+* [X] open scheduled events tab, click "Monthly" button toggle - should display
     message "MonthlyCalendarComponent works!"
+    * 'should render message "monthly-calendar works!" when monthly button toggle clicked'
+* [X] should render List scheduled events display when List toggle button selected
+    * [X] written
+    * [X] passing
+* [X] should render Monthly scheduled events display when Monthly toggle button selected
+    * [X] written
+    * [X] passing
 * (I think that's it)
 === ScheduledEventsComponent ===
 * [X] will load ScheduledEventDisplayComponent instead of ListComponent
@@ -87,6 +91,7 @@ ScheduledEventDisplayModule which display to use to display the events
     * [X] passing
     * I'll have to determine whether this properly updates the scheduledEvents$
         observable in the ScheduledEventDisplayComponent in the end-to-end tests
+* [X] should render toggle button with options List and Monthly
 === ScheduledEventDisplayComponent ===
 ==== Tests ====
 * [X] should create
@@ -124,6 +129,7 @@ ScheduledEventDisplayModule which display to use to display the events
 * [X] Add DisplayKind enum
 = Additional Tasks =
 = To-Do =
+* [X] all that remains is to write and pass the end-to-end tests
 = Progress =
 = Next =
 

@@ -1,0 +1,36 @@
+%title Refactor (Task 0016) | Tasks | TimeIn
+
+    = Contents =
+    - [[#User Story|User Story]]
+    - [[#Solution Proposal|Solution Proposal]]
+    - [[#Solution Breakdown|Solution Breakdown]]
+        - [[#Solution Breakdown#Backend|Backend]]
+        - [[#Solution Breakdown#Frontend|Frontend]]
+        - [[#Solution Breakdown#Integration|Integration]]
+        - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
+    - [[#Additional Tasks|Additional Tasks]]
+    - [[#To-Do|To-Do]]
+    - [[#Progress|Progress]]
+    - [[#Next|Next]]
+
+= User Story =
+* take some time to review all code to clean it up and reorganize if needed
+* review tests and consider whether they are complete, well chosen, and well-
+    written
+* remove code, variables and definitions, etc., that has no purpose
+= Solution Proposal =
+= Solution Breakdown =
+== Backend ==
+* I don't think there is much to do here since there isn't much to it yet, but
+    take a look just in case
+== Frontend ==
+== Integration ==
+* not really applicable, except perhaps in the end-to-end tests
+== Coat of Paint ==
+* one thing that might be good to do here is try to improve the UI a bit
+= Additional Tasks =
+= To-Do =
+= Progress =
+= Next =
+
+

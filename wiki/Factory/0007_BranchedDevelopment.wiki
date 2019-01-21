@@ -17,5 +17,7 @@ Dev branch merges into master when task is complete.
 = Additional Tasks =
 = To-Do =
 = Progress =
+* Have used branching, easily accomplished using Team Explorer in Visual Studio,
+    to accomplish the last few tasks. I consider this ticket closed.
 = Next =
 

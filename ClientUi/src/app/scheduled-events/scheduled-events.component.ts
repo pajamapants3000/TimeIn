@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
 
 import { ScheduledEvent } from '../models/scheduled-event';
 import { ScheduledEventService } from '../scheduled-event.service';
+import { DisplayKind } from '../scheduled-event-display/display-kind';
 
 @Component({
   selector: 'app-scheduled-events',
@@ -16,8 +17,26 @@ export class ScheduledEventsComponent implements OnInit {
   isDetailsOpen: boolean = false;
   detailsId: number = null;
   detailsUpdateSwitch: boolean = false;
-  updateSwitch: boolean = false;
+
+  currentDisplayKind: DisplayKind = DisplayKind.List;
   scheduledEvents$: Observable<ScheduledEvent[]>;
+  scheduledEventSource: Subject<ScheduledEvent[]>;
+
+  ngOnInit() {
+    this.scheduledEventSource = new Subject<ScheduledEvent[]>();
+    this.scheduledEvents$ = this.scheduledEventSource.asObservable();
+    this.updateScheduledEvents();
+  }
+
+  updateScheduledEvents(): void {
+    this.service.getScheduledEventList().subscribe(
+      success => {
+        this.scheduledEventSource.next(success.sort(ScheduledEvent.compare));
+      },
+      error => { /* what to do here? */ },
+      () => {} /* complete */
+    );
+  }
 
   onAddClicked(): void {
     console.log(`Opening dialog to add new scheduled event.`);
@@ -28,20 +47,6 @@ export class ScheduledEventsComponent implements OnInit {
     }
 
     this.isDetailsOpen = true;
-  }
-
-  ngOnInit() {
-    this.updateScheduledEvents();
-  }
-
-  updateScheduledEvents(): void {
-    this.service.getScheduledEventList().subscribe(
-      success => {
-        this.scheduledEvents$ = of(success.sort(ScheduledEvent.compare))
-      },
-      error => { /* what to do here? */ },
-      () => {} /* complete */
-    );
   }
 
   openDetails(id: number) {
@@ -62,5 +67,17 @@ export class ScheduledEventsComponent implements OnInit {
     }
 
     this.isDetailsOpen = false;
+  }
+
+  onDisplayKindChanged(kind: string) {
+    switch (kind) {
+      case "List":
+        this.currentDisplayKind = DisplayKind.List;
+        break;
+      case "Monthly":
+        this.currentDisplayKind = DisplayKind.Monthly;
+        break;
+    }
+    this.updateScheduledEvents();
   }
 }

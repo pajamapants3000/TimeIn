@@ -68,67 +68,60 @@ N/A
 === End-to-End Tests ===
 ==== Updates ====
 * changes should be made to existing TimeIn spec:
-* [ ] All current scheduled events tests should click "List" just after opening
-    scheduled events tab
 ==== New ====
-* [ ] should render message "MonthlyCalendarComponent works!" when "Monthly"
+* [X] should render message "monthly-calendar works!" when "Monthly"
       button toggle clicked
-    * [ ] written
-    * [ ] passing
+    * [X] written
+    * [X] passing
 ==== PageObject ====
-* [ ] add properties for each toggle button element
-* [ ] update element references for ListScheduledEventsComponent to ListComponent
+* [X] add properties for each toggle button element
+* [X] update element references for ListScheduledEventsComponent to ListComponent
 === ScheduledEventsComponent ===
 ==== Tests ====
 ===== Updates =====
-* [ ] should render ListScheduledEvents component
+* [X] should render ListScheduledEvents component
     * should render ScheduledEventDisplay component
-    * [ ] written
-    * [ ] passing
-* [ ] should set ScheduledEventDetails detailsId input to null when
+    * [X] written
+    * [X] passing
+* [X] should set ScheduledEventDetails detailsId input to null when
     ListScheduledEvents raises `openDetailsEvent` event with no id
-    * should set ScheduledEventDetails detailsId input to null when add button
-      clicked
-    * [ ] written
-    * [ ] passing
-* [ ] should set ScheduledEventDetails detailsId input to correct id when
+    * should set ScheduledEventDetails detailsId input to null when add button clicked
+    * [X] written
+    * [X] passing
+* [X] should set ScheduledEventDetails detailsId input to correct id when
     ListScheduledEvents raises `openDetailsEvent` event'
     * should set ScheduledEventDetails detailsId input to correct id when
         ScheduledEventDisplay emits idSelected event
-    * [ ] written
-    * [ ] passing
-* [ ] should toggle ListScheduledEvents `updateSwitch` input when
+    * [X] written
+    * [X] passing
+* [X] should toggle ListScheduledEvents `updateSwitch` input when
     `closeDetailsEvent` is true'
-    * should call refreshDisplay on ScheduledEventDisplayComponent when
+    * should call updateScheduledEvents on ScheduledEventDisplayComponent when
         closeDetailsEvent is true
-    * [ ] written
-    * [ ] passing
-* [ ] should not toggle ListScheduledEvents `updateSwitch` input when
+    * [X] written
+    * [X] passing
+* [X] should not toggle ListScheduledEvents `updateSwitch` input when
     `closeDetailsEvent` is false
     * should not call refreshDisplay on ScheduledEventDisplayComponent when
         closeDetailsEvent is false
-    * [ ] written
-    * [ ] passing
+    * [X] written
+    * [X] passing
 ===== New =====
-* [ ] should render 'Add new event' button
-    * [ ] written
-    * [ ] passing
-* [ ] should render button toggle with options in DisplayKind enum
-    * [ ] written
-    * [ ] passing
-* [ ] should set display input property to DisplayKind.List when "List" clicked
-    * [ ] written
-    * [ ] passing
-* [ ] should set display input property to DisplayKind.Monthly when "Monthly" clicked
-    * [ ] written
-    * [ ] passing
-* [ ] should call loadScheduledEvents on ScheduledEventDisplay view child in ngOnInit
-    * [ ] written
-    * [ ] passing
-* [ ] should call loadScheduledEvents on ScheduledEventDisplay view child in
-      onCloseDetails if argument is true
-    * [ ] written
-    * [ ] passing
+* [X] should render 'Add new event' button
+    * [X] written
+    * [X] passing
+* [X] should render button toggle with options List and Monthly
+    * [X] written
+    * [X] passing
+* [X] should set currentDisplayKind input property to DisplayKind.List when "List" clicked
+    * [X] written
+    * [X] passing
+* [X] should set currentDisplayKind input property to DisplayKind.Monthly when "Monthly" clicked
+    * [X] written
+    * [X] passing
+* [X] should call updateScheduledEvents in ngOnInit
+    * [X] written
+    * [X] passing
 === ScheduledEventDisplayModule ===
 I think the best way to accomplish this is via a practice site...
 ==== Practice Site ====
@@ -164,69 +157,63 @@ I think the best way to accomplish this is via a practice site...
     * subscribe via `scheduledEvent$`
         * set to `this.scheduledEventSource.asObservable()`
 ===== Tests =====
-* [ ] subscriber gets id when onIdSelected called
-* [ ] subscriber gets array of scheduled events when updateScheduledEvents called
+* [X] should be created
+* [X] should update idSelectedSource subscribers when onIdSelected called',
+* [X] subscriber should get array of scheduled events when onScheduledEventsUpdated called
 ==== DisplayService ====
 * returns appropriate display kind component when called with a DisplayKind
     enum value
     * single method: `getDisplayComponent(kind: DisplayKind): any`
 ===== Tests =====
-* [ ] should return ListComponent when `getDisplayComponent` called with
-    DisplayKind.List
-* [ ] should return MonthlyCalendarComponent when `getDisplayComponent` called with
-    DisplayKind.Monthly
+* [X] should be created
+* [X] should return ListComponent when `getDisplayComponent` called with DisplayKind.List
+* [X] should return MonthlyCalendarComponent when `getDisplayComponent` called with DisplayKind.Monthly
 ==== ScheduledEventDisplayComponent ====
-* takes input, `kind` (?), to specify which display to...display
+* takes input, `currentDisplayKind`, to specify which display to...display
 * basically an anchor for inserting requested display kind and delegating
     messages to update display or open details for an id
 ===== Tests =====
-* [ ] intracom service provides id - id output emitted
-* [ ] renders "List" when currentDisplayKind updated to List
-* [ ] renders "Monthly" when currentDisplayKind updated to Monthly
-* [ ] should call loadScheduledEvents in ngOnInit
-    * [ ] written
-    * [ ] passing
-* [ ] should call getScheduledEventList service method in loadScheduledEvents
-    * [ ] written
-    * [ ] passing
+* [X] should call onScheduledEventsUpdated on intracom when scheduledEvents$ gets new value',
+* [X] should emit idSelected when intracom sends new idSelected',
+* [X] should call loadComponent with index when currentDisplayKind receives new value',
+* [X] should request component from display service when loadComponent is called',
 ==== ListComponent ====
 * existing ListScheduledEventsComponent moved and renamed
 ===== Tests =====
 ====== Updates ======
-* [ ] should call `getScheduledEventList` service method in ngOnInit
+* [X] should call `getScheduledEventList` service method in ngOnInit
     * delete this test
-* [ ] should call openDetails with correct id when "Details" clicked
-    * rename "onOpenDetails" to "onIdSelected"
-* [ ] should call `getScheduledEventList` service method when `updateSwitch` changed to true',
+* [X] should call openDetails with correct id when "Details" clicked
+    * should emit onIdSelected with correct id when "Details" clicked
+* [X] should call `getScheduledEventList` service method when `updateSwitch` changed to true',
     * delete this test
-* [ ] should emit `openDetailsEvent` with correct id when `openDetails` is called',
-    * should call onIdSelected on intracom service in onIdSelected
+* [X] should emit `openDetailsEvent` with correct id when `openDetails` is called',
+    * should call onIdSelected on intracom service with correct id when "Details" clicked
 ====== New ======
-* [ ] should destroy subscription to intracom in ngOnDestroy
-    * [ ] written
-    * [ ] passing
-* [ ] should display scheduled events provided by intracom when passed through
-    subject
-    * [ ] written
-    * [ ] passing
+* [X] should destroy subscription to scheduled events in ngOnDestroy
+    * [X] written
+    * [X] passing
+* [X] should should update list when scheduledEvents updated
+    * [X] written
+    * [X] passing
 ==== MonthlyCalendarComponent ====
 * trivial component
 ===== Tests =====
-* [ ] should create
-    * [ ] written
-    * [ ] passing
-* [ ] should have message variable set to 'MonthlyCalendarComponent works!
-    * [ ] written
-    * [ ] passing
-* [ ] should render message in an h1 tag
-    * [ ] written
-    * [ ] passing
+* [X] should create
+    * [X] written
+    * [X] passing
+* [X] should have message variable set to 'MonthlyCalendarComponent works!
+    * [X] written
+    * [X] passing
+* [X] should render message in an h1 tag
+    * [X] written
+    * [X] passing
 == Integration ==
 == Coat of Paint ==
 = Additional Tasks =
-* [[0013_MoveAddScheduledEventButton]]
-* [[0014_MoveListScheduledEvents]]
-* [[0015_ScheduledEventDisplayToggle]]
+* ~~[[0013_MoveAddScheduledEventButton]]~~
+* ~~[[0014_MoveListScheduledEvents]]~~
+* ~~[[0015_ScheduledEventDisplayToggle]]~~
 = To-Do =
 * NOTE: the ScheduledEventsComponent tests import the full button toggle module
     * this isn't good practice, but I'm not sure writing an effective fake

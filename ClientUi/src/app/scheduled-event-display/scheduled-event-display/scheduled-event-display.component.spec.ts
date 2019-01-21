@@ -113,7 +113,6 @@ describe('ScheduledEventDisplayComponent', () => {
   });
   it('should call loadComponent with index when currentDisplayKind receives new value',
      () => {
-    spyOn(component, 'loadComponent');
     let initialKindValue: DisplayKind = DisplayKind.List;
     let newKindValue: DisplayKind = DisplayKind.Monthly;
 
@@ -123,16 +122,16 @@ describe('ScheduledEventDisplayComponent', () => {
     });
     fixture.detectChanges();
 
-    let beforeCalls = component.loadComponent.calls.count();
+    spyOn(component, 'loadComponent');
     component.currentDisplayKind = DisplayKind.Monthly;
     component.ngOnChanges({
       currentDisplayKind: new SimpleChange(initialKindValue, newKindValue, false)
     });
     fixture.detectChanges();
 
-    expect(component.loadComponent).toHaveBeenCalledTimes(beforeCalls + 1);
+    expect(component.loadComponent).toHaveBeenCalledTimes(1);
   });
-  it('should request component factory from display service when loadComponent is called',
+  it('should request component from display service when loadComponent is called',
      () => {
     component.loadComponent(DisplayKind.List);
     expect(displaySpy.getDisplayComponent).toHaveBeenCalledWith(DisplayKind.List);
