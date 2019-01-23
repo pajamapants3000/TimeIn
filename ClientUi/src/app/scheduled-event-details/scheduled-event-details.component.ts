@@ -21,7 +21,7 @@ import { ScheduledEventService } from '../scheduled-event.service';
 export class ScheduledEventDetailsComponent implements OnInit, OnChanges {
 
   @Input() detailsId: number = null;
-  @Input() detailsUpdateSwitch: boolean;
+  @Input() isOpen: boolean;
   @Output() closeDetailsEvent = new EventEmitter<Boolean>();
 
   model: ScheduledEvent;
@@ -39,9 +39,11 @@ export class ScheduledEventDetailsComponent implements OnInit, OnChanges {
       console.log("changes to detailsId detected in scheduled-event-details component.");
       this.setModelData();
     }
-    if (changes["detailsUpdateSwitch"] != undefined) {
-      console.log("changes to UpdateSwitch detected in scheduled-event-details component.");
-      this.setModelData();
+    if (changes["isOpen"] != undefined) {
+      //console.log("changes to UpdateSwitch detected in scheduled-event-details component.");
+      if (this.isOpen) {
+        this.setModelData();
+      }
     }
   }
 
@@ -72,7 +74,7 @@ export class ScheduledEventDetailsComponent implements OnInit, OnChanges {
     if (isOk) {
       if (this.model.when < ScheduledEvent.whenLowerLimit ||
           this.model.when > ScheduledEvent.whenUpperLimit) {
-        console.log("Failed to save scheduled event.");
+        console.log("Failed to save scheduled event - invalid data.");
         return;
       }
 

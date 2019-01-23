@@ -19,11 +19,12 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ScheduledEventDisplayModule } from './scheduled-event-display/scheduled-event-display.module';
+import { ScheduledEventDisplayComponent } from
+'./scheduled-event-display/scheduled-event-display/scheduled-event-display.component';
 
 import { AppComponent } from './app.component';
 import { AddReminderComponent } from './add-reminder/add-reminder.component';
 import { ListRemindersComponent } from './list-reminders/list-reminders.component';
-import { ListScheduledEventsComponent } from './list-scheduled-events/list-scheduled-events.component';
 import { ScheduledEventDetailsComponent } from './scheduled-event-details/scheduled-event-details.component';
 import { ScheduledEventsComponent } from './scheduled-events/scheduled-events.component';
 
@@ -36,7 +37,6 @@ import { ScheduledEventService } from './scheduled-event.service';
     AppComponent,
     AddReminderComponent,
     ListRemindersComponent,
-    ListScheduledEventsComponent,
     ScheduledEventDetailsComponent,
     ScheduledEventsComponent,
   ],
@@ -58,6 +58,7 @@ import { ScheduledEventService } from './scheduled-event.service';
     ScheduledEventDisplayModule,
   ],
   providers: [],
+  entryComponents: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

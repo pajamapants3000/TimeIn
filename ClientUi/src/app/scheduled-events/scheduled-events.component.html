@@ -1,10 +1,9 @@
 <div class="scheduled-events-container">
   <mat-sidenav-container class="mat-sidenav-container">
-    <mat-sidenav #sidenav mode="over" [(opened)]="isDetailsOpen">
+    <mat-sidenav #sidenav mode="over">
 
-      <app-scheduled-event-details class="scheduled-event"
-                          [detailsId]="detailsId"
-                          [detailsUpdateSwitch]="detailsUpdateSwitch"
+      <app-scheduled-event-details class="scheduled-event" #details
+                          [isOpen]="sidenav.opened"
                           (closeDetailsEvent)="closeDetails($event)">
       </app-scheduled-event-details>
     </mat-sidenav>
@@ -23,7 +22,7 @@
         </mat-button-toggle-group>
       </div>
       <div class="display-scheduled-events-container">
-        <app-scheduled-event-display class="display-scheduled-events"
+        <app-scheduled-event-display class="display-scheduled-events" #display
                                      [scheduledEvents$]="scheduledEvents$"
                                      [currentDisplayKind]="currentDisplayKind"
                                      (idSelected)="openDetails($event)">

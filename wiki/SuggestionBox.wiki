@@ -1,8 +1,8 @@
 %title SuggestionBox | TimeIn | Projects
 
 = Contents =
-    - [[#Branched Development|Branched Development]]
     - [[#Scheduled Events Displays/Calendars|Scheduled Events Displays/Calendars]]
+    - [[#ScheduledEventDisplayItem|ScheduledEventDisplayItem]]
     - [[#Prevent Duplicates|Prevent Duplicates]]
     - [[#Partial Postback|Partial Postback]]
     - [[#Full Keyboard Control|Full Keyboard Control]]
@@ -15,21 +15,34 @@
     - [[#Only request patch when model has changes|Only request patch when model has changes]]
     - [[#User can create multiple lists|User can create multiple lists]]
     - [[#Completed Tasks|Completed Tasks]]
+        - [[#Completed Tasks#Branched Development|Branched Development]]
         - [[#Completed Tasks#Create scheduled events|Create scheduled events]]
         - [[#Completed Tasks#Mark as complete|Mark as complete]]
         - [[#Completed Tasks#Data Persistence|Data Persistence]]
         - [[#Completed Tasks#Initialize|Initialize]]
 
 
-= Branched Development =
-Keep master branch clean, but create dev branch for committing incomplete tasks.
-Dev branch merges into master when task is complete.
-- Created Task 0007
 = Scheduled Events Displays/Calendars =
 We want our scheduled events to be viewable in multiple convenient ways:
 * Monthly Calendar
 * Weekly Schedule
 * Day PLanner
+- Created Task 0008
+    - Created Task 0009
+    - Created Task 0010
+    - Created Task 0011
+    - Created Task 0012
+        - Created Task 0013
+        - Created Task 0014
+        - Created Task 0015
+- Completed Task 0012, including all subtasks (0013, 0014, 0015)
+= ScheduledEventDisplayItem =
+Though ListComponent will soon not be used except for testing and a fall-back,
+it might be a good idea to make a control dedicated to the display of a single
+item in the list. This can be carried through to the other display types as
+well; each item shown in the MonthlyCalendar, for example, will need a specific
+layout, set of properties to display, in a specific format. This can be
+encapsulated, and it probably should be.
 = Prevent Duplicates =
 Add validation that prevents:
 * adding reminders that have same name as existing incomplete reminders
@@ -67,6 +80,11 @@ In addition to "Reminders", which is a main list, add the ability to create
 separate custom lists of associated reminders.
 
 = Completed Tasks =
+== Branched Development ==
+Keep master branch clean, but create dev branch for committing incomplete tasks.
+Dev branch merges into master when task is complete.
+- Created Task 0007
+- Completed
 == Create scheduled events ==
 In addition to simple reminders, I would like to be able to add items with
 specific date/times associated with them.

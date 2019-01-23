@@ -1,8 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ContentChild,
+} from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
+import { MatSidenav } from '@angular/material';
 
 import { ScheduledEvent } from '../models/scheduled-event';
 import { ScheduledEventService } from '../scheduled-event.service';
+import { ScheduledEventDetailsComponent } from
+  '../scheduled-event-details/scheduled-event-details.component';
+import { ScheduledEventDisplayComponent } from
+  '../scheduled-event-display/scheduled-event-display/scheduled-event-display.component';
 import { DisplayKind } from '../scheduled-event-display/display-kind';
 
 @Component({
@@ -12,19 +22,26 @@ import { DisplayKind } from '../scheduled-event-display/display-kind';
 })
 export class ScheduledEventsComponent implements OnInit {
 
-  constructor(private service: ScheduledEventService) { }
-
-  isDetailsOpen: boolean = false;
-  detailsId: number = null;
-  detailsUpdateSwitch: boolean = false;
+  @ViewChild('sidenav') private sidenav: MatSidenav;
+  @ViewChild('details')
+  private details: ScheduledEventDetailsComponent;
+  // couldn't get @ViewChild to work with ScheduledEventDisplayComponent
+  // my best guess is I'm not importing it correctly to be used this way
+  // but all the documentation I've seen says it should work.
+  @ViewChild('display')
+  private display: ScheduledEventDisplayComponent;
 
   currentDisplayKind: DisplayKind = DisplayKind.List;
   scheduledEvents$: Observable<ScheduledEvent[]>;
   scheduledEventSource: Subject<ScheduledEvent[]>;
 
-  ngOnInit() {
+  constructor(private service: ScheduledEventService) {
     this.scheduledEventSource = new Subject<ScheduledEvent[]>();
     this.scheduledEvents$ = this.scheduledEventSource.asObservable();
+  }
+
+  ngOnInit() {
+    console.log("ngOnInit called for scheduled-events component");
     this.updateScheduledEvents();
   }
 
@@ -40,24 +57,14 @@ export class ScheduledEventsComponent implements OnInit {
 
   onAddClicked(): void {
     console.log(`Opening dialog to add new scheduled event.`);
-    if (this.detailsId == null) {
-      this.detailsUpdateSwitch = !this.detailsUpdateSwitch;
-    } else {
-      this.detailsId = null;
-    }
-
-    this.isDetailsOpen = true;
+    this.details.detailsId = null;
+    this.sidenav.opened = true;
   }
 
   openDetails(id: number) {
     console.log(`Opening scheduled event details for id: ${id}`);
-    if (this.detailsId == id) {
-      this.detailsUpdateSwitch = !this.detailsUpdateSwitch;
-    } else {
-      this.detailsId = id;
-    }
-
-    this.isDetailsOpen = true;
+    this.details.detailsId = id;
+    this.sidenav.opened = true;
   }
 
   closeDetails(_isUpdated: boolean) {
@@ -66,7 +73,7 @@ export class ScheduledEventsComponent implements OnInit {
       this.updateScheduledEvents();
     }
 
-    this.isDetailsOpen = false;
+    this.sidenav.opened = false;
   }
 
   onDisplayKindChanged(kind: string) {

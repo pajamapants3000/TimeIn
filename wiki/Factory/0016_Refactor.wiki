@@ -6,6 +6,7 @@
     - [[#Solution Breakdown|Solution Breakdown]]
         - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventsComponent|ScheduledEventsComponent]]
         - [[#Solution Breakdown#Integration|Integration]]
         - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
     - [[#Additional Tasks|Additional Tasks]]
@@ -24,6 +25,19 @@
 * I don't think there is much to do here since there isn't much to it yet, but
     take a look just in case
 == Frontend ==
+=== ScheduledEventsComponent ===
+* [ ] eliminate displayUpdateSwitch
+    * [ ] instead, utilize the sidenav `opened` property
+* [ ] Create ViewChild for:
+    * [ ] mat-sidenav element
+        * [ ] set `opened` property in place of `isDetailsOpen`
+    * [ ] app-scheduled-event-display element
+        * [ ] set `scheduledEvents$` property without intermediate of same name
+        * [ ] set `currentDisplayKind` property without intermediate of same name
+    * [ ] app-scheduled-event-details element
+        * [ ] set `detailsId` property without intermediate of same name
+* [ ] update tests to make clear, clean account of behavior
+    * focus on interaction with other components, and with user
 == Integration ==
 * not really applicable, except perhaps in the end-to-end tests
 == Coat of Paint ==
