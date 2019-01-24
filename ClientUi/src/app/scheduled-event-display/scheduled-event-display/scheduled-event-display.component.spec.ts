@@ -1,9 +1,7 @@
-import {
-  Component,
-  SimpleChange,
-  ComponentFactoryResolver,
-} from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, SimpleChange, } from '@angular/core';
+import { By } from '@angular/platform-browser'
+import { BrowserDynamicTestingModule } from "@angular/platform-browser-dynamic/testing";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Subject, of } from 'rxjs';
 
 import * as json from '../../../../../testData.json';
@@ -18,11 +16,14 @@ import { storedUtcDateToDate } from '../../common';
 
 @Component({selector: 'app-list', template: '<ng-content></ng-content>' })
 class ListComponentStub { }
+@Component({selector: 'app-monthly-calendar', template: '<ng-content></ng-content>' })
+class MonthlyCalendarComponentStub { }
 
 describe('ScheduledEventDisplayComponent', () => {
   let component: ScheduledEventDisplayComponent;
   let fixture: ComponentFixture<ScheduledEventDisplayComponent>;
   let fakeList: ListComponentStub = new ListComponentStub();
+  let fakeMonthlyCalendar: MonthlyCalendarComponentStub = new MonthlyCalendarComponentStub();
   let intracomSpy: jasmine.SpyObj<IntracomService>;
   let displaySpy: jasmine.SpyObj<DisplayService>;
   let scheduledEventsSource: Subject<ScheduledEvent[]>;
@@ -46,14 +47,22 @@ describe('ScheduledEventDisplayComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         ScheduledEventDisplayComponent,
-        ListComponentStub
+        MonthlyCalendarComponentStub,
+        ListComponentStub,
       ],
       providers: [
         { provide: IntracomService, useValue: spy_intracom },
         { provide: DisplayService, useValue: spy_display },
         { provide: ListComponentStub, useValue: fakeList },
+        { provide: MonthlyCalendarComponentStub, useValue: fakeMonthlyCalendar },
       ],
     })
+
+    TestBed.overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [ListComponentStub, MonthlyCalendarComponentStub]
+      }
+    });
 
     testData = json.ScheduledEvent.map(i => {
       return new ScheduledEvent({
@@ -78,6 +87,12 @@ describe('ScheduledEventDisplayComponent', () => {
     displaySpy.getDisplayComponent.and.returnValue(null);
   });
 
+  afterEach(() => {
+    intracomSpy.getIdSelected$.calls.reset();
+    intracomSpy.onScheduledEventsUpdated.calls.reset();
+    displaySpy.getDisplayComponent.calls.reset();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -89,16 +104,12 @@ describe('ScheduledEventDisplayComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    let beforeCalls: number = intracomSpy.onScheduledEventsUpdated.calls.count();
     source.next(testData_empty);
     expect(intracomSpy.onScheduledEventsUpdated)
-      .toHaveBeenCalledTimes(beforeCalls + 1);
+      .toHaveBeenCalledWith(testData_empty);
   });
   it('should emit idSelected when intracom sends new idSelected',
      () => {
-    let source = new Subject<number>();
-    intracomSpy.getIdSelected$.and.returnValue(source.asObservable());
-
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -106,34 +117,37 @@ describe('ScheduledEventDisplayComponent', () => {
     let listenNumber: number = arbitraryNumber;
     component.idSelected.subscribe( success => { listenNumber = success; });
 
-    source.next(arbitraryNumber + 1);
+    idSelectedSource.next(arbitraryNumber + 1);
     fixture.detectChanges();
 
     expect(listenNumber).not.toEqual(arbitraryNumber);
   });
-  it('should call loadComponent with index when currentDisplayKind receives new value',
+  it('should render component when currentDisplayKind receives new value',
      () => {
-    let initialKindValue: DisplayKind = DisplayKind.List;
-    let newKindValue: DisplayKind = DisplayKind.Monthly;
+    // haven't figured out how to test the actual dynamic component rendering
+    // so I encapsulated that step in a method - renderComponent
+    displaySpy.getDisplayComponent.and.returnValue(ListComponentStub);
+    spyOn(component, 'renderComponent');
 
     component.currentDisplayKind = DisplayKind.List;
     component.ngOnChanges({
-      currentDisplayKind: new SimpleChange(DisplayKind.None, initialKindValue, true)
+      currentDisplayKind: new SimpleChange(DisplayKind.None, DisplayKind.List, true)
     });
     fixture.detectChanges();
 
-    spyOn(component, 'loadComponent');
-    component.currentDisplayKind = DisplayKind.Monthly;
+    expect(component.renderComponent).toHaveBeenCalledWith(ListComponentStub);
+  });
+  it('should request component from display service when currentDisplayKind receives new value',
+     () => {
+    let initialKindValue: DisplayKind = DisplayKind.None;
+    let newKindValue: DisplayKind = DisplayKind.Monthly;
+
+    component.currentDisplayKind = newKindValue;
     component.ngOnChanges({
       currentDisplayKind: new SimpleChange(initialKindValue, newKindValue, false)
     });
     fixture.detectChanges();
 
-    expect(component.loadComponent).toHaveBeenCalledTimes(1);
-  });
-  it('should request component from display service when loadComponent is called',
-     () => {
-    component.loadComponent(DisplayKind.List);
-    expect(displaySpy.getDisplayComponent).toHaveBeenCalledWith(DisplayKind.List);
+    expect(displaySpy.getDisplayComponent).toHaveBeenCalledWith(newKindValue);
   });
 });

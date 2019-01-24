@@ -8,10 +8,7 @@ import { ScheduledEvent } from '../models/scheduled-event';
 })
 export class IntracomService {
   public idSelectedSource = new Subject<number>();
-  public scheduledEventsSource = new Subject<ScheduledEvent[]>();
-
-  idSelected$ = this.idSelectedSource.asObservable();
-  scheduledEvents$ = this.scheduledEventsSource.asObservable();
+  public scheduledEventsSource: Subject<ScheduledEvent[]> = new Subject<ScheduledEvent[]>();
 
   onIdSelected(id: number) {
     this.idSelectedSource.next(id);
@@ -22,10 +19,10 @@ export class IntracomService {
   }
 
   getScheduledEvents$(): Observable<ScheduledEvent[]> {
-    return this.scheduledEvents$;
+    return this.scheduledEventsSource.asObservable();
   }
 
   getIdSelected$(): Observable<number> {
-    return this.idSelected$;
+    return this.idSelectedSource.asObservable();
   }
 }

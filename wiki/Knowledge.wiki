@@ -32,9 +32,12 @@
     - [[#Angular Testing|Angular Testing]]
         - [[#Angular Testing#fakeAsync|fakeAsync]]
         - [[#Angular Testing#ngModel|ngModel]]
+        - [[#Angular Testing#By|By]]
     - [[#Git|Git]]
         - [[#Git#Branching and Merging|Branching and Merging]]
             - [[#Git#Branching and Merging#In Visual Studio|In Visual Studio]]
+    - [[#Angular|Angular]]
+        - [[#Angular#Unsorted lessons|Unsorted lessons]]
 
 = The Problem with UWP =
 * Universal Windows applications cannot use consoles as UI
@@ -426,6 +429,8 @@ Summary:
     `tick`
 * putting `detectChanges` in the `beforeEach` breaks it!
 * somehow this prevents the two-way binding on ngModel from working - sheesh!
+== By ==
+* must import `By` from '@angular/platform-browser'
 = Git =
 == Branching and Merging ==
 * from https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging
@@ -454,4 +459,8 @@ Summary:
 === In Visual Studio ===
 * should be pretty straightforward with the above information
 * I will post any notes here once I've tried it, if there are any gotchas
+= Angular =
+== Unsorted lessons ==
+* `@Output` properties must be initialized
+    * `@Input` properties need never be set
 

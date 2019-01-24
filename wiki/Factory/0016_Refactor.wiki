@@ -6,7 +6,22 @@
     - [[#Solution Breakdown|Solution Breakdown]]
         - [[#Solution Breakdown#Backend|Backend]]
         - [[#Solution Breakdown#Frontend|Frontend]]
+            - [[#Solution Breakdown#Frontend#AppComponent|AppComponent]]
+            - [[#Solution Breakdown#Frontend#AddReminderComponent|AddReminderComponent]]
+            - [[#Solution Breakdown#Frontend#ListRemindersComponent|ListRemindersComponent]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventDetailsComponent|ScheduledEventDetailsComponent]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventDisplayComponent|ScheduledEventDisplayComponent]]
+            - [[#Solution Breakdown#Frontend#ListComponent|ListComponent]]
+            - [[#Solution Breakdown#Frontend#MonthlyCalendarComponent|MonthlyCalendarComponent]]
             - [[#Solution Breakdown#Frontend#ScheduledEventsComponent|ScheduledEventsComponent]]
+            - [[#Solution Breakdown#Frontend#Common|Common]]
+            - [[#Solution Breakdown#Frontend#Model - Reminder|Model - Reminder]]
+            - [[#Solution Breakdown#Frontend#Model - ScheduledEvent|Model - ScheduledEvent]]
+            - [[#Solution Breakdown#Frontend#ReminderService|ReminderService]]
+            - [[#Solution Breakdown#Frontend#ScheduledEventService|ScheduledEventService]]
+            - [[#Solution Breakdown#Frontend#IntracomService|IntracomService]]
+            - [[#Solution Breakdown#Frontend#DisplayService|DisplayService]]
+            - [[#Solution Breakdown#Frontend#InMemoryDataService|InMemoryDataService]]
         - [[#Solution Breakdown#Integration|Integration]]
         - [[#Solution Breakdown#Coat of Paint|Coat of Paint]]
     - [[#Additional Tasks|Additional Tasks]]
@@ -21,27 +36,116 @@
 * remove code, variables and definitions, etc., that has no purpose
 = Solution Proposal =
 = Solution Breakdown =
+* For each class:
+    * update tests to make clear, clean account of behavior
+        * focus on interaction with other components, and with user
+    * clean up code:
+        * remove unused imports
+        * simplify logic and organization
+        * look for ideas for improvement
+    * check consistency
+        * classes defined in CSS should match classes in template
 == Backend ==
 * I don't think there is much to do here since there isn't much to it yet, but
     take a look just in case
 == Frontend ==
+=== AppComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== AddReminderComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== ListRemindersComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== ScheduledEventDetailsComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== ScheduledEventDisplayComponent ===
+* [X] complete
+* [X] tests
+    * I couldn't test the dynamic rendering of components
+        * should be able to I think, but didn't work and didn't want to spend
+            too much time trying to figure it out
+        * instead, encapsulated the rendering step in a function to spy on
+        * end-to-end tests can handle the rest
+* [X] cleanup
+=== ListComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== MonthlyCalendarComponent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
 === ScheduledEventsComponent ===
-* [ ] eliminate displayUpdateSwitch
-    * [ ] instead, utilize the sidenav `opened` property
-* [ ] Create ViewChild for:
-    * [ ] mat-sidenav element
-        * [ ] set `opened` property in place of `isDetailsOpen`
+* [X] complete
+* [X] tests
+* [X] cleanup
+* [X] eliminate displayUpdateSwitch
+    * [X] instead, utilize the sidenav `opened` property
+* [o] Create ViewChild for:
+    * [X] mat-sidenav element
+        * [X] set `opened` property in place of `isDetailsOpen`
     * [ ] app-scheduled-event-display element
         * [ ] set `scheduledEvents$` property without intermediate of same name
         * [ ] set `currentDisplayKind` property without intermediate of same name
-    * [ ] app-scheduled-event-details element
-        * [ ] set `detailsId` property without intermediate of same name
-* [ ] update tests to make clear, clean account of behavior
-    * focus on interaction with other components, and with user
+        * I couldn't get these to work!
+        * perhaps come back to this another time
+    * [X] app-scheduled-event-details element
+        * [X] set `detailsId` property without intermediate of same name
+* [X] ~~change scheduledEvents$ to use a BehaviorSubject, to avoid the need to~~
+      ~~refresh list every time the view is changed~~
+      * upon further thought, I realized that changing the schedule view would
+            typically mean loading a different range of events
+            * this means it would always correspond to a new set of events to
+                display
+            * therefore, probably best to leave it as it is
+=== Common ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== Model - Reminder ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== Model - ScheduledEvent ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== ReminderService ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== ScheduledEventService ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
+=== IntracomService ===
+* [X] complete
+* [X] tests
+* [X] cleanup
+=== DisplayService ===
+* [X] complete
+* [X] tests
+* [X] cleanup
+=== InMemoryDataService ===
+* [ ] complete
+* [ ] tests
+* [ ] cleanup
 == Integration ==
-* not really applicable, except perhaps in the end-to-end tests
+* [ ] complete
+* end-to-end tests:
+    * [ ] complete
+    * [ ] test cases
+    * [ ] cleanup
 == Coat of Paint ==
 * one thing that might be good to do here is try to improve the UI a bit
+    * on second thought... probably not the task for that
 = Additional Tasks =
 = To-Do =
 = Progress =

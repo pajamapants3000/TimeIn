@@ -28,11 +28,11 @@ describe('IntracomService', () => {
     const service: IntracomService = TestBed.get(IntracomService);
     expect(service).toBeTruthy();
   });
-  it('should return scheduledEvents$ observable when getScheduledEvents$ called',
+  it('should return observable of scheduledEventsSource when getScheduledEvents$ called',
      () => {
     let subject: Subject<ScheduledEvent[]> = new Subject<ScheduledEvent[]>();
     const service: IntracomService = TestBed.get(IntracomService);
-    service.scheduledEvents$ = subject.asObservable();
+    service.scheduledEventsSource = subject;
 
     let testObservable = service.getScheduledEvents$();
     let subscriptionResult: ScheduledEvent[];
@@ -44,12 +44,12 @@ describe('IntracomService', () => {
 
     expect(subscriptionResult.length).toEqual(testData.length);
   });
-  it('should return idSelected$ observable when getIdSelected$ called',
+  it('should return observable of idSelectedSource when getIdSelected$ called',
      () => {
     const arbitraryId: number = 2;
     let subject: Subject<number> = new Subject<number>();
     const service: IntracomService = TestBed.get(IntracomService);
-    service.idSelected$ = subject.asObservable();
+    service.idSelectedSource = subject;
 
     let testObservable = service.getIdSelected$();
     let subscriptionResult: number;

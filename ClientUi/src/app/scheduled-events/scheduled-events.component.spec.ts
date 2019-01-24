@@ -101,6 +101,20 @@ describe('ScheduledEventsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('should render "Add new event" button',
+     () => {
+    const element = fixture.debugElement.nativeElement;
+    expect(element.querySelector('#addScheduledEventButton')).toBeTruthy();
+  });
+  it('should render toggle button with options List and Monthly',
+     () => {
+    const element = fixture.debugElement.nativeElement;
+    const toggleGroup = element.querySelector('#displayKind');
+    expect(toggleGroup).toBeTruthy();
+    const toggleButtons = toggleGroup.querySelectorAll('mat-button-toggle');
+    expect(toggleButtons[0].innerText).toEqual("List");
+    expect(toggleButtons[1].innerText).toEqual("Monthly");
+  });
   it('should render ScheduledEventDisplayComponent',
      () => {
     const element = fixture.debugElement.nativeElement;
@@ -169,7 +183,7 @@ describe('ScheduledEventsComponent', () => {
       .componentInstance;
     expect(details.detailsId).toEqual(null);
   });
-  it('should close side nav when `closeDetailsEvent` event is triggered',
+  it('should close side nav when `closeDetailsEvent` event is emitted by details component',
      () => {
     const arbitraryBoolean: boolean = false;
     const debugElement = fixture.debugElement;
@@ -178,9 +192,11 @@ describe('ScheduledEventsComponent', () => {
     component.onAddClicked();
     fixture.detectChanges();
 
+    // verify initial conditions of test
     let details = debugElement.query(By.directive(ScheduledEventDetailsStub));
     expect(nav.opened).toEqual(true);
     expect(details).toBeTruthy();
+    //
 
     details.componentInstance.closeDetailsEvent.emit(arbitraryBoolean);
     fixture.detectChanges();
@@ -231,11 +247,6 @@ describe('ScheduledEventsComponent', () => {
     details.componentInstance.closeDetailsEvent.emit(true);
     fixture.detectChanges();
   });
-  it('should render "Add new event" button',
-     () => {
-    const element = fixture.debugElement.nativeElement;
-    expect(element.querySelector('#addScheduledEventButton')).toBeTruthy();
-  });
   it('should open sidenav when addScheduledEvent button clicked',
      () => {
     const debugElement = fixture.debugElement;
@@ -249,17 +260,9 @@ describe('ScheduledEventsComponent', () => {
     expect(nav.opened).toBeTruthy();
     expect(details).toBeTruthy();
   });
-  it('should render toggle button with options List and Monthly',
-     () => {
-    const element = fixture.debugElement.nativeElement;
-    const toggleGroup = element.querySelector('#displayKind');
-    expect(toggleGroup).toBeTruthy();
-    const toggleButtons = toggleGroup.querySelectorAll('mat-button-toggle');
-    expect(toggleButtons[0].innerText).toEqual("List");
-    expect(toggleButtons[1].innerText).toEqual("Monthly");
-  });
   it('should set currentDisplayKind input property to DisplayKind.List when onDisplayKindChanged called with "List"',
      () => {
+    // NOTE: it's up to button toggle to make proper callback; we test from there.
     const debugElement = fixture.debugElement;
     component.onDisplayKindChanged("List");
     fixture.detectChanges();
@@ -270,6 +273,7 @@ describe('ScheduledEventsComponent', () => {
   });
   it('should set currentDisplayKind input property to DisplayKind.Monthly when onDisplayKindChanged called with "Monthly"',
      () => {
+    // NOTE: it's up to button toggle to make proper callback; we test from there.
     const debugElement = fixture.debugElement;
     component.onDisplayKindChanged("Monthly");
     fixture.detectChanges();
