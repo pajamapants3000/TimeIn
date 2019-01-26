@@ -46,21 +46,21 @@
     * check consistency
         * classes defined in CSS should match classes in template
 == Backend ==
-* I don't think there is much to do here since there isn't much to it yet, but
-    take a look just in case
+* [ ] review all code
+* [ ] see about writing unit tests
 == Frontend ==
 === AppComponent ===
-* [ ] complete
-* [ ] tests
-* [ ] cleanup
+* [X] complete
+* [X] tests
+* [X] cleanup
 === AddReminderComponent ===
-* [ ] complete
-* [ ] tests
-* [ ] cleanup
+* [X] complete
+* [X] tests
+* [X] cleanup
 === ListRemindersComponent ===
-* [ ] complete
-* [ ] tests
-* [ ] cleanup
+* [X] complete
+* [X] tests
+* [X] cleanup
 === ScheduledEventDetailsComponent ===
 * [ ] complete
 * [ ] tests

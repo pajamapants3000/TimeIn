@@ -1,31 +1,40 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Subject, of } from 'rxjs';
 
 import { ListRemindersComponent } from './list-reminders.component';
-import { ReminderFakeService } from '../reminder.fake.service';
 import { ReminderService } from '../reminder.service';
 import { doArraysContainSameValues, click } from '../common';
 import { Reminder } from '../models/reminder';
 import * as json from '../../../../testData.json';
 
 @Component({selector: 'mat-list', template: '<ng-content></ng-content>'})
-class MatListStub {
-}
+class MatListStub { }
 @Component({selector: 'mat-list-item', template: '<ng-content></ng-content>'})
-class MatListItemStub {
-}
+class MatListItemStub { }
 @Component({selector: 'mat-icon', template: '<div></div>'})
-class MatIcon {
-}
+class MatIcon { }
 
 describe('ListRemindersComponent', () => {
   let component: ListRemindersComponent;
   let fixture: ComponentFixture<ListRemindersComponent>;
-  let fakeService: ReminderFakeService = new ReminderFakeService();
+  let reminderServiceSpy: jasmine.SpyObj<ReminderService>;
   let testData: Reminder[];
   let testData_empty: Reminder[];
 
+  const reminderToAdd: Reminder = new Reminder({
+    value: "reminderToAdd",
+    isCompleted: false
+  });
+  const reminderSource: Subject<Reminder[]> = new Subject<Reminder[]>();
+
+
   beforeEach(() => {
+    let spy = jasmine.createSpyObj("ReminderService", [
+      "refreshRemindersList",
+      "updateReminder",
+      "getReminderSource",
+    ]);
     TestBed.configureTestingModule({
       declarations: [
         ListRemindersComponent,
@@ -34,209 +43,189 @@ describe('ListRemindersComponent', () => {
         MatIcon
       ],
       providers: [
-        { provide: ReminderService, useValue: fakeService }
+        { provide: ReminderService, useValue: spy }
       ]
     })
 
-    // NOTE: data gets sorted in NgOnInit
-    testData = json.Reminder.map(i => {
-      return new Reminder().deserialize(i);
-    });
+    testData = json.Reminder.map(i => {return new Reminder().deserialize(i);});
     testData_empty = [];
 
-    fakeService.fakeData = testData_empty;
-    fakeService.resetCalls();
+    reminderServiceSpy = TestBed.get(ReminderService);
+    reminderServiceSpy.getReminderSource.and.returnValue(reminderSource);
+    reminderServiceSpy.refreshRemindersList.and.returnValue(of());
+    reminderServiceSpy.updateReminder.and.returnValue(of());
 
     fixture = TestBed.createComponent(ListRemindersComponent);
     component = fixture.componentInstance;
   });
 
   it('should be created',
-    () => {
+     () => {
+    component.ngOnInit();
+    reminderSource.next(testData);
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
-
-  /* Template-related tests */
   it('should render h2 heading "Reminders"',
-    () => {
-    const element: HTMLElement = fixture.nativeElement;
-    const h2 = element.querySelector('h2');
+     () => {
+    component.ngOnInit();
+    reminderSource.next(testData);
+    fixture.detectChanges();
+
+    const h2 = fixture.nativeElement.querySelector('h2');
     expect(h2.textContent).toEqual('Reminders');
   });
-
   it('should render a material list',
-    () => {
-    const element: HTMLElement = fixture.nativeElement;
-    const list = element.querySelector('mat-list');
+     () => {
+    component.ngOnInit();
+    reminderSource.next(testData);
+    fixture.detectChanges();
+
+    const list = fixture.nativeElement.querySelector('mat-list');
     expect(list).toBeTruthy();
   });
-
   it('should render an empty list when storage is empty',
      () => {
-    fakeService.fakeData = testData_empty;
     component.ngOnInit();
+    reminderSource.next(testData_empty);
     fixture.detectChanges();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
                                               .querySelector('mat-list')
     expect(remindersListElement).toBeTruthy();
-    let listItems = remindersListElement.getElementsByTagName('mat-list-item');
+    let listItems = fixture.nativeElement.getElementsByTagName('mat-list-item');
     expect(listItems.length).toEqual(0);
   });
-
   it('should render ordered list (isCompleted (asc), then is (asc)) when non-empty',
      () => {
-    fakeService.fakeData = testData
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
-    let remindersListElement: HTMLElement = fixture.nativeElement.querySelector('mat-list')
-    let listItems = remindersListElement.querySelectorAll('mat-list-item span');
-    let listValues: string[] = [];
-
-    expect(listItems.length).toBeGreaterThan(0);
-
-    for (let i = 0; i < listItems.length; i++) {
-      listValues.push(listItems[i].textContent)
-    }
-    let reminderExpectedValues = testData.sort(Reminder.compare)
+    let expectedResult: string[] = testData.sort(Reminder.compare)
                                          .map(reminder => reminder.value);
 
-    expect(doArraysContainSameValues(reminderExpectedValues, listValues))
-      .toBeTruthy();
-    // help avoid trivial passes
-    expect(doArraysContainSameValues(
-      testData.sort((a, b) => {
-        if (a.id < b.id) return -1;
-        if (a.id > b.id) return 1;
-        if (a.id == b.id) return 0;
-      }).map(reminder => reminder.value),
-      listValues)).toBeFalsy();
-  });
-
-  it('should render updated, properly ordered list when data changes',
-     () => {
-    let expectedResult: Reminder[] = [...testData,
-      new Reminder({ value:'new reminder' })].sort(Reminder.compare);
-
-    fakeService.fakeData = testData;
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    fakeService.fakeData = expectedResult;
-    fakeService.refreshRemindersList();
-    fixture.detectChanges();
-
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    let listItems = remindersListElement.querySelectorAll('mat-list-item span');
+    let listItems = fixture.nativeElement.querySelectorAll('mat-list-item span');
     let listValues: string[] = [];
 
-    expect(listItems.length).toBeGreaterThan(0);
     for (let i = 0; i < listItems.length; i++) {
       listValues.push(listItems[i].textContent)
     }
-    let reminderExpectedValues = expectedResult.map(reminder => reminder.value);
 
-    expect(doArraysContainSameValues(reminderExpectedValues, listValues))
-      .toBeTruthy();
-    expect(doArraysContainSameValues(
-      expectedResult.sort((a, b) => {
-        if (a.id < b.id) return -1;
-        if (a.id > b.id) return 1;
-        if (a.id == b.id) return 0;
-      }).map(reminder => reminder.value),
-      listValues)).toBeFalsy();
-   });
-
-  it('should render an button on all list items',
-    () => {
-    fakeService.fakeData = testData;
+    expect(doArraysContainSameValues(expectedResult, listValues)).toBeTruthy();
+  });
+  it('should render updated, properly ordered list when data changes',
+     () => {
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    let listItems = remindersListElement.querySelectorAll('mat-list-item');
-    expect(listItems.length).toBeGreaterThan(0);
+    let newData: Reminder[] = [...testData,
+                                      new Reminder({ value: 'new reminder' })]
+      .sort(Reminder.compare);
+    let expectedResult: string[] = newData.map(reminder => reminder.value);
+
+    reminderSource.next(newData);
+    fixture.detectChanges();
+
+    let listItems = fixture.nativeElement.querySelectorAll('mat-list-item span');
+    let listValues: string[] = [];
+
+    for (let i = 0; i < listItems.length; i++) {
+      listValues.push(listItems[i].textContent)
+    }
+
+    expect(doArraysContainSameValues(expectedResult, listValues)).toBeTruthy();
+   });
+  it('should render an button on all list items',
+    () => {
+      // NOTE: I would like to figure out a way to test the correct icon on
+      // completed and incomplete reminders, but haven't figured it out
+    component.ngOnInit();
+    reminderSource.next(testData);
+    fixture.detectChanges();
+
+    let listItems = fixture.nativeElement.querySelectorAll('mat-list-item');
+
+    expect(listItems.length).toBeGreaterThan(0); // ensure non-trivial test
     for (let i = 0; i < listItems.length; i++) {
       let button = listItems[i].querySelector('button');
       expect(button).toBeTruthy();
     }
   });
-
   it('should render text on completed items with reminder-list-item-complete css class',
     () => {
-    fakeService.fakeData = testData;
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
     let expectedCssClassName: string = "reminder-list-item-complete";
 
-    let completeIds: string[] = testData.filter(i => i.isCompleted).map(i => `reminder_${i.id}`);
+    let completeIds: string[] = testData
+      .filter(i => i.isCompleted)
+      .map(i => `reminder_${i.id}`);
 
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    expect(completeIds.length).toBeGreaterThan(0);
+    expect(completeIds.length).toBeGreaterThan(0); // ensure non-trivial test
     for (let i = 0; i < completeIds.length; i++) {
-      let completedItem = remindersListElement.querySelector(`#${completeIds[i]}`);
+      let completedItem = fixture.nativeElement.querySelector(`#${completeIds[i]}`);
       expect(completedItem.className).toEqual(expectedCssClassName);
     }
   });
-
   it('should render text on non-completed items with reminder-list-item-incomplete css class',
     () => {
-    fakeService.fakeData = testData;
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
     let expectedCssClassName: string = "reminder-list-item-incomplete";
 
     let incompleteIds: string[] = testData.filter(i => !i.isCompleted).map(i => `reminder_${i.id}`);
 
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    expect(incompleteIds.length).toBeGreaterThan(0);
+    expect(incompleteIds.length).toBeGreaterThan(0); // ensure non-trivial test
     for (let i = 0; i < incompleteIds.length; i++) {
-      let incompletedItem = remindersListElement.querySelector(`#${incompleteIds[i]}`);
+      let incompletedItem = fixture.nativeElement.querySelector(`#${incompleteIds[i]}`);
       expect(incompletedItem.className).toEqual(expectedCssClassName);
     }
   });
-
   it('should call service method updateReminder with isCompleted true when button clicked on incomplete reminders',
     () => {
     const idToClick: number = 2;
     testData[idToClick].isCompleted = false;
+    let expected: Reminder = new Reminder({
+      id: idToClick,
+      value: null,
+      isCompleted: true
+    });
 
-    fakeService.fakeData = testData;
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
-    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(0);
+    reminderServiceSpy.updateReminder.calls.reset();
 
-    let remindersListElement: HTMLElement = fixture.nativeElement
-                                              .querySelector('mat-list')
-    let listItems = remindersListElement.querySelector(`#reminder_${idToClick}`);
-    let completeButton = listItems.querySelector("button");
+    let listItem = fixture.nativeElement.querySelector(`#reminder_${idToClick}`);
+    let completeButton = listItem.querySelector("button");
 
     click(completeButton);
 
-    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(1);
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].id).toEqual(idToClick);
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].value).toBeNull();
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].isCompleted).toBeTruthy();
+    expect(reminderServiceSpy.updateReminder).toHaveBeenCalledWith(expected);
   });
-
   it('should call service method updateReminder with isCompleted false when button clicked on completed reminders',
     () => {
     const idToClick: number = 3;
     testData[idToClick].isCompleted = true;
+    let expected: Reminder = new Reminder({
+      id: idToClick,
+      value: null,
+      isCompleted: false
+    });
 
-    fakeService.fakeData = testData;
     component.ngOnInit();
+    reminderSource.next(testData);
     fixture.detectChanges();
 
-    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(0);
+    reminderServiceSpy.updateReminder.calls.reset();
 
     let remindersListElement: HTMLElement = fixture.nativeElement
                                               .querySelector('mat-list')
@@ -245,18 +234,7 @@ describe('ListRemindersComponent', () => {
 
     click(completeButton);
 
-    expect(fakeService.memberCalls.get("updateReminder").length).toEqual(1);
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].id).toEqual(idToClick);
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].value).toBeNull();
-    expect(fakeService.memberCalls.get("updateReminder")[0][0].isCompleted).toBeFalsy();
-  });
-
-  /* Class-related tests */
-  it('should call service method refreshRemindersList in ngOnInit',
-     () => {
-    expect(fakeService.memberCalls.get("refreshRemindersList").length).toEqual(0);
-    component.ngOnInit();
-    expect(fakeService.memberCalls.get("refreshRemindersList").length).toEqual(1);
+    expect(reminderServiceSpy.updateReminder).toHaveBeenCalledWith(expected);
   });
 });
 

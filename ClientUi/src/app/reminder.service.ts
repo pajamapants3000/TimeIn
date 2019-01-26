@@ -14,7 +14,7 @@ export class ReminderService {
 
   constructor(private http: HttpClient) { }
 
-  reminders: Subject<Reminder[]> = new Subject<Reminder[]>();
+  reminderSource: Subject<Reminder[]> = new Subject<Reminder[]>();
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -24,35 +24,32 @@ export class ReminderService {
     headers: new HttpHeaders({ 'Content-Type': 'application/merge-patch+json' })
   };
 
+  public getReminderSource(): Subject<Reminder[]> {
+    return this.reminderSource;
+  }
+
   public addReminder(newReminder: Reminder): Observable<Reminder> {
     let result: Observable<Reminder> = this.http.post<Reminder>(`${apiUrl}/reminder`,
                                                             newReminder,
                                                             this.httpOptions);
     return result.pipe(tap(
       success => {
-        this.refreshRemindersList().subscribe();
+        this.refreshRemindersList();
         console.log(`Reminder added: ${success.value}.`);
-      },
-      error => {
-        throw new Error(`Failed to add reminder: ${newReminder.value}. ` +
-                                `URL: ${apiUrl}/reminder. ` +
-                                error.message);
     }));
   }
 
-  public refreshRemindersList(): Observable<Reminder[]> {
-    let result: Observable<Reminder[]> = this.http.get<Reminder[]>(`${apiUrl}/reminder`);
-
-    return result.pipe(tap(
+  public refreshRemindersList(): void {
+    this.http.get<Reminder[]>(`${apiUrl}/reminder`).subscribe(
       success => {
-        this.reminders.next(success);
+        this.reminderSource.next(success);
         console.log(`Retrieved list of ${success.length.toString()} reminders from server.`);
       },
       error => {
-        throw new Error("Failed to retrieve reminders. " +
+        console.log("Failed to retrieve reminders. " +
                                 `URL: ${apiUrl}/reminder. ` +
                                 error.message);
-    }));
+    });
   }
 
   public updateReminder(patchReminder: Reminder): Observable<void> {
@@ -62,7 +59,7 @@ export class ReminderService {
                                     this.patchOptions);
     return result.pipe(tap(
       success => {
-        this.refreshRemindersList().subscribe();
+        this.refreshRemindersList();
         console.log(`Reminder #${patchReminder.id} updated.`);
       },
       error => {

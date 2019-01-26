@@ -1,18 +1,19 @@
+.mat-list {
+}
+
+.mat-h2 {
+}
+
 .reminder-list {
 }
+
 .reminder-list-item {
 }
+
 .reminder-list-item-complete {
     text-decoration: line-through;
 }
+
 .reminder-list-item-incomplete {
-}
-.completedIconDiv {
-    padding: 0 16px;
-    width: 32px;
-    height: 36px;
-    display: inline-block;
-}
-.completedIcon {
 }
 

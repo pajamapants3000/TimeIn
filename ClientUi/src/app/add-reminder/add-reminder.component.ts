@@ -12,12 +12,13 @@ export class AddReminderComponent {
 
   constructor(private service: ReminderService) { }
 
-  addReminder(newReminder: string): void {
-    if (newReminder != '') {
+  addReminder(newReminderValue: string): void {
+    if (newReminderValue != '') {
       let reminderToAdd: Reminder = new Reminder({
-        value: newReminder,
+        value: newReminderValue,
         isCompleted: false
       });
+
       this.service.addReminder(reminderToAdd).subscribe();
     }
   }

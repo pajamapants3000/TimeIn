@@ -3,14 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { AddReminderComponent } from './add-reminder.component';
-
-import { ReminderService } from '../reminder.service';
-import { doArraysContainSameValues, click } from '../common';
 import { Reminder } from '../models/reminder';
+import { ReminderService } from '../reminder.service';
+import { click } from '../common';
 
 @Component({selector: 'mat-form-field', template: '<ng-content></ng-content>'})
-class MatFormFieldStub {
-}
+class MatFormFieldStub { }
 
 describe('AddReminderComponent', () => {
   let component: AddReminderComponent;
@@ -42,69 +40,52 @@ describe('AddReminderComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create',
-    () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   /* Template-related Tests */
-  it('should have a button',
+  it('should render a button',
     () => {
     const element: HTMLElement = fixture.nativeElement;
     const button = element.querySelector('button');
     expect(button).toBeTruthy();
   });
-
   it('should have a text input',
     () => {
-    const element: HTMLElement = fixture.nativeElement;
-    const inner = element.querySelector('mat-form-field');
-    const input = inner.querySelector('input');
+    const inner = fixture.nativeElement.querySelector('mat-form-field');
     expect(inner).toBeTruthy();
   });
-
-  it('should call addReminder service method with input text when button clicked',
+  it('should create new reminder when button clicked',
     () => {
-    let callsAfterInit = reminderServiceSpy.addReminder.calls.count();
-    expect(reminderServiceSpy.addReminder).not
-      .toHaveBeenCalledWith(reminderToAdd);
     const element: HTMLElement = fixture.nativeElement;
     const button = element.querySelector('button');
     const input = element.querySelector('input');
+    reminderServiceSpy.addReminder.calls.reset();
+
     input.value = reminderToAdd.value;
     click(button);
 
-    expect(reminderServiceSpy.addReminder.calls.count())
-      .toEqual(callsAfterInit + 1);
     expect(reminderServiceSpy.addReminder).toHaveBeenCalledWith(reminderToAdd);
   });
-
   it('should clear the input text field when button is clicked',
     () => {
-    let callsAfterInit = reminderServiceSpy.addReminder.calls.count();
-    expect(reminderServiceSpy.addReminder).not
-      .toHaveBeenCalledWith(reminderToAdd);
     const element: HTMLElement = fixture.nativeElement;
     const button = element.querySelector('button');
     const input = element.querySelector('input');
+
     input.value = reminderToAdd.value;
     click(button);
-    fixture.detectChanges();
+    fixture.detectChanges(); // test requires page to render changes
 
     expect(input.value).toEqual("");
   });
 
-
   /* Class-related Tests */
-  it('#addReminder should call addReminder service method with input text as Reminder',
+  it('should create new reminder when `addReminder` called',
     () => {
-    let callsAfterInit = reminderServiceSpy.addReminder.calls.count();
-    expect(reminderServiceSpy.addReminder).not
-      .toHaveBeenCalledWith(reminderToAdd);
+    reminderServiceSpy.addReminder.calls.reset();
     component.addReminder(reminderToAdd.value);
-    fixture.detectChanges();
-    expect(reminderServiceSpy.addReminder.calls.count())
-      .toEqual(callsAfterInit + 1);
     expect(reminderServiceSpy.addReminder).toHaveBeenCalledWith(reminderToAdd);
    });
 

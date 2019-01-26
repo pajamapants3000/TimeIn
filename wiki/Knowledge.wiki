@@ -38,6 +38,9 @@
             - [[#Git#Branching and Merging#In Visual Studio|In Visual Studio]]
     - [[#Angular|Angular]]
         - [[#Angular#Unsorted lessons|Unsorted lessons]]
+        - [[#Angular#Unidirectional Data Flow|Unidirectional Data Flow]]
+        - [[#Angular#Lean Hooks|Lean Hooks]]
+        - [[#Angular#Content Projection|Content Projection]]
 
 = The Problem with UWP =
 * Universal Windows applications cannot use consoles as UI
@@ -184,6 +187,8 @@
         course, after I spent a _LOT_ of time troubleshooting
         * *sigh*
 * I think it's ok in the root component (e.g. AppComponent)
+    * this depends on whether any changes are made to index.html
+    * by default, angular content is simply wrapped in html/body
 == Ng-Content for Directive Elements that Wrap Content ==
 * When testing against pages with angular components that have content inside
     them, create a stub with template="<ng-content></ng-content>"
@@ -463,4 +468,34 @@ Summary:
 == Unsorted lessons ==
 * `@Output` properties must be initialized
     * `@Input` properties need never be set
+== Unidirectional Data Flow ==
+* I have seen this mentioned a few times, but wasn't sure what it meant, exactly
+* an example at https://angular.io/guide/lifecycle-hooks#abide-by-the-unidirectional-data-flow-rule
+    clarified it a bit
+    * in a method called in a lifecycle hook like `AfterViewChecked`, we set
+        the value of a data-bound property
+        * since we are calling it in the `AfterViewChecked`, we have already
+            loaded and updated the page content
+            * we are then, subsequently, applying yet another view update
+            * in such a scenario, we want to call something like `tick_then` to
+                tell angular to wait for one turn of the browser's JavaScript
+                cycle before trying to apply the new change
+== Lean Hooks ==
+* many of Angular's page lifecycle hooks are called frequently
+* make sure these hooks, if utilized, do not have any substantial logic
+    attached to them
+* keep them lean and simple!
+== Content Projection ==
+* "never put content between a component's element tags unless you intend to
+    project that content into the component"
+* this means you must include `ng-content` tags in the child component, into
+    which content is being projected
+* this is the kind of scenario where the `AfterContent*` hooks are relevant,
+    and in which the `@ContentChild` and `@ContentChildren` decorators can be
+    useful
+* it seems a little backwards, but the `AfterContent*` hooks are called
+    _before_ the `AfterView*` hooks
+    * therefore, there is no need to worry about unidirectional data flow
+        concerns in the `AfterContent*` hooks
+        * the view may still be modified at this point
 

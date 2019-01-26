@@ -10,14 +10,10 @@ class AddReminderStub {}
 class ListRemindersStub {}
 @Component({selector: 'app-scheduled-events', template: ''})
 class ScheduledEventsStub {}
-
-
 @Component({selector: 'mat-tab', template: '<ng-content></ng-content>'})
-class MatTabStub {
-}
+class MatTabStub { }
 @Component({selector: 'mat-tab-group', template: '<ng-content></ng-content>'})
-class MatTabGroupStub {
-}
+class MatTabGroupStub { }
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -43,34 +39,28 @@ describe('AppComponent', () => {
   it('should create the app', () => {
     expect(component).toBeTruthy();
   });
-
   it(`should have as title 'Welcome to TimeIn!'`, () => {
     expect(component.title).toEqual('Welcome to TimeIn!');
   });
-
   it('should render title in a h1 tag', () => {
     const element = fixture.debugElement.nativeElement;
     expect(element.querySelector('h1').textContent).toContain(component.title);
   });
-
   it('should render add-reminder element ("app-add-reminder")',
      () => {
     const element = fixture.debugElement.nativeElement;
     expect(element.querySelector('app-add-reminder')).toBeTruthy();
   });
-
   it('should render list-reminders element ("app-list-reminders")',
      () => {
     const element = fixture.debugElement.nativeElement;
     expect(element.querySelector('app-list-reminders')).toBeTruthy();
   });
-
   it('should render tab element',
      () => {
     const element = fixture.debugElement.nativeElement;
     expect(element.querySelector('mat-tab-group')).toBeTruthy();
   });
-
   it('should have two tabs: "To-do" and "Scheduled Events"',
      () => {
     const element = fixture.debugElement.nativeElement;
@@ -85,11 +75,9 @@ describe('AppComponent', () => {
     expect(tabs[1].attributes.getNamedItem('label').value)
       .toEqual("Scheduled Events", "Events tab at index 1");
   });
-
   it('should render ScheduledEvents component',
      () => {
     const element = fixture.debugElement.nativeElement;
-    const tabs = element.querySelectorAll('mat-tab');
     expect(element.querySelector('app-scheduled-events'))
       .toBeTruthy("render ScheduledEvents component");
   });

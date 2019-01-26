@@ -79,14 +79,14 @@ describe('ReminderService', () => {
     req.error(errorEvent);
   }));
 
-  it('#addReminder should trigger update for any subscribers to reminders',
+  it('#addReminder should trigger update for any subscribers to reminderSource',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
 
     let reqGet: TestRequest;
     let reminderSubscriber: Reminder[] = [];
 
-    service.reminders.subscribe(
+    service.reminderSource.subscribe(
       success => {
         reminderSubscriber = success
         expect(reminderSubscriber.length).toEqual(1);
@@ -112,7 +112,7 @@ describe('ReminderService', () => {
   it('#refreshRemindersList should call GET api',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
-      service.refreshRemindersList().subscribe();
+      service.refreshRemindersList();
 
       const reqGet = httpMock.expectOne(`${apiUrl}/reminder`);
       expect(reqGet.request.method).toEqual("GET");
@@ -121,12 +121,12 @@ describe('ReminderService', () => {
      }
   ));
 
-  it('refreshRemindersList` should trigger update for any subscribers to reminders',
+  it('refreshRemindersList` should trigger update for any subscribers to reminderSource',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
 
       let reminderSubscriber: Reminder[] = testData_empty;
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => {
           reminderSubscriber = success
           expect(reminderSubscriber.length).toEqual(testData.length);
@@ -134,18 +134,18 @@ describe('ReminderService', () => {
         error => fail('expected successful call')
       );
 
-      service.refreshRemindersList().subscribe();
+      service.refreshRemindersList();
 
       const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData);
    }));
 
-  it('#refreshRemindersList should leave reminders with updated value - empty',
+  it('#refreshRemindersList should leave reminderSource with updated value - empty',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       let reminderSubscriber: Reminder[] = testData;
 
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => {
           reminderSubscriber = success
           expect(doArraysContainSameValues(testData_empty, reminderSubscriber))
@@ -154,18 +154,18 @@ describe('ReminderService', () => {
         error => fail('expected successful call')
       );
 
-      service.refreshRemindersList().subscribe();
+      service.refreshRemindersList();
 
       const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData_empty);
    }));
 
-  it('#refreshRemindersList should leave reminders with updated value - non-empty ',
+  it('#refreshRemindersList should leave reminderSource with updated value - non-empty ',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       let reminderSubscriber: Reminder[] = testData;
 
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => {
           reminderSubscriber = success
           expect(doArraysContainSameValues(testData, reminderSubscriber))
@@ -174,7 +174,7 @@ describe('ReminderService', () => {
         error => fail('expected successful call')
       );
 
-      service.refreshRemindersList().subscribe();
+      service.refreshRemindersList();
 
       const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.flush(testData);
@@ -185,16 +185,12 @@ describe('ReminderService', () => {
             (httpMock: HttpTestingController, service: ReminderService) => {
 
       let reminderSubscriber: Reminder[] = testData;
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => fail('subscription should not be updated'),
         error => fail('subscription should not be updated')
       );
 
-      service.refreshRemindersList().subscribe(
-        success => {
-          fail("expected call to refreshRemindersList to fail");
-        },
-        error => { /* Success! ...err, Error! */ });
+      service.refreshRemindersList();
 
       const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.error(errorEvent);
@@ -203,15 +199,12 @@ describe('ReminderService', () => {
   it('#refreshRemindersList should not update Reminders subject when API call is not successful',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => fail('subscription should not be updated'),
         error => fail('subscription should not be updated')
       );
 
-      service.refreshRemindersList().subscribe(
-        success => {},
-        error => {}
-      );
+      service.refreshRemindersList();
 
       const reqGet = httpMock.match(`${apiUrl}/reminder`)[0];
       reqGet.error(errorEvent);
@@ -262,7 +255,7 @@ describe('ReminderService', () => {
       let reqGet: TestRequest;
 
       let reminderSubscriber: Reminder[] = [reminderToPatch];
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => {
           reminderSubscriber = success
           let updatedReminder: Reminder = reminderSubscriber.find(x => x.id == reminderPatch.id);
@@ -285,7 +278,7 @@ describe('ReminderService', () => {
       reqPatch.flush(null);
   }));
 
-  it('#updateReminder should not update reminders list if unsuccessful',
+  it('#updateReminder should not update reminderSource list if unsuccessful',
      inject([HttpTestingController, ReminderService],
             (httpMock: HttpTestingController, service: ReminderService) => {
       const reminderValue: string = "A reminder";
@@ -307,7 +300,7 @@ describe('ReminderService', () => {
       let reqGet: TestRequest;
 
       let reminderSubscriber: Reminder[] = [reminderToPatch];
-      service.reminders.subscribe(
+      service.reminderSource.subscribe(
         success => fail('this subscription should not update'),
         error => fail('this subscription should not update')
       );

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { MatIconRegistry } from '@angular/material';
 
 import { ReminderService } from '../reminder.service';
 import { Reminder } from '../models/reminder';
@@ -16,22 +15,31 @@ export class ListRemindersComponent implements OnInit {
 
   constructor(private service: ReminderService) { }
 
-  ngOnInit() {
-    this.service.reminders.subscribe(
+  ngOnInit(): void {
+    this.service.getReminderSource().subscribe(
       next => {
         this.reminders$ = of(next.sort(Reminder.compare))
       },
-      err => {},
-      () => {} /* complete */
+      err => { /* error */ },
+      () => { /* complete */ }
     );
-    this.service.refreshRemindersList().subscribe();
+    this.service.refreshRemindersList();
   }
 
-  public completeReminder(id: number) {
-    this.service.updateReminder(new Reminder({id: id, value: null, isCompleted: true})).subscribe();
+  public completeReminder(id: number): void {
+    this.service.updateReminder(new Reminder({
+      id: id,
+      value: null,
+      isCompleted: true
+    })).subscribe();
   }
-  public uncompleteReminder(id: number) {
-    this.service.updateReminder(new Reminder({id: id, value: null, isCompleted: false})).subscribe();
+
+  public uncompleteReminder(id: number): void {
+    this.service.updateReminder(new Reminder({
+      id: id,
+      value: null,
+      isCompleted: false
+    })).subscribe();
   }
 }
 
